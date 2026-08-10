@@ -8,9 +8,10 @@
 
    Houve aqui mais duas funcionalidades de CSS — as animações de entrada com
    `animation-timeline: view()` e as transições entre páginas com
-   `@view-transition`. As duas deixavam fotografias de artigos sem serem
-   pintadas no Chrome e as duas foram retiradas. O relato completo, com as
-   medições, está no `estilo.css`.
+   `@view-transition`. Foram retiradas por parecerem deixar as fotografias dos
+   artigos sem serem pintadas; o sintoma era, na verdade, do separador de
+   browser onde a verificação corria, que estava oculto. O relato completo está
+   no `estilo.css`, na secção MOVIMENTO.
 
    O que ficou:
      1. o logótipo que encolhe no scroll

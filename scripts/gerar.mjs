@@ -658,15 +658,21 @@ function paginaProduto(p) {
 
   const galeria = fs.length ? `
 <div class="galeria">
-  <!-- Sem view-transition-name: as transições entre páginas foram retiradas por
-       deixarem fotografias sem pintar. A razão está por extenso no estilo.css. -->
+  <!-- Sem view-transition-name: as transições entre páginas foram retiradas.
+       A história, incluindo o diagnóstico errado que as tirou, está no
+       estilo.css, na secção MOVIMENTO. -->
   <div class="galeria__principal">
     <img id="foto" src="${fs[0].src}" srcset="${fs[0].srcset}" sizes="(max-width: 940px) 92vw, 660px"
          alt="${esc(p.nome)}" width="1600" height="1600" fetchpriority="high" decoding="async">
     <button class="galeria__lupa" type="button" id="abrir-lupa" aria-label="Ver a fotografia em grande">${ic.lupa}</button>
   </div>
-  ${fs.length > 1 ? `<div class="galeria__tiras" role="tablist" aria-label="Fotografias">
-    ${fs.map((f, i) => `<button class="tira" type="button" role="tab" data-i="${i}" aria-current="${i === 0}"
+  ${/* Nem `role="tablist"` nem `role="tab"`, de propósito. Uma galeria assim não é
+        um separador: não há um painel por miniatura, e um `role="tab"` obriga a
+        `aria-selected` e a navegação por setas com gestão de `tabindex`, nada
+        disso está aqui. São botões, e o estado do que está escolhido diz-se com
+        `aria-current`, que é válido num botão e é o que o JS actualiza. */''}
+  ${fs.length > 1 ? `<div class="galeria__tiras" role="group" aria-label="Fotografias do artigo">
+    ${fs.map((f, i) => `<button class="tira" type="button" data-i="${i}" aria-current="${i === 0}"
       aria-label="Fotografia ${i + 1} de ${fs.length}"><img src="${f.cartao}" alt="" width="96" height="96" loading="lazy" decoding="async"></button>`).join('\n    ')}
   </div>` : ''}
 </div>

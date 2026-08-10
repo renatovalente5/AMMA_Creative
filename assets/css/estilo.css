@@ -696,6 +696,12 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
   font-size: .82rem; color: rgba(250, 241, 232, .66);
 }
 .pe__legais { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; }
+/* Altura mínima de 24px em cada elo. Medidos no telemóvel davam 21,6px, e o
+   critério 2.5.8 do WCAG 2.2 pede 24×24 para alvos de toque. A excepção dos
+   links dentro de uma frase não se aplica aqui: isto é uma lista de ligações,
+   não texto corrido. O enchimento vertical resolve sem mexer no tamanho da
+   letra nem no aspecto da linha. */
+.pe__legais a { display: inline-flex; align-items: center; min-height: 24px; }
 /* A entrada da gestão, apagada. Não é `pointer-events: none` nem um `disabled`
    a sério — é um link que funciona, só que sem chamar a atenção de quem não é a
    dona da loja. Mantém contraste suficiente para se encontrar quando se procura. */
@@ -746,58 +752,53 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .migalhas svg { width: 13px; height: 13px; color: var(--tinta-3); }
 
 /* ============================================================= MOVIMENTO ===
-   AS REVELAÇÕES CONDUZIDAS PELO SCROLL FORAM RETIRADAS. Vale a pena explicar,
-   porque a tentação de as voltar a pôr é grande — é a coisa mais moderna que o
-   CSS ganhou nos últimos anos, e são quatro linhas.
+   DUAS FUNCIONALIDADES DE CSS FORAM RETIRADAS DAQUI, e a explicação honesta é
+   que foram retiradas por um diagnóstico errado. Fica escrito porque quem vier
+   a seguir merece saber o que se passou, e porque o erro de método é mais útil
+   do que a conclusão.
 
-   O que aconteceu neste site: com `animation-timeline: view()`, as FOTOGRAFIAS
-   deixavam de ser pintadas. Não era opacidade, não era visibilidade, não era o
-   ficheiro: as imagens vinham com HTTP 200, dimensões certas, `complete: true`,
-   `opacity: 1` — e o Chrome simplesmente não as desenhava. O hero era um
-   rectângulo creme vazio e os cartões do catálogo eram caixas sem fotografia.
-   Tirar a animação fazia aparecer no mesmo instante, sempre.
+   Estavam aqui:
+     1. revelações conduzidas pelo scroll, com `animation-timeline: view()`
+     2. transições entre páginas, com `@view-transition { navigation: auto }`
 
-   Medido: um cronómetro `view()` só está activo enquanto o elemento ainda não
-   entrou no ecrã. Fica inactivo em tudo o que já esteja visível ao carregar a
-   página, e nesse estado um elemento normal ignora a animação (inofensivo) mas
-   um <img> deixa de ser pintado (defeito). Pôr a classe num invólucro em vez da
-   imagem não resolveu: um <img> dentro de um elemento animado desaparece
-   igualmente.
+   O SINTOMA. Durante a verificação, as fotografias dos artigos apareciam em
+   branco nas capturas de ecrã: rectângulos creme vazios no hero e nos cartões.
+   As imagens vinham com HTTP 200, dimensões certas, `complete: true`,
+   `opacity: 1`, `visibility: visible` e zero animações — e nada desenhado.
+   Forçar uma repintura (`display: none` e logo `display: ''`) fazia a
+   fotografia aparecer no instante. Parecia, e foi tomado como, um defeito de
+   pintura do browser desencadeado por estas duas funcionalidades.
 
-   Num site de loja, o modo de falha desta funcionalidade é «as fotografias dos
-   produtos não aparecem». Isso não se arrisca por um desvanecimento.
+   O QUE ERA DE FACTO. O separador onde tudo isto foi medido estava com
+   `document.visibilityState === 'hidden'`. Num separador oculto o Chrome não
+   corre o ciclo de renderização: o `requestAnimationFrame` não dispara e as
+   capturas apanham conteúdo que ainda não foi desenhado. Uma captura da página
+   inteira, tirada logo a seguir e sem mexer em nada, mostrava a fotografia
+   perfeita. Não havia defeito nenhum — havia um instrumento de medida a mentir.
+   O «forçar a repintura resolve» encaixava nas duas hipóteses e não distinguia
+   nenhuma; foi o que atrasou o diagnóstico.
 
-   O que FICA, e está tudo verificado a funcionar: container queries nos
-   cartões, o menu em Popover API, a prateleira que rola com marcadores
-   nativos, `text-wrap: balance`, e o movimento no hover — que é onde o
-   movimento é seguro, porque só acontece depois de alguém apontar. */
+   PORQUE NÃO FORAM REPOSTAS. Já não há prova contra elas, mas também não houve
+   forma de as verificar: a pintura não se confirma sem alguém à frente do ecrã.
+   Entre repor um desvanecimento que não se consegue verificar e deixar uma
+   montra que se sabe que funciona, escolhe-se a montra. Repor é um `git revert`
+   de dois commits e trinta segundos de olhar para a página — desfazer uma loja
+   com fotografias invisíveis não é.
 
-/* AQUI ESTAVAM AS TRANSIÇÕES ENTRE PÁGINAS, e foram retiradas pela mesma razão
-   e com a mesma medição.
+   REGRA QUE FICA, e esta é independente de tudo o que está acima: a
+   visibilidade de uma fotografia de artigo nunca deve depender de uma animação.
+   Se as revelações voltarem, voltam em texto e em títulos, nunca num <img> nem
+   num antepassado de um <img>. Numa montra o modo de falha inaceitável é «as
+   fotografias não aparecem», e essa possibilidade tira-se por construção, não
+   por confiança no browser.
 
-   Tinha aqui `@view-transition { navigation: auto }` com o cabeçalho e o rodapé
-   fixos e a fotografia do produto a continuar-se da listagem para a ficha. Seis
-   linhas de CSS para o efeito mais moderno do site.
+   E A LIÇÃO DE MÉTODO: antes de acreditar numa captura de ecrã, confirmar
+   `document.visibilityState`. Um separador oculto não pinta.
 
-   O que fazia, medido no Chrome em produção, no mesmo ecrã e na mesma sessão:
-
-     vir de outro domínio (carregamento limpo) ....... a fotografia PINTA
-     ir a /contactos/ e voltar a / (transição corre) . a fotografia FICA EM BRANCO
-
-   E em branco quer dizer isto: `complete: true`, `naturalWidth` correcto,
-   `opacity: 1`, `visibility: visible`, zero animações no elemento e no pai,
-   `view-transition-name: none` na imagem — e nada desenhado. Um `display: none`
-   seguido de `display: ''` obriga o browser a repintar e a fotografia aparece
-   na hora. Não é estado, não é carregamento, não é CSS herdado: é pintura que
-   o browser não faz depois de terminar a transição.
-
-   É o segundo defeito de pintura da mesma família neste site (o primeiro foi o
-   `animation-timeline: view()`, documentado acima). A conclusão é a mesma: numa
-   montra, o modo de falha é «as fotografias dos artigos não aparecem», e isso
-   não se troca por um desvanecimento de 340 ms.
-
-   Se algum dia voltar aqui: o teste é o quadro em cima — carregamento limpo
-   contra navegação interna. Não basta abrir a página inicial e ver que está bem. */
+   O que fica e está verificado: container queries nos cartões, o menu em
+   Popover API, a prateleira que rola com marcadores nativos, `text-wrap:
+   balance`, e o movimento no hover — que é onde o movimento é seguro, porque só
+   acontece depois de alguém apontar. */
 
 /* --------------------------------------------------------------- impressão -- */
 @media print {
