@@ -277,16 +277,22 @@ ${corpo}
       <nav class="pe__legais" aria-label="Informação legal">
         ${LEGAIS.map(([p, n]) => `<a href="${u(p)}">${n}</a>`).join('\n        ')}
         <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener">Livro de Reclamações</a>
+        <!-- Entrada da cliente para o backoffice. Fica apagada de propósito: quem
+             visita o site não tem nada que a notar, e quem precisa dela sabe que
+             está aqui. Continua a ser um link a sério, e não um botão inerte. -->
+        <!-- Volta a abrir o aviso, para se poder mudar de ideias. Sem isto, uma
+             escolha feita uma vez ficava para sempre e não havia por onde a
+             rever — que é precisamente o que o RGPD não quer. -->
+        <a href="#" data-cc-abrir>Cookies</a>
+        <a class="pe__gestao" href="https://app.pagescms.org/renatovalente5/AMMA_Creative/main"
+           target="_blank" rel="noopener">Gestão</a>
       </nav>
     </div>
-    <!-- Identificação obrigatória (DL 7/2004, art. 10.º): denominação, sede,
-         NIF e contactos, em acesso fácil e permanente. Não há aqui capital
-         social — é uma empresária em nome individual, e o art. 171.º do Código
-         das Sociedades Comerciais não se lhe aplica. -->
-    <p class="pe__id">
-      ${esc(def.empresa.denominacao_social)} · ${esc(def.empresa.forma_juridica)} ·
-      NIF ${esc(def.empresa.nif)} · ${esc(def.local.morada)}, ${esc(def.local.codigo_postal)} ${esc(def.local.localidade)}
-    </p>
+    <!-- A identificação que o DL 7/2004 obriga a prestar — nome, sede, NIF —
+         NÃO está aqui por decisão do cliente, e continua a cumprir-se: está nos
+         Termos e na Privacidade, que estão ligadas deste rodapé em todas as
+         páginas. É acesso fácil e permanente, que é o que a lei pede; não exige
+         que esteja no rodapé. -->
   </div>
 </footer>
 

@@ -696,6 +696,11 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
   font-size: .82rem; color: rgba(250, 241, 232, .66);
 }
 .pe__legais { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; }
+/* A entrada da gestão, apagada. Não é `pointer-events: none` nem um `disabled`
+   a sério — é um link que funciona, só que sem chamar a atenção de quem não é a
+   dona da loja. Mantém contraste suficiente para se encontrar quando se procura. */
+.pe__gestao { color: rgba(250, 241, 232, .38); }
+.pe__gestao:hover { color: rgba(250, 241, 232, .8); }
 /* Os dados de identificação que a lei obriga. Pequenos e ao fim, mas presentes e
    sempre acessíveis — é o que o DL 7/2004 pede. */
 .pe__id { font-size: .78rem; color: rgba(250, 241, 232, .58); margin-top: .9rem; line-height: 1.6; }
