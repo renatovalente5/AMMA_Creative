@@ -1,0 +1,23 @@
+{
+  "slug": "tshirt-pai",
+  "nome": "T-shirt de pai personalizada",
+  "categoria": "textil",
+  "ocasioes": [
+    "dia-do-pai",
+    "presente"
+  ],
+  "fotos": [
+    "assets/produtos/tshirt-pai/01.jpg"
+  ],
+  "resumo": "«PAPA» com as fotografias dentro das letras, e o ano por baixo.",
+  "texto": "A mesma ideia da sweat de mãe, para ele. Fica bem em escuro, que é o que costumam escolher.\n\nFazemos «PAI», «PAPÁ» e «AVÔ», com o número de fotografias que as letras aguentarem.",
+  "personalizavel": [
+    "As fotografias",
+    "O texto e o ano",
+    "A cor da t-shirt",
+    "O tamanho"
+  ],
+  "ordem": 180,
+  "publicado": true,
+  "destaque": false
+}

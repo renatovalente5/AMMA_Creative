@@ -1,0 +1,24 @@
+{
+  "slug": "colar-nome-gravado",
+  "nome": "Colar com nome gravado",
+  "categoria": "aco",
+  "ocasioes": [
+    "dia-da-mae",
+    "baptizado",
+    "presente"
+  ],
+  "fotos": [
+    "assets/produtos/colar-nome-gravado/01.jpg"
+  ],
+  "resumo": "Aço inoxidável com o nome gravado. Um por filho, para usar todos juntos.",
+  "texto": "Gravamos o nome em letra corrida, na chapa de aço. Quem tem dois filhos leva dois; quem tem três leva três, e usa-os na mesma corrente.\n\nAço inoxidável: não escurece, não dá alergia e vai ao banho.",
+  "personalizavel": [
+    "O nome ou os nomes",
+    "O tipo de letra",
+    "O comprimento da corrente",
+    "Prateado ou dourado"
+  ],
+  "ordem": 130,
+  "publicado": true,
+  "destaque": false
+}

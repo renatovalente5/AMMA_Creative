@@ -1,0 +1,23 @@
+{
+  "slug": "conjunto-aco",
+  "nome": "Conjunto em aço",
+  "categoria": "aco",
+  "ocasioes": [
+    "presente",
+    "dia-da-mae"
+  ],
+  "fotos": [
+    "assets/produtos/conjunto-aco/01.jpg"
+  ],
+  "resumo": "Colar, pendentes e brincos a combinar, para dar de uma vez.",
+  "texto": "Quando não se sabe o que escolher, escolhe-se o conjunto. Montamos com os pendentes que quiser — inicial, coração, pegadinha, árvore da vida — e vai numa caixa pronta a dar.",
+  "personalizavel": [
+    "Os pendentes",
+    "As gravações",
+    "A cor do metal",
+    "A caixa"
+  ],
+  "ordem": 160,
+  "publicado": true,
+  "destaque": false
+}

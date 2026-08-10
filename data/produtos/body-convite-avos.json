@@ -1,0 +1,23 @@
+{
+  "slug": "body-convite-avos",
+  "nome": "Body «avô e avó, preparem o colinho»",
+  "categoria": "bodies-convites",
+  "ocasioes": [
+    "anuncio-gravidez",
+    "convite-padrinhos"
+  ],
+  "fotos": [
+    "assets/produtos/body-convite-avos/01.jpg"
+  ],
+  "resumo": "Para contar aos avós que vem alguém a caminho.",
+  "texto": "Com as pegadinhas em vermelho e a frase que faz sempre chorar alguém. É dos que mais saem por aqui, e não é por acaso: dá-se numa mão e diz tudo sem se falar.",
+  "personalizavel": [
+    "A frase",
+    "Os nomes dos avós",
+    "A cor das pegadinhas",
+    "O tamanho do body"
+  ],
+  "ordem": 30,
+  "publicado": true,
+  "destaque": true
+}

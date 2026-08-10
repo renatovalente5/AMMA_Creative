@@ -1,0 +1,22 @@
+{
+  "slug": "body-primeira-pascoa",
+  "nome": "Body «a minha primeira Páscoa»",
+  "categoria": "bodies-convites",
+  "ocasioes": [
+    "pascoa"
+  ],
+  "fotos": [
+    "assets/produtos/body-primeira-pascoa/01.jpg"
+  ],
+  "resumo": "Com orelhas de coelho e o nome. Para a primeira de todas.",
+  "texto": "As primeiras vezes são uma só, e ficam em fotografia. Este leva as orelhas desenhadas e o nome do bebé por baixo.\n\nFazemos o mesmo para o primeiro Natal e para o primeiro aniversário.",
+  "personalizavel": [
+    "O nome do bebé",
+    "A ocasião (Páscoa, Natal, aniversário)",
+    "A cor do desenho",
+    "O tamanho"
+  ],
+  "ordem": 70,
+  "publicado": true,
+  "destaque": false
+}

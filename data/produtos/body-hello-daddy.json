@@ -1,0 +1,24 @@
+{
+  "slug": "body-hello-daddy",
+  "nome": "Body «hello daddy»",
+  "categoria": "bodies-convites",
+  "ocasioes": [
+    "anuncio-gravidez",
+    "dia-do-pai"
+  ],
+  "fotos": [
+    "assets/produtos/body-hello-daddy/01.jpg",
+    "assets/produtos/body-hello-daddy/02.jpg",
+    "assets/produtos/body-hello-daddy/03.jpg"
+  ],
+  "resumo": "Para contar ao pai. Costuma ser o mais difícil de filmar sem estragar a surpresa.",
+  "texto": "Escrito à mão, em letra corrida, num body pequeno. Há quem o embrulhe, há quem o deixe em cima da cama.\n\nFazemos também «hello mummy», «hello grandpa», e as versões em português.",
+  "personalizavel": [
+    "A frase",
+    "O tipo de letra",
+    "O tamanho do body"
+  ],
+  "ordem": 60,
+  "publicado": true,
+  "destaque": true
+}

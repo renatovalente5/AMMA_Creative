@@ -1,0 +1,23 @@
+{
+  "slug": "sweat-mae",
+  "nome": "Sweat de mãe personalizada",
+  "categoria": "textil",
+  "ocasioes": [
+    "dia-da-mae",
+    "presente"
+  ],
+  "fotos": [
+    "assets/produtos/sweat-mae/01.jpg"
+  ],
+  "resumo": "«MOM» com a fotografia dos filhos dentro das letras.",
+  "texto": "A fotografia entra dentro do lettering — é isso que faz esta peça. Manda-nos as fotografias e nós compomos, com o ano por baixo se quiser.\n\nTambém fazemos «MÃE», e com o nome dos filhos em vez da fotografia.",
+  "personalizavel": [
+    "As fotografias",
+    "O texto e o ano",
+    "A cor da sweat",
+    "O tamanho"
+  ],
+  "ordem": 170,
+  "publicado": true,
+  "destaque": false
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "porta-chaves-foto",
+  "nome": "Porta-chaves com fotografia",
+  "categoria": "lembrancas",
+  "ocasioes": [
+    "presente",
+    "lembrancas",
+    "dia-da-mae"
+  ],
+  "fotos": [
+    "assets/produtos/porta-chaves-foto/01.jpg"
+  ],
+  "resumo": "Acrílico com a fotografia e um coração com o parentesco escrito.",
+  "texto": "«Avó» escrito à mão dentro do coração, e a fotografia ao lado. É pequeno, anda no bolso, e é dos presentes que mais nos agradecem.\n\nFazemos para avó, avô, madrinha, padrinho, mãe, pai — e com a fotografia que nos mandar.",
+  "personalizavel": [
+    "A fotografia",
+    "A palavra no coração",
+    "A cor do coração",
+    "A quantidade"
+  ],
+  "ordem": 240,
+  "publicado": true,
+  "destaque": false
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "tshirt-super-padrinho",
+  "nome": "T-shirt «super padrinho»",
+  "categoria": "textil",
+  "ocasioes": [
+    "baptizado",
+    "convite-padrinhos",
+    "presente"
+  ],
+  "fotos": [
+    "assets/produtos/tshirt-super-padrinho/01.jpg"
+  ],
+  "resumo": "O emblema de super-herói, com o nome dele.",
+  "texto": "Para dar no dia do pedido ou vestir no dia do baptizado. O emblema é desenhado por nós e leva o nome dentro.\n\nHá a versão «super madrinha», e a de padrinho e madrinha a condizer.",
+  "personalizavel": [
+    "O nome no emblema",
+    "Padrinho ou madrinha",
+    "A cor da t-shirt",
+    "O tamanho"
+  ],
+  "ordem": 190,
+  "publicado": true,
+  "destaque": false
+}

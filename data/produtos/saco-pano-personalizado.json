@@ -1,0 +1,24 @@
+{
+  "slug": "saco-pano-personalizado",
+  "nome": "Saco de pano personalizado",
+  "categoria": "textil",
+  "ocasioes": [
+    "presente",
+    "lembrancas"
+  ],
+  "fotos": [
+    "assets/produtos/saco-pano-personalizado/01.jpg",
+    "assets/produtos/saco-pano-personalizado/02.jpg"
+  ],
+  "resumo": "Para lembranças, para a escola, ou para levar o presente lá dentro.",
+  "texto": "Fazemos um ou fazemos quarenta. Para lembrança de festa, com o nome de cada convidado; para a creche, com o nome do bebé; ou para embrulhar o que nos comprar.\n\nEm lona crua, com o desenho e o nome que escolher.",
+  "personalizavel": [
+    "O nome ou nomes",
+    "O desenho",
+    "A quantidade",
+    "O tamanho do saco"
+  ],
+  "ordem": 230,
+  "publicado": true,
+  "destaque": false
+}

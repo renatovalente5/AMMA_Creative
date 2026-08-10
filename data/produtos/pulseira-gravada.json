@@ -1,0 +1,24 @@
+{
+  "slug": "pulseira-gravada",
+  "nome": "Pulseira gravada",
+  "categoria": "aco",
+  "ocasioes": [
+    "presente",
+    "casamento"
+  ],
+  "fotos": [
+    "assets/produtos/pulseira-gravada/01.jpg",
+    "assets/produtos/pulseira-gravada/02.jpg"
+  ],
+  "resumo": "Chapa em aço, gravada com nome, data ou coordenadas.",
+  "texto": "Há cinco modelos de fecho e de contas, e gravamos o que quiser na chapa: um nome, uma data, umas coordenadas, uma frase curta.\n\nFazemos em par, para dar uma e ficar com a outra.",
+  "personalizavel": [
+    "A gravação",
+    "O modelo da pulseira",
+    "O tamanho do pulso",
+    "Prateado ou dourado"
+  ],
+  "ordem": 150,
+  "publicado": true,
+  "destaque": false
+}

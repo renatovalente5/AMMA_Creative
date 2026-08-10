@@ -1,0 +1,25 @@
+{
+  "slug": "box-convite-padrinhos",
+  "nome": "Box de convite a padrinhos",
+  "categoria": "boxes",
+  "ocasioes": [
+    "baptizado",
+    "convite-padrinhos"
+  ],
+  "fotos": [
+    "assets/produtos/box-convite-padrinhos/01.jpg",
+    "assets/produtos/box-convite-padrinhos/02.jpg",
+    "assets/produtos/box-convite-padrinhos/03.jpg"
+  ],
+  "resumo": "O pedido em caixa: carta, lembrança e o nome de quem convida.",
+  "texto": "«Temos um pedido muito especial para ti…» — e depois a carta, que escrevemos com as suas palavras ou com as nossas, se preferir que ajudemos.\n\nHá quem leve só a carta, há quem junte o body, o porta-chaves ou uma peça em aço gravada. Diga-nos o que quer lá dentro.",
+  "personalizavel": [
+    "O texto da carta",
+    "Madrinha ou padrinho",
+    "O que vai dentro da caixa",
+    "A cor da caixa e do papel"
+  ],
+  "ordem": 90,
+  "publicado": true,
+  "destaque": false
+}

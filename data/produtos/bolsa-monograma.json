@@ -1,0 +1,23 @@
+{
+  "slug": "bolsa-monograma",
+  "nome": "Bolsa com monograma",
+  "categoria": "textil",
+  "ocasioes": [
+    "presente",
+    "dia-da-mae"
+  ],
+  "fotos": [
+    "assets/produtos/bolsa-monograma/01.jpg"
+  ],
+  "resumo": "Lona crua com a inicial grande e o nome por cima, em dourado.",
+  "texto": "A inicial vai grande, em escuro, e o nome atravessa-a em dourado. Fica bem como estojo, como necessaire, ou dentro de um presente maior.\n\nFazemos com a florzinha ao canto ou sem ela.",
+  "personalizavel": [
+    "A inicial e o nome",
+    "As cores do vinil",
+    "Com ou sem ornamento",
+    "O tamanho da bolsa"
+  ],
+  "ordem": 220,
+  "publicado": true,
+  "destaque": false
+}

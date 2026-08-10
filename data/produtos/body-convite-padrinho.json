@@ -1,0 +1,23 @@
+{
+  "slug": "body-convite-padrinho",
+  "nome": "Body «aceitas ser o meu padrinho?»",
+  "categoria": "bodies-convites",
+  "ocasioes": [
+    "baptizado",
+    "convite-padrinhos"
+  ],
+  "fotos": [
+    "assets/produtos/body-convite-padrinho/01.jpg"
+  ],
+  "resumo": "O mesmo pedido, para o padrinho — ou para o tio que já sabe que vai ser escolhido.",
+  "texto": "«Tio, aceitas ser meu padrinho?» — escrito num body, entregue sem aviso. Funciona sempre.\n\nA frase é sua: mudamos o parentesco, o nome, e o tratamento por tu ou por você.",
+  "personalizavel": [
+    "A frase do pedido",
+    "O parentesco (tio, avô, primo…)",
+    "O nome de quem convida",
+    "O tamanho do body"
+  ],
+  "ordem": 20,
+  "publicado": true,
+  "destaque": true
+}

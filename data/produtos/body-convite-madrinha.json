@@ -1,0 +1,24 @@
+{
+  "slug": "body-convite-madrinha",
+  "nome": "Body «aceitas ser a minha madrinha?»",
+  "categoria": "bodies-convites",
+  "ocasioes": [
+    "baptizado",
+    "convite-padrinhos"
+  ],
+  "fotos": [
+    "assets/produtos/body-convite-madrinha/01.jpg",
+    "assets/produtos/body-convite-madrinha/02.jpg"
+  ],
+  "resumo": "O convite que ninguém recusa. Um body com o pedido escrito, para dar em mão à futura madrinha.",
+  "texto": "É o nosso pedido mais pedido. Escolhemos juntas a frase — «um bebé especial precisa da madrinha mais especial de todas» é a preferida de quem já cá passou — e nós fazemos o resto.\n\nVai num body de algodão, no tamanho que quiser, e pode seguir com os sapatinhos e a caixa se preferir entregar tudo junto.",
+  "personalizavel": [
+    "A frase do pedido",
+    "O nome de quem convida",
+    "O tamanho do body",
+    "A cor do lettering"
+  ],
+  "ordem": 10,
+  "publicado": true,
+  "destaque": true
+}

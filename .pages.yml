@@ -1,0 +1,329 @@
+# ============================================================================
+# Backoffice da AMMA Creative — configuração do Pages CMS (pagescms.org)
+#
+# A cliente entra em app.pagescms.org com um link enviado por email. Não precisa
+# de conta no GitHub e não consegue mexer neste ficheiro — só no conteúdo.
+#
+# Cada gravação é guardada no repositório e o site é publicado sozinho em 1 a 3
+# minutos.
+#
+# TRÊS COISAS SÓ, na barra lateral: Artigos, Categorias e Dados da loja. Foi
+# pedido um backoffice simples, e simples aqui quer dizer poucas entradas com
+# ajuda em cada campo — não muitas entradas bem arrumadas.
+# ============================================================================
+actions:
+  - name: publicar
+    label: Publicar site agora
+    workflow: publicar.yml
+    ref: current
+    confirm:
+      title: Publicar o site?
+      message: >-
+        O site vai ser reconstruído com as alterações já gravadas. Demora 1 a 3
+        minutos. Normalmente não é preciso — cada gravação já publica sozinha.
+        Use isto se achar que ficou algo por actualizar.
+      button: Publicar
+
+# `output` igual a `input` de propósito. Com a barra inicial (`/assets/...`) o
+# Pages CMS grava os caminhos das fotografias numa forma diferente da que está
+# nos ficheiros, e a primeira gravação de cada artigo reescrevia a lista toda.
+media:
+  input: assets/produtos
+  output: assets/produtos
+  categories: [image]
+
+content:
+  # ---------------------------------------------------------------- artigos
+  - name: artigos
+    label: Artigos
+    type: collection
+    path: data/produtos
+    filename: '{fields.slug}.json'
+    format: json
+    view:
+      # O `slug` na tabela é a referência do artigo: é o que está no endereço da
+      # página e o nome do próprio ficheiro. Serve para o distinguir sem
+      # ambiguidade quando há nomes parecidos — e há: quatro bodies de convite.
+      fields: [nome, categoria, publicado, destaque, slug]
+      primary: nome
+      sort: [ordem, nome]
+    fields:
+      # ORDEM DOS CAMPOS: o que o artigo é, as fotografias, os textos, o que se
+      # personaliza, e no fim as opções de publicação. O `slug` fica para último
+      # por ser o único campo técnico do formulário.
+
+      - name: nome
+        label: Nome do artigo
+        type: string
+        required: true
+        description: >-
+          Como aparece no site e no Google. Escreva-o como o descreveria a uma
+          cliente — «Body «aceitas ser a minha madrinha?»» diz mais do que
+          «Body 03».
+
+      - name: categoria
+        label: Categoria
+        type: select
+        required: true
+        description: Onde o artigo aparece no catálogo e no menu do rodapé.
+        # A chave de cada opção é `name`, não `value` — está assim documentado, e
+        # com `value` arrisca-se gravar vazio sem aviso nenhum.
+        options:
+          values:
+            - { name: bodies-convites, label: 'Bodies e convites' }
+            - { name: aco, label: 'Artigos em aço' }
+            - { name: boxes, label: 'Boxes de presente' }
+            - { name: textil, label: 'Têxtil personalizado' }
+            - { name: lembrancas, label: 'Lembranças' }
+
+      - name: ocasioes
+        label: Ocasiões
+        type: select
+        list: true
+        description: >-
+          Para que ocasiões serve. É por aqui que se filtra o catálogo — quem
+          procura um presente de baptizado escolhe «Baptizado» e vê só o que
+          serve. Pode escolher várias.
+        options:
+          multiple: true
+          values:
+            - { name: anuncio-gravidez, label: 'Anúncio de gravidez' }
+            - { name: convite-padrinhos, label: 'Convite a padrinhos' }
+            - { name: baptizado, label: 'Baptizado' }
+            - { name: casamento, label: 'Casamento' }
+            - { name: dia-da-mae, label: 'Dia da Mãe' }
+            - { name: dia-do-pai, label: 'Dia do Pai' }
+            - { name: pascoa, label: 'Páscoa' }
+            - { name: presente, label: 'Presente' }
+            - { name: lembrancas, label: 'Lembranças' }
+
+      # ─────────── fotografias
+      - name: fotos
+        label: Fotografias
+        type: image
+        options:
+          multiple:
+            max: 12
+        description: >-
+          A PRIMEIRA é a mais importante: é a que aparece no catálogo, na página
+          inicial e na pré-visualização quando o link é partilhado no WhatsApp.
+          Escolha uma em que se veja bem a peça inteira.
+          As fotografias são reduzidas sozinhas na publicação — carregue-as como
+          saem do telemóvel. Arraste para reordenar.
+
+      # ─────────── textos
+      - name: resumo
+        label: Resumo
+        type: text
+        required: true
+        description: >-
+          Uma ou duas frases. Aparece no cartão do catálogo e é o que o Google
+          mostra na pesquisa. Diga o que a peça é e para quem serve — não repita
+          o nome.
+
+      - name: texto
+        label: Descrição
+        type: text
+        required: true
+        description: >-
+          Dois ou três parágrafos, na primeira pessoa, como se estivesse a
+          explicar a uma cliente. Deixe uma linha em branco entre parágrafos —
+          aparecem separados no site.
+          O que resulta melhor: dizer o que a peça tem de especial, o que as
+          pessoas costumam escolher, e uma frase sobre o material.
+
+      - name: personalizavel
+        label: O que se personaliza
+        type: string
+        list: true
+        description: >-
+          Um item por linha, curto. Exemplo: «O nome do bebé», «A cor do
+          lettering», «O tamanho do body». Aparece em lista com um visto ao lado
+          de cada um — é dos blocos que as clientes mais leem, porque é onde
+          percebem que podem pedir o que querem.
+
+      # ─────────── publicação
+      - name: publicado
+        label: Publicado no site
+        type: boolean
+        default: true
+        description: >-
+          Desligue para tirar o artigo do site sem o perder — fica aqui guardado
+          e volta a aparecer quando ligar outra vez. Útil enquanto não tem
+          fotografias boas.
+
+      - name: destaque
+        label: Mostrar na página inicial
+        type: boolean
+        default: false
+        description: >-
+          Os artigos em destaque aparecem na secção «O que mais sai por aqui».
+          Quatro a seis é o número que fica bem — mais do que isso e a página
+          inicial fica um catálogo.
+
+      - name: ordem
+        label: Ordem
+        type: number
+        default: 500
+        description: >-
+          Número mais baixo aparece primeiro, no catálogo e na categoria. Deixe
+          500 se for indiferente.
+        # Sem `min`: no Pages CMS o `min` passa a ser a base do incremento e
+        # invalida valores que já existam nos dados.
+        step: 10
+
+      - name: slug
+        label: Endereço da página
+        type: string
+        required: true
+        description: >-
+          É o fim do link do artigo. Só letras minúsculas, números e hífens.
+          Exemplo: body-convite-madrinha.
+          DEPOIS DE PUBLICADO, NÃO MUDE — quem tiver o link guardado ou
+          partilhado deixa de o conseguir abrir, e o Google perde a página.
+        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+
+  # ------------------------------------------------------------- categorias
+  - name: categorias
+    label: Categorias
+    type: file
+    path: data/categorias.json
+    format: json
+    list: true
+    fields:
+      - name: nome
+        label: Nome
+        type: string
+        required: true
+        description: Como aparece nos títulos e no rodapé.
+      - name: curto
+        label: Nome curto
+        type: string
+        description: >-
+          Para os botões de filtro do catálogo, onde não cabe o nome todo.
+          «Têxtil» em vez de «Têxtil personalizado».
+      - name: resumo
+        label: Resumo
+        type: text
+        description: Uma frase. Aparece no cartão da categoria na página inicial.
+      - name: texto
+        label: Texto da página
+        type: text
+        description: >-
+          Dois parágrafos, no topo da página da categoria. É o texto que faz esta
+          página aparecer no Google — vale a pena usar as palavras que as pessoas
+          escrevem quando procuram («convite madrinha», «body personalizado»).
+      - name: titulo_seo
+        label: Título para o Google
+        type: string
+        description: >-
+          O que aparece como título azul no resultado da pesquisa. Até 60
+          caracteres, com as palavras que se procuram à frente.
+      - name: descricao_seo
+        label: Descrição para o Google
+        type: text
+        description: >-
+          As duas linhas cinzentas debaixo do título, no resultado da pesquisa.
+          Até 155 caracteres.
+      - name: slug
+        label: Endereço
+        type: string
+        required: true
+        description: >-
+          NÃO MUDE depois de publicado — é o endereço da página, e mudá-lo
+          quebra as ligações e desliga os artigos desta categoria.
+        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+
+  # ---------------------------------------------------------- dados da loja
+  - name: definicoes
+    label: Dados da loja
+    type: file
+    path: data/definicoes.json
+    format: json
+    fields:
+      - name: contactos
+        label: Contactos
+        type: object
+        description: >-
+          Aparecem no cabeçalho, no rodapé, na página de contactos e nos botões
+          de todas as fichas de artigo. Mudar aqui muda em todo o lado.
+        fields:
+          - { name: telefone, label: 'Telefone (só dígitos)', type: string }
+          - { name: telefone_texto, label: 'Telefone (como aparece)', type: string }
+          - name: whatsapp
+            label: WhatsApp
+            type: string
+            description: 'Com o indicativo e sem sinais: 351925110570.'
+          - { name: email, label: Email, type: string }
+          - { name: instagram, label: 'Instagram (endereço completo)', type: string }
+
+      - name: local
+        label: Onde estão
+        type: object
+        fields:
+          - { name: morada, label: Rua, type: string }
+          - { name: codigo_postal, label: Código postal, type: string }
+          - { name: localidade, label: Localidade, type: string }
+          - { name: concelho, label: Concelho, type: string }
+          - { name: pais, label: País, type: string }
+          - name: latitude
+            label: Latitude
+            type: number
+            description: 'Para o mapa e para o Google. Sem `step`, o backoffice recusa decimais.'
+            step: 0.0000001
+          - { name: longitude, label: Longitude, type: number, step: 0.0000001 }
+          - { name: mapa, label: Link do Google Maps, type: string }
+
+      - name: textos
+        label: Textos do site
+        type: object
+        description: >-
+          As frases grandes. Alterações aqui aparecem na página inicial e no
+          «Sobre nós» assim que gravar.
+        fields:
+          - { name: hero_titulo, label: Título da página inicial, type: string }
+          - { name: hero_texto, label: Texto da página inicial, type: text }
+          - { name: reclamo, label: Frase da marca (rodapé), type: string }
+          - { name: sobre_titulo, label: Título do «Sobre nós», type: string }
+          - { name: sobre_texto, label: Texto do «Sobre nós», type: text }
+          - name: portes
+            label: Frase dos portes
+            type: string
+            description: >-
+              Aparece na página inicial, nas fichas de artigo e nas perguntas
+              frequentes. Exemplo: «Portes grátis acima de 60€».
+
+      - name: opcoes
+        label: Opções
+        type: object
+        fields:
+          - name: mostrar_mapa
+            label: Mostrar o mapa na página de contactos
+            type: boolean
+            description: >-
+              O mapa só carrega depois de o visitante o autorizar, porque vem do
+              Google e instala cookies. Desligue isto se preferir não o ter.
+
+      - name: empresa
+        label: Dados legais
+        type: object
+        description: >-
+          Aparecem no rodapé por imposição legal (Decreto-Lei 7/2004): quem tem
+          um site com actividade comercial tem de se identificar de forma
+          permanente. Altere só se algum destes dados mudar.
+        fields:
+          - { name: nome_comercial, label: Nome comercial, type: string }
+          - { name: assinatura, label: Assinatura (Artigos personalizados), type: string }
+          - name: denominacao_social
+            label: Nome completo da titular
+            type: string
+            description: >-
+              Numa empresa em nome individual, a denominação é o nome da pessoa.
+              É o que a lei obriga a mostrar, e está a faltar — assim que o der,
+              substitui-se aqui.
+          - { name: forma_juridica, label: Forma jurídica, type: string }
+          - name: nif
+            label: NIF
+            type: string
+            description: Obrigatório no rodapé. Está com um valor de espera até ser indicado.
+          - { name: cae, label: CAE, type: string }

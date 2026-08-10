@@ -1,0 +1,26 @@
+{
+  "slug": "colar-inicial",
+  "nome": "Colar de inicial",
+  "categoria": "aco",
+  "ocasioes": [
+    "dia-da-mae",
+    "presente"
+  ],
+  "fotos": [
+    "assets/produtos/colar-inicial/01.jpg",
+    "assets/produtos/colar-inicial/02.jpg",
+    "assets/produtos/colar-inicial/03.jpg",
+    "assets/produtos/colar-inicial/04.jpg"
+  ],
+  "resumo": "A inicial em madrepérola, com um coração ao lado se quiser.",
+  "texto": "Discreto, para usar todos os dias. A inicial vem em madrepérola sobre aço dourado, e há quem junte o coração — ou o segundo, para o outro filho.\n\nÉ o que mais sai no Dia da Mãe, e o que mais nos pedem para embrulhar.",
+  "personalizavel": [
+    "A inicial",
+    "Com ou sem coração",
+    "Dourado ou prateado",
+    "O comprimento"
+  ],
+  "ordem": 140,
+  "publicado": true,
+  "destaque": false
+}

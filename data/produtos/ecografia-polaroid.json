@@ -1,0 +1,21 @@
+{
+  "slug": "ecografia-polaroid",
+  "nome": "Ecografia em polaroid",
+  "categoria": "boxes",
+  "ocasioes": [
+    "anuncio-gravidez"
+  ],
+  "fotos": [
+    "assets/produtos/ecografia-polaroid/01.jpg"
+  ],
+  "resumo": "A primeira fotografia dele, impressa como se tivesse saído de uma polaroid.",
+  "texto": "Manda-nos a ecografia e nós tratamos: limpamos, imprimimos em papel fotográfico e escrevemos por baixo o que quiser — «chego em 2026», «estou a caminho», o nome.\n\nVai bem sozinha num envelope, e vai melhor dentro da box de anúncio.",
+  "personalizavel": [
+    "A frase por baixo",
+    "Quantas impressões",
+    "Com ou sem moldura"
+  ],
+  "ordem": 120,
+  "publicado": true,
+  "destaque": false
+}

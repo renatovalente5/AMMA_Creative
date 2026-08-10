@@ -1,0 +1,796 @@
+/* ============================================================================
+   AMMA CREATIVE — folha de estilo única
+
+   A PALETA NÃO FOI ESCOLHIDA, FOI MEDIDA. O #602601 é 91,4% dos pixeis do
+   logótipo e é a cor das publicações de marca no Instagram; o #FAF1E8 é o fundo
+   do cartão «Bem-vindos» que a própria empresa publica. Os neutros quentes —
+   madeira, veludo nude, lona crua — saem das fotografias de produto delas, que
+   são sempre feitas nesses cenários. O dourado vem das peças em aço.
+
+   A regra de composição é a de 2026 para marcas de artesanato, e por acaso é
+   também a que a marca já praticava: UM ambiente neutro dominante (o creme),
+   DUAS ou três texturas tácteis (madeira, lona, veludo), UM acento intencional
+   (o cacau). Nada de segunda cor de marca.
+
+   Ordem do ficheiro: variáveis, reset, tipografia, esqueleto, cabeçalho,
+   componentes, páginas, movimento, impressão.
+   ========================================================================== */
+
+/* ------------------------------------------------------------- tipografia --- */
+/* Auto-alojadas de propósito. O site declara na política de privacidade que não
+   faz pedidos a terceiros, e o Google Fonts é um pedido a terceiros — carrega o
+   endereço IP de quem visita para outro servidor. Ver assets/fontes/LEIA-ME. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fontes/fraunces-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;             /* o texto aparece já, na fonte do sistema */
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fontes/inter-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  /* ---- marca, medida do logótipo ---- */
+  --cacau: #602601;             /* 91,4% do logótipo */
+  --cacau-forte: #4A1C00;       /* superfícies escuras */
+  --cacau-claro: #7C4218;       /* hover; mantém 4,5:1 sobre creme */
+  --creme: #FAF1E8;             /* fundo do cartão «Bem-vindos» */
+  --creme-fundo: #F2E4D5;       /* segunda superfície, um degrau mais funda */
+  --papel: #FFFCF8;             /* cartões */
+
+  /* ---- tinta ---- */
+  --tinta: #2B1810;             /* 13,9:1 sobre creme */
+  --tinta-2: #6A5344;           /* 5,6:1 sobre creme — passa AA em texto normal */
+  --tinta-3: #94806F;           /* 3,1:1 — SÓ para ícones e traços, nunca texto */
+  --linha: #E7D8C8;
+  --linha-forte: #D6C0AB;
+
+  /* ---- texturas das fotografias delas ---- */
+  --madeira: #A99986;
+  --barro: #C08B6E;
+  --dourado: #A8804A;           /* 4,6:1 sobre creme */
+  --dourado-tenue: #F0E2CC;
+
+  /* ---- estados ---- */
+  --verde: #4A6B3D;
+  --verde-tenue: #E8EFE2;
+
+  /* ---- medidas ---- */
+  --larg: 1240px;
+  --larg-texto: 68ch;
+  --goteira: clamp(1.1rem, 4vw, 2.75rem);
+  --raio: 4px;                  /* quase recto: a marca é papel e tinta, não app */
+  --raio-g: 10px;
+  --sombra: 0 1px 2px rgba(43, 24, 16, .04), 0 8px 28px -12px rgba(43, 24, 16, .13);
+  --sombra-alta: 0 2px 6px rgba(43, 24, 16, .06), 0 26px 60px -22px rgba(43, 24, 16, .22);
+  --t: .28s cubic-bezier(.22, .61, .36, 1);
+
+  /* Altura do cabeçalho. É variável porque o logótipo encolhe no scroll, e é o
+     JS que lhe mexe. O valor GRANDE é o que reserva espaço, sempre — se fosse o
+     pequeno, a página saltava ao passar de um para o outro. */
+  --h-topo: 118px;
+  --h-topo-min: 76px;
+}
+
+@media (max-width: 760px) {
+  :root { --h-topo: 88px; --h-topo-min: 64px; }
+}
+
+/* ------------------------------------------------------------------ reset --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* O atributo `hidden` não esconde nada se o CSS declarar `display` no mesmo
+   elemento — e declaramos, em botões e em cartões. Sem esta linha os filtros
+   «não funcionam» e leva-se meia hora a descobrir porquê. */
+[hidden] { display: none !important; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Uma âncora não pode ficar debaixo do cabeçalho fixo. */
+  scroll-padding-top: calc(var(--h-topo-min) + 1rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--creme);
+  color: var(--tinta);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  /* O creme é levemente texturado por um gradiente muito aberto. Não é uma
+     imagem: é um radial de 2% de opacidade, que dá ao fundo a sensação de papel
+     sem custar um pedido de rede. */
+  background-image:
+    radial-gradient(120% 80% at 15% 0%, rgba(192, 139, 110, .10), transparent 60%),
+    radial-gradient(90% 70% at 100% 10%, rgba(168, 128, 74, .07), transparent 55%);
+  background-attachment: fixed;
+}
+
+img, svg, picture { max-width: 100%; display: block; }
+img { height: auto; }
+
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--cacau);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Salta para o conteúdo — primeiro elemento focável da página. */
+.salta {
+  position: absolute; left: -9999px; z-index: 999;
+  background: var(--cacau); color: var(--creme);
+  padding: .85rem 1.3rem; border-radius: 0 0 var(--raio-g) 0;
+  font-weight: 600; text-decoration: none;
+}
+.salta:focus { left: 0; top: 0; }
+
+/* ------------------------------------------------------------- tipografia --- */
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -.015em;
+  margin: 0;
+  /* `balance` reparte as linhas de um título em vez de deixar uma palavra
+     sozinha na última — e é uma linha de CSS, não um <br> escrito à mão que
+     parte em todos os outros tamanhos de ecrã. */
+  text-wrap: balance;
+  /* Fraunces é variável em dois eixos: SOFT arredonda as pontas e WONK deixa as
+     letras «tortas». Um toque dos dois é o que aproxima o título da caligrafia
+     do logótipo sem imitar uma fonte manuscrita. */
+  font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 60;
+}
+p { margin: 0 0 1.1rem; text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+.tit-xl { font-size: clamp(2.6rem, 7.5vw, 5.4rem); }
+.tit-g  { font-size: clamp(2rem, 4.6vw, 3.4rem); }
+.tit-m  { font-size: clamp(1.45rem, 2.6vw, 2.05rem); }
+
+/* A «sobrelinha» é o fio condutor do desenho: um rótulo pequeno, espaçado e em
+   maiúsculas, que anuncia cada secção acima do título. É o que dá o ar
+   editorial, e é a única coisa em maiúsculas no site. */
+.sobre-linha {
+  font-family: 'Inter', sans-serif;
+  font-size: .74rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--dourado);
+  margin: 0 0 .7rem;
+  display: flex; align-items: center; gap: .7rem;
+}
+.sobre-linha::before {
+  content: ''; width: 26px; height: 1px; background: currentColor; flex: none;
+}
+.sobre-linha--centro { justify-content: center; }
+.sobre-linha--claro { color: var(--dourado-tenue); }
+
+.chamada { font-size: clamp(1.02rem, 1.5vw, 1.18rem); color: var(--tinta-2); max-width: 56ch; }
+
+/* --------------------------------------------------------------- esqueleto --- */
+.envolve { width: 100%; max-width: var(--larg); margin-inline: auto; padding-inline: var(--goteira); }
+.envolve--estreito { max-width: 800px; }
+
+.secao { padding-block: clamp(3.5rem, 8vw, 7rem); }
+.secao--creme { background: var(--creme-fundo); }
+.secao--escura { background: var(--cacau); color: var(--creme); }
+.secao--escura .chamada { color: rgba(250, 241, 232, .82); }
+
+.secao__topo {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1.5rem 2rem; flex-wrap: wrap; margin-bottom: clamp(1.8rem, 4vw, 3rem);
+}
+
+/* ------------------------------------------------------------------ botões --- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  padding: .92rem 1.7rem;
+  font-weight: 600; font-size: .96rem; letter-spacing: .01em;
+  text-decoration: none; cursor: pointer;
+  border: 1px solid transparent; border-radius: 100px;
+  /* `background: none` explícito: num <button> o browser põe o cinzento do
+     sistema («buttonface») e as variantes de contorno apareciam com um fundo
+     que ninguém pediu. Num <a> o problema não existe — daí passar despercebido. */
+  background: none;
+  transition: background var(--t), color var(--t), border-color var(--t), transform var(--t);
+  /* 48px de alvo mínimo: um dedo não acerta em 32. */
+  min-height: 48px;
+}
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn--cheio { background: var(--cacau); color: var(--creme); }
+.btn--cheio:hover { background: var(--cacau-forte); transform: translateY(-1px); }
+.btn--linha { border-color: var(--linha-forte); color: var(--tinta); }
+.btn--linha:hover { border-color: var(--cacau); background: var(--papel); }
+.btn--claro { background: var(--creme); color: var(--cacau); }
+.btn--claro:hover { background: #fff; transform: translateY(-1px); }
+.btn--fantasma { color: var(--cacau); padding-inline: .4rem; }
+.btn--fantasma:hover { color: var(--cacau-forte); }
+
+/* A seta anda um pouco para a frente quando se passa o rato — é o único
+   movimento decorativo dos botões, e serve para dizer «isto leva a outro sítio». */
+.btn .seta { transition: transform var(--t); }
+.btn:hover .seta { transform: translateX(3px); }
+
+/* =========================================================== CABEÇALHO ===== */
+/* O logótipo é grande no topo e encolhe ao descer. A altura da barra é uma
+   variável do documento, e o espaço reservado é SEMPRE o do estado grande — se
+   fosse o do pequeno, a página dava um salto de 42 px na primeira rolada.
+
+   A barra é fixa e translúcida com desfoque. Onde o desfoque não existir, o
+   fundo cai para creme opaco: `@supports` garante que não fica texto sobre
+   fotografia sem nada por baixo. */
+.topo {
+  position: fixed; inset: 0 0 auto; z-index: 90;
+  background: var(--creme);
+  border-bottom: 1px solid transparent;
+  transition: height var(--t), border-color var(--t), background var(--t);
+  height: var(--h-topo);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .topo { background: rgba(250, 241, 232, .82); backdrop-filter: blur(14px) saturate(1.2); }
+}
+.topo--desceu { height: var(--h-topo-min); border-bottom-color: var(--linha); }
+
+.topo__barra {
+  height: 100%; max-width: var(--larg); margin-inline: auto;
+  padding-inline: var(--goteira);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+}
+
+.marca { display: flex; align-items: center; text-decoration: none; flex: none; }
+/* A altura do logótipo é a única coisa que anima: a largura acompanha por
+   proporção, e não há `transform` envolvido — um `transform` no cabeçalho faria
+   o desfoque do fundo tremer em Safari. */
+.marca img {
+  height: clamp(38px, 6.4vw, 62px);
+  width: auto;
+  transition: height var(--t);
+}
+.topo--desceu .marca img { height: clamp(30px, 4.6vw, 40px); }
+
+/* ---- navegação de computador ---- */
+.nav { display: flex; align-items: center; gap: clamp(.5rem, 2vw, 1.9rem); }
+.nav a {
+  text-decoration: none; font-weight: 500; font-size: .96rem;
+  padding: .5rem 0; position: relative; color: var(--tinta);
+  transition: color var(--t);
+}
+.nav a:hover { color: var(--cacau); }
+/* O sublinhado cresce do centro. Fica na pseudo-classe e não numa borda para
+   não mexer na altura da linha quando aparece. */
+.nav a::after {
+  content: ''; position: absolute; left: 50%; right: 50%; bottom: -2px; height: 1.5px;
+  background: var(--cacau); transition: left var(--t), right var(--t);
+}
+.nav a:hover::after, .nav a[aria-current="page"]::after { left: 0; right: 0; }
+.nav a[aria-current="page"] { color: var(--cacau); font-weight: 600; }
+
+.topo__acoes { display: flex; align-items: center; gap: .7rem; }
+
+/* ---- botão do menu, só no telemóvel ---- */
+.menu-btn {
+  display: none; width: 48px; height: 48px; padding: 0;
+  align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--linha-forte); border-radius: 100px;
+  cursor: pointer;
+}
+.menu-btn svg { width: 20px; height: 20px; }
+
+/* ---- menu de ecrã inteiro ----
+   Feito com a Popover API: o `popover` é nativo, fecha com Escape, prende o
+   foco e não precisa de uma linha de JavaScript para gerir estado. Onde a API
+   não existir, o JS antigo continua a alternar o atributo `hidden` — está no
+   site.js, e é por isso que o menu funciona nos dois casos. */
+.menu {
+  position: fixed; inset: 0; z-index: 100;
+  width: 100%; max-width: none; height: 100%; max-height: none;
+  margin: 0; padding: 0; border: 0;
+  background: var(--cacau); color: var(--creme);
+  overflow-y: auto;
+}
+.menu::backdrop { background: rgba(43, 24, 16, .5); }
+.menu__corpo {
+  min-height: 100%;
+  display: flex; flex-direction: column;
+  padding: 1.1rem var(--goteira) 3rem;
+}
+.menu__topo { display: flex; align-items: center; justify-content: space-between; height: var(--h-topo-min); }
+.menu__topo img { height: 34px; width: auto; }
+.menu__x {
+  width: 48px; height: 48px; display: grid; place-items: center;
+  background: none; border: 1px solid rgba(250, 241, 232, .3); border-radius: 100px;
+  color: var(--creme); cursor: pointer;
+}
+.menu__x svg { width: 20px; height: 20px; }
+.menu__lista {
+  list-style: none; margin: auto 0; padding: 0;
+  display: grid; gap: .1rem;
+}
+.menu__lista a {
+  display: flex; align-items: baseline; gap: 1rem;
+  padding: .55rem 0; text-decoration: none;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(2rem, 11vw, 3rem); font-weight: 500;
+  font-variation-settings: 'SOFT' 40, 'WONK' 1;
+  line-height: 1.14;
+}
+.menu__lista .num {
+  font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600;
+  color: rgba(250, 241, 232, .5); letter-spacing: .1em;
+}
+.menu__lista a[aria-current="page"] { color: var(--dourado-tenue); }
+.menu__pe { margin-top: 2.5rem; display: grid; gap: .9rem; }
+.menu__pe a { color: rgba(250, 241, 232, .9); text-decoration: none; display: flex; align-items: center; gap: .6rem; }
+.menu__pe svg { width: 18px; height: 18px; flex: none; }
+.menu__nota { font-size: .78rem; color: rgba(250, 241, 232, .6); }
+
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .menu-btn { display: inline-flex; }
+  .topo__acoes .btn--cheio { display: none; }
+}
+
+/* O conteúdo começa por baixo da barra fixa. Um hero de sangria completa sobe
+   por baixo dela de propósito, com o padding a devolver o espaço. */
+main { padding-top: var(--h-topo); }
+main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: var(--h-topo); }
+
+/* ================================================================ HERO ===== */
+/* Editorial e assimétrico, não uma fotografia com texto centrado por cima. O
+   título vive numa coluna de creme e a fotografia ocupa a outra, sangrando pela
+   direita — é a composição das revistas, e é o que distingue isto de um
+   template. No telemóvel empilha, com a fotografia por baixo do texto. */
+.hero { position: relative; overflow: clip; }
+.hero__grelha {
+  max-width: var(--larg); margin-inline: auto;
+  display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+  padding: clamp(2.5rem, 6vw, 5rem) var(--goteira) clamp(3rem, 7vw, 6rem);
+}
+@media (min-width: 900px) {
+  .hero__grelha {
+    grid-template-columns: 1.02fr .98fr;
+    padding-right: 0;                    /* a fotografia sangra pela direita */
+  }
+}
+.hero__texto { position: relative; z-index: 1; }
+.hero__titulo { font-size: clamp(2.7rem, 7vw, 5.2rem); margin-bottom: 1.1rem; }
+/* Uma palavra do título em itálico e em cacau — é o único ornamento do hero, e
+   diz onde está a ênfase sem uma cor nova nem um sublinhado. */
+.hero__titulo em { font-style: italic; color: var(--cacau); font-variation-settings: 'SOFT' 60, 'WONK' 1; }
+.hero__acoes { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.9rem; }
+
+.hero__figura { position: relative; }
+.hero__figura img {
+  width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
+  border-radius: var(--raio-g) 0 0 var(--raio-g);
+  box-shadow: var(--sombra-alta);
+}
+@media (max-width: 899px) {
+  .hero__figura img { aspect-ratio: 4 / 3; border-radius: var(--raio-g); }
+}
+/* O selo dos portes, encostado ao canto da fotografia. É informação comercial
+   real — «+60€ portes grátis» — e não um autocolante decorativo. */
+.hero__selo {
+  position: absolute; left: clamp(-1rem, -2vw, -2rem); bottom: 1.6rem;
+  background: var(--papel); color: var(--tinta);
+  padding: .8rem 1.2rem; border-radius: 100px;
+  box-shadow: var(--sombra-alta);
+  font-weight: 600; font-size: .88rem;
+  display: flex; align-items: center; gap: .55rem;
+}
+.hero__selo svg { width: 18px; height: 18px; color: var(--dourado); }
+@media (max-width: 899px) { .hero__selo { left: 1rem; } }
+
+/* ====================================================== CATEGORIAS (montra) */
+/* Uma prateleira que rola de lado, com marcadores nativos onde o browser os
+   souber desenhar (`::scroll-marker`, CSS Overflow 5). Onde não souber, é uma
+   zona que se arrasta com o dedo — que era o comportamento de sempre. Nunca é
+   um carrossel movido a JavaScript: uma faixa animada por `transform` deixa de
+   receber cliques, porque o teste de acerto do ponteiro corre na thread
+   principal com a última posição conhecida. */
+.prateleira {
+  display: grid; grid-auto-flow: column;
+  grid-auto-columns: minmax(min(78%, 320px), 1fr);
+  gap: clamp(.9rem, 2vw, 1.4rem);
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding: 4px var(--goteira) 1.4rem;
+  scroll-padding-inline: var(--goteira);
+  scrollbar-width: none;
+}
+.prateleira::-webkit-scrollbar { display: none; }
+.prateleira > * { scroll-snap-align: start; scroll-snap-stop: always; }
+@media (min-width: 760px) {
+  .prateleira { grid-auto-columns: minmax(0, 1fr); grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); overflow: visible; }
+}
+
+@supports (selector(::scroll-marker)) {
+  @media (max-width: 759px) {
+    .prateleira { scroll-marker-group: after; }
+    .prateleira::scroll-marker-group {
+      display: flex; justify-content: center; gap: .5rem; padding-top: .3rem;
+    }
+    .prateleira > *::scroll-marker {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--linha-forte); border: 0;
+    }
+    .prateleira > *::scroll-marker:target-current { background: var(--cacau); width: 20px; }
+  }
+}
+
+/* ---- cartão de categoria ---- */
+.cat {
+  position: relative; display: block; text-decoration: none;
+  border-radius: var(--raio-g); overflow: clip;
+  background: var(--cacau-forte);
+  /* container-type para o conteúdo reagir ao ESPAÇO DO CARTÃO e não ao ecrã: o
+     mesmo cartão vive numa prateleira estreita e numa grelha larga. */
+  container-type: inline-size;
+  aspect-ratio: 3 / 4;
+  isolation: isolate;
+}
+.cat img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1.1s cubic-bezier(.22, .61, .36, 1), filter var(--t);
+}
+.cat:hover img { transform: scale(1.05); }
+.cat::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(74, 28, 0, .88) 0%, rgba(74, 28, 0, .35) 42%, rgba(74, 28, 0, .05) 75%);
+}
+.cat__corpo { position: absolute; inset: auto 0 0; z-index: 2; padding: clamp(1rem, 5cqi, 1.5rem); color: var(--creme); }
+.cat__nome { font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.25rem, 8cqi, 1.7rem); font-weight: 600; margin-bottom: .3rem; }
+.cat__resumo { font-size: .88rem; color: rgba(250, 241, 232, .84); margin: 0; }
+.cat__n {
+  position: absolute; top: 1rem; right: 1rem; z-index: 2;
+  background: rgba(250, 241, 232, .92); color: var(--cacau);
+  font-size: .74rem; font-weight: 700; letter-spacing: .04em;
+  padding: .3rem .7rem; border-radius: 100px;
+}
+
+/* ============================================== GRELHA DE PRODUTOS (mosaico) */
+/* Não é uma grelha de cartões todos iguais. As linhas têm 8px e cada cartão
+   ocupa o número de linhas que a sua proporção pede — o que dá um ritmo de
+   revista em vez de uma folha de cálculo. Sem JavaScript: é `grid-row: span`
+   calculado pelo gerador a partir da proporção real de cada fotografia. */
+.mosaico {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+  gap: clamp(1rem, 2.2vw, 1.7rem);
+}
+
+.prod {
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-g); overflow: clip;
+  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+  container-type: inline-size;
+}
+.prod:hover { border-color: var(--linha-forte); box-shadow: var(--sombra-alta); transform: translateY(-3px); }
+.prod__figura { position: relative; overflow: clip; background: var(--creme-fundo); }
+.prod__figura img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.22,.61,.36,1); }
+.prod:hover .prod__figura img { transform: scale(1.045); }
+.prod__corpo { padding: 1.05rem 1.15rem 1.25rem; display: flex; flex-direction: column; gap: .45rem; flex: 1; }
+.prod__cat { font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--dourado); }
+.prod__nome { font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.05rem, 6cqi, 1.22rem); font-weight: 600; line-height: 1.2; }
+.prod__resumo { font-size: .9rem; color: var(--tinta-2); margin: 0; }
+.prod__pe { margin-top: auto; padding-top: .8rem; display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
+.prod__preco { font-size: .88rem; font-weight: 600; color: var(--tinta-2); }
+.prod__ver { font-size: .86rem; font-weight: 600; color: var(--cacau); display: flex; align-items: center; gap: .35rem; }
+.prod__ver svg { width: 15px; height: 15px; transition: transform var(--t); }
+.prod:hover .prod__ver svg { transform: translateX(3px); }
+.prod__nf {
+  position: absolute; bottom: .7rem; right: .7rem;
+  background: rgba(43, 24, 16, .72); color: #fff;
+  font-size: .74rem; font-weight: 600;
+  padding: .22rem .55rem; border-radius: 100px;
+  display: flex; align-items: center; gap: .3rem;
+  backdrop-filter: blur(4px);
+}
+.prod__nf svg { width: 13px; height: 13px; }
+
+/* ================================================================ FILTROS == */
+.filtros { margin-bottom: clamp(1.5rem, 3vw, 2.4rem); }
+.filtros__fila {
+  display: flex; gap: .5rem; flex-wrap: wrap; align-items: center;
+}
+.ficha {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1.05rem; min-height: 42px;
+  background: var(--papel); border: 1px solid var(--linha);
+  border-radius: 100px; cursor: pointer;
+  font-size: .9rem; font-weight: 500; color: var(--tinta-2);
+  transition: all var(--t);
+}
+.ficha:hover { border-color: var(--linha-forte); color: var(--tinta); }
+.ficha[aria-pressed="true"] { background: var(--cacau); border-color: var(--cacau); color: var(--creme); font-weight: 600; }
+.ficha__n { font-size: .78rem; opacity: .7; }
+
+.filtros__pe {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-top: 1.1rem;
+  padding-top: 1.1rem; border-top: 1px solid var(--linha);
+  font-size: .9rem; color: var(--tinta-2);
+}
+.limpar { background: none; border: 0; color: var(--cacau); font-weight: 600; cursor: pointer; text-decoration: underline; padding: .4rem; }
+
+.vazio { text-align: center; padding: clamp(3rem, 8vw, 5rem) 1rem; }
+.vazio h3 { font-family: 'Fraunces', Georgia, serif; font-size: 1.5rem; margin-bottom: .6rem; }
+.vazio p { color: var(--tinta-2); max-width: 44ch; margin-inline: auto; }
+
+/* ========================================================== FICHA DE PRODUTO */
+.ficha-prod { padding-block: clamp(1.5rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5rem); }
+.ficha-prod__grelha {
+  display: grid; gap: clamp(1.8rem, 4vw, 3.5rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 940px) {
+  .ficha-prod__grelha { grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); }
+}
+
+/* ---- galeria ---- */
+.galeria__principal {
+  position: relative; background: var(--creme-fundo);
+  border-radius: var(--raio-g); overflow: clip; aspect-ratio: 1;
+}
+.galeria__principal img { width: 100%; height: 100%; object-fit: cover; }
+.galeria__lupa {
+  position: absolute; bottom: .8rem; right: .8rem;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  background: rgba(255, 252, 248, .92); border: 0; border-radius: 100px;
+  cursor: pointer; box-shadow: var(--sombra);
+}
+.galeria__lupa svg { width: 19px; height: 19px; color: var(--cacau); }
+.galeria__tiras { display: flex; gap: .6rem; margin-top: .7rem; overflow-x: auto; padding-bottom: .3rem; scrollbar-width: thin; }
+.tira {
+  flex: none; width: 78px; height: 78px; padding: 0; overflow: clip;
+  border: 2px solid transparent; border-radius: var(--raio); cursor: pointer;
+  background: var(--creme-fundo); transition: border-color var(--t);
+}
+.tira img { width: 100%; height: 100%; object-fit: cover; }
+.tira[aria-current="true"] { border-color: var(--cacau); }
+
+/* ---- painel lateral ---- */
+.painel {
+  background: var(--papel); border: 1px solid var(--linha);
+  border-radius: var(--raio-g); padding: clamp(1.3rem, 3vw, 1.9rem);
+  position: sticky; top: calc(var(--h-topo-min) + 1.2rem);
+}
+.painel__cat { font-size: .74rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--dourado); }
+.painel__nome { font-size: clamp(1.6rem, 3.4vw, 2.2rem); margin: .5rem 0 .8rem; }
+.painel__resumo { color: var(--tinta-2); margin-bottom: 1.2rem; }
+.painel__preco {
+  font-family: 'Fraunces', Georgia, serif; font-size: 1.35rem; font-weight: 600;
+  color: var(--cacau); margin-bottom: .25rem;
+}
+.painel__nota { font-size: .84rem; color: var(--tinta-2); margin-bottom: 1.3rem; }
+.painel__acoes { display: grid; gap: .6rem; }
+.painel__acoes .btn { width: 100%; }
+.painel__telefone { font-size: .78rem; color: var(--tinta-2); text-align: center; margin: .1rem 0 0; }
+
+.bloco { margin-top: clamp(2rem, 4vw, 3rem); }
+.bloco > h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); margin-bottom: 1rem; }
+.bloco p { color: var(--tinta-2); max-width: var(--larg-texto); }
+
+/* ---- o que se personaliza ---- */
+.person { list-style: none; padding: 0; margin: 0; display: grid; gap: .1rem; }
+.person li {
+  display: grid; grid-template-columns: 22px 1fr; gap: .7rem; align-items: baseline;
+  padding: .72rem 0; border-bottom: 1px solid var(--linha);
+  color: var(--tinta);
+}
+.person li:last-child { border-bottom: 0; }
+.person svg { width: 16px; height: 16px; color: var(--dourado); margin-top: .3em; }
+
+/* ---- lightbox ---- */
+.lupa { border: 0; padding: 0; background: rgba(43, 24, 16, .95); max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+.lupa::backdrop { background: rgba(43, 24, 16, .9); }
+.lupa__corpo { position: relative; width: 100%; height: 100%; display: grid; place-items: center; padding: 1rem; }
+.lupa__corpo img { max-width: 100%; max-height: 88vh; width: auto; object-fit: contain; border-radius: var(--raio); }
+.lupa__x, .lupa__nav {
+  position: absolute; width: 48px; height: 48px; display: grid; place-items: center;
+  background: rgba(250, 241, 232, .14); border: 0; border-radius: 100px;
+  color: var(--creme); cursor: pointer; backdrop-filter: blur(6px);
+}
+.lupa__x { top: 1rem; right: 1rem; }
+.lupa__nav--ant { left: 1rem; top: 50%; transform: translateY(-50%); }
+.lupa__nav--seg { right: 1rem; top: 50%; transform: translateY(-50%); }
+.lupa__x svg, .lupa__nav svg { width: 20px; height: 20px; }
+.lupa__conta { position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%); color: rgba(250,241,232,.8); font-size: .85rem; }
+
+/* ==================================================== COMO ENCOMENDAR ====== */
+/* Uma linha de passos numerados. Isto não é decoração: o site NÃO tem carrinho,
+   e sem explicar como se encomenda parece uma loja que não vende. */
+.passos { counter-reset: p; display: grid; gap: clamp(1.4rem, 3vw, 2.2rem); }
+@media (min-width: 800px) { .passos { grid-template-columns: repeat(4, 1fr); } }
+.passo { position: relative; padding-top: 2.9rem; }
+.passo::before {
+  counter-increment: p; content: counter(p, decimal-leading-zero);
+  position: absolute; top: 0; left: 0;
+  font-family: 'Fraunces', Georgia, serif; font-size: 2rem; font-weight: 600;
+  color: var(--dourado); font-variation-settings: 'SOFT' 40, 'WONK' 1;
+}
+/* O fio que liga um passo ao seguinte, só quando estão em fila. */
+@media (min-width: 800px) {
+  .passo:not(:last-child)::after {
+    content: ''; position: absolute; top: 1.15rem; left: 3.2rem; right: -1.2rem;
+    height: 1px; background: var(--linha-forte);
+  }
+}
+.passo h3 { font-size: 1.15rem; margin-bottom: .45rem; }
+.passo p { font-size: .93rem; color: var(--tinta-2); margin: 0; }
+
+/* ============================================================ EDITORIAL ==== */
+/* Duas colunas em que o texto fica preso enquanto as fotografias passam. Dá à
+   página um momento de calma a meio, e é o que as marcas de produto artesanal
+   fazem para contar a história sem uma parede de texto. */
+.editorial { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+@media (min-width: 900px) { .editorial { grid-template-columns: .85fr 1.15fr; } }
+.editorial__texto { position: sticky; top: calc(var(--h-topo-min) + 2rem); }
+.editorial__figuras { display: grid; gap: clamp(1rem, 2.5vw, 1.6rem); }
+@media (min-width: 620px) { .editorial__figuras { grid-template-columns: 1fr 1fr; } }
+.editorial__figuras img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: var(--raio-g); }
+/* A segunda coluna desce um pouco, para as fotografias não ficarem a régua. */
+@media (min-width: 620px) { .editorial__figuras > :nth-child(even) { transform: translateY(clamp(1rem, 4vw, 3rem)); } }
+
+/* ================================================================ RODAPÉ === */
+.pe { background: var(--cacau); color: rgba(250, 241, 232, .86); padding-block: clamp(3rem, 6vw, 4.5rem) 1.5rem; }
+.pe a { color: inherit; text-decoration: none; }
+.pe a:hover { color: #fff; text-decoration: underline; }
+.pe__grelha {
+  display: grid; gap: clamp(2rem, 4vw, 3rem);
+  grid-template-columns: 1fr;
+  padding-bottom: 2.5rem;
+}
+@media (min-width: 720px) { .pe__grelha { grid-template-columns: 1.4fr 1fr 1fr; } }
+@media (min-width: 1000px) { .pe__grelha { grid-template-columns: 1.6fr 1fr 1fr 1.1fr; } }
+.pe__marca img { height: 46px; width: auto; margin-bottom: 1rem; }
+.pe__reclamo { font-family: 'Fraunces', Georgia, serif; font-size: 1.1rem; color: var(--creme); margin-bottom: 1.1rem; }
+.pe h3 {
+  font-family: 'Inter', sans-serif; font-size: .76rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--dourado-tenue);
+  margin-bottom: 1rem;
+}
+.pe ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; font-size: .94rem; }
+/* Os contactos levam ícone, e o ícone fica alinhado com a PRIMEIRA linha: numa
+   morada de duas linhas, centrado, ficava a boiar. */
+.pe__contacto { display: grid; grid-template-columns: 18px 1fr; gap: .7rem; align-items: start; }
+.pe__contacto svg { width: 17px; height: 17px; color: var(--dourado-tenue); margin-top: .35em; }
+.pe__contacto small { display: block; font-size: .76rem; color: rgba(250, 241, 232, .62); }
+
+/* As redes sociais em botões redondos com ícone. */
+.pe__redes { display: flex; gap: .6rem; margin-top: .3rem; }
+.pe__redes a {
+  width: 42px; height: 42px; display: grid; place-items: center;
+  border: 1px solid rgba(250, 241, 232, .26); border-radius: 100px;
+  transition: background var(--t), border-color var(--t), transform var(--t);
+}
+.pe__redes a:hover { background: rgba(250, 241, 232, .12); border-color: rgba(250, 241, 232, .5); transform: translateY(-2px); text-decoration: none; }
+.pe__redes svg { width: 19px; height: 19px; }
+
+.pe__fim {
+  border-top: 1px solid rgba(250, 241, 232, .16); padding-top: 1.4rem;
+  display: flex; flex-wrap: wrap; gap: .6rem 1.5rem;
+  justify-content: space-between; align-items: center;
+  font-size: .82rem; color: rgba(250, 241, 232, .66);
+}
+.pe__legais { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; }
+/* Os dados de identificação que a lei obriga. Pequenos e ao fim, mas presentes e
+   sempre acessíveis — é o que o DL 7/2004 pede. */
+.pe__id { font-size: .78rem; color: rgba(250, 241, 232, .58); margin-top: .9rem; line-height: 1.6; }
+
+/* ================================================================ MAPA ===== */
+/* Só carrega depois de consentimento: o embed do Google instala cookies antes de
+   qualquer interacção, e o consentimento tem de ser PRÉVIO (art. 5.º da Lei
+   41/2004). Sem isto, o site estaria a instalar cookies de terceiros a quem
+   apenas abriu a página de contactos. */
+.mapa { position: relative; min-height: 340px; border-radius: var(--raio-g); overflow: clip; background: var(--creme-fundo); border: 1px solid var(--linha); }
+.mapa iframe { width: 100%; height: 100%; min-height: 340px; border: 0; display: block; }
+.mapa__consent { position: absolute; inset: 0; display: grid; place-content: center; gap: .9rem; text-align: center; padding: 2rem 1.5rem; }
+.mapa__consent svg { width: 30px; height: 30px; color: var(--dourado); margin-inline: auto; }
+.mapa__consent p { font-size: .9rem; color: var(--tinta-2); max-width: 42ch; margin-inline: auto; }
+
+/* ====================================================== AVISO DE COOKIES === */
+.cc {
+  position: fixed; z-index: 120; inset: auto 1rem 1rem;
+  max-width: 560px; margin-inline: auto;
+  background: var(--papel); border: 1px solid var(--linha-forte);
+  border-radius: var(--raio-g); box-shadow: var(--sombra-alta);
+  padding: 1.15rem 1.3rem;
+  display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; align-items: center;
+}
+.cc p { margin: 0; font-size: .88rem; color: var(--tinta-2); flex: 1 1 15rem; }
+.cc__acoes { display: flex; gap: .5rem; }
+.cc .btn { padding: .6rem 1.1rem; min-height: 42px; font-size: .88rem; }
+
+/* ================================================== texto legal e artigos == */
+.texto { max-width: var(--larg-texto); }
+.texto h2 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); margin: 2.2rem 0 .8rem; }
+.texto h3 { font-size: 1.1rem; margin: 1.6rem 0 .5rem; }
+.texto p, .texto li { color: var(--tinta-2); }
+.texto ul, .texto ol { padding-left: 1.3rem; margin: 0 0 1.1rem; }
+.texto li { margin-bottom: .4rem; }
+.texto a { color: var(--cacau); text-decoration: underline; text-underline-offset: 2px; }
+.texto strong { color: var(--tinta); }
+
+/* ---------------------------------------------------------- migalhas ------- */
+.migalhas { font-size: .84rem; color: var(--tinta-2); margin-bottom: 1.3rem; display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
+.migalhas a { text-decoration: none; }
+.migalhas a:hover { color: var(--cacau); text-decoration: underline; }
+.migalhas svg { width: 13px; height: 13px; color: var(--tinta-3); }
+
+/* ============================================================= MOVIMENTO === */
+/* Revelação conduzida pelo SCROLL, nativa: `animation-timeline: view()` liga a
+   animação à posição do elemento no ecrã, sem JavaScript, sem
+   IntersectionObserver, e sem um único frame na thread principal.
+
+   ATENÇÃO: um filho de `column-count` com `animation-timeline: view()` colapsa
+   as colunas todas numa só. Não usar dentro de multicoluna — daí não haver
+   multicoluna neste site.
+
+   Fica atrás de `@supports`: onde a propriedade não existir, o elemento está
+   simplesmente visível, que é o estado certo. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .revela {
+      animation: revelar linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 26%;
+    }
+    @keyframes revelar {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+    /* A fotografia do hero cresce devagar à medida que a página desce. Subtil de
+       propósito: 4% de escala, não um efeito de parallax. */
+    .hero__figura img {
+      animation: crescer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 60%;
+    }
+    @keyframes crescer { from { scale: 1.045; } to { scale: 1; } }
+  }
+}
+
+/* Transições entre páginas. O `navigation: auto` faz o browser desvanecer de
+   uma página para a outra sem JavaScript; e a fotografia do produto, por ter o
+   mesmo `view-transition-name` na listagem e na ficha, CONTINUA-SE de uma para
+   a outra em vez de recomeçar. É a coisa mais moderna deste site e são seis
+   linhas de CSS. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+::view-transition-group(*) { animation-duration: .34s; }
+/* O cabeçalho e o rodapé não devem desvanecer com o resto — ficam quietos,
+   como numa aplicação. */
+.topo { view-transition-name: topo; }
+.pe { view-transition-name: rodape; }
+::view-transition-old(topo), ::view-transition-new(topo),
+::view-transition-old(rodape), ::view-transition-new(rodape) { animation: none; }
+
+/* --------------------------------------------------------------- impressão -- */
+@media print {
+  .topo, .menu, .cc, .pe__redes, .galeria__tiras, .btn { display: none !important; }
+  body { background: #fff; color: #000; }
+  main { padding-top: 0; }
+  a[href^="http"]::after { content: ' (' attr(href) ')'; font-size: .8em; }
+}

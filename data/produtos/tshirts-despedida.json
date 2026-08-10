@@ -1,0 +1,23 @@
+{
+  "slug": "tshirts-despedida",
+  "nome": "T-shirts de despedida de solteira",
+  "categoria": "textil",
+  "ocasioes": [
+    "casamento"
+  ],
+  "fotos": [
+    "assets/produtos/tshirts-despedida/01.jpg",
+    "assets/produtos/tshirts-despedida/02.jpg"
+  ],
+  "resumo": "«Bride» para ela, «Team Bride» para o grupo.",
+  "texto": "Fazemos o grupo todo de uma vez: a dela numa cor, as delas noutra, com os nomes atrás se quiserem.\n\nDiga-nos quantas e os tamanhos — e se quiserem a coroa, que é o detalhe que mais nos pedem.",
+  "personalizavel": [
+    "As frases",
+    "Os nomes de cada uma",
+    "As cores",
+    "Os tamanhos do grupo"
+  ],
+  "ordem": 200,
+  "publicado": true,
+  "destaque": false
+}
