@@ -767,27 +767,37 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
    Num site de loja, o modo de falha desta funcionalidade é «as fotografias dos
    produtos não aparecem». Isso não se arrisca por um desvanecimento.
 
-   O que FICA, e está tudo verificado a funcionar: transições entre páginas,
-   container queries nos cartões, o menu em Popover API, a prateleira que rola
-   com marcadores nativos, `text-wrap: balance`, e o movimento no hover — que é
-   onde o movimento é seguro, porque só acontece depois de alguém apontar. */
+   O que FICA, e está tudo verificado a funcionar: container queries nos
+   cartões, o menu em Popover API, a prateleira que rola com marcadores
+   nativos, `text-wrap: balance`, e o movimento no hover — que é onde o
+   movimento é seguro, porque só acontece depois de alguém apontar. */
 
-/* Transições entre páginas. O `navigation: auto` faz o browser desvanecer de
-   uma página para a outra sem JavaScript; e a fotografia do produto, por ter o
-   mesmo `view-transition-name` na listagem e na ficha, CONTINUA-SE de uma para
-   a outra em vez de recomeçar. É a coisa mais moderna deste site e são seis
-   linhas de CSS. */
-@view-transition { navigation: auto; }
-@media (prefers-reduced-motion: reduce) {
-  @view-transition { navigation: none; }
-}
-::view-transition-group(*) { animation-duration: .34s; }
-/* O cabeçalho e o rodapé não devem desvanecer com o resto — ficam quietos,
-   como numa aplicação. */
-.topo { view-transition-name: topo; }
-.pe { view-transition-name: rodape; }
-::view-transition-old(topo), ::view-transition-new(topo),
-::view-transition-old(rodape), ::view-transition-new(rodape) { animation: none; }
+/* AQUI ESTAVAM AS TRANSIÇÕES ENTRE PÁGINAS, e foram retiradas pela mesma razão
+   e com a mesma medição.
+
+   Tinha aqui `@view-transition { navigation: auto }` com o cabeçalho e o rodapé
+   fixos e a fotografia do produto a continuar-se da listagem para a ficha. Seis
+   linhas de CSS para o efeito mais moderno do site.
+
+   O que fazia, medido no Chrome em produção, no mesmo ecrã e na mesma sessão:
+
+     vir de outro domínio (carregamento limpo) ....... a fotografia PINTA
+     ir a /contactos/ e voltar a / (transição corre) . a fotografia FICA EM BRANCO
+
+   E em branco quer dizer isto: `complete: true`, `naturalWidth` correcto,
+   `opacity: 1`, `visibility: visible`, zero animações no elemento e no pai,
+   `view-transition-name: none` na imagem — e nada desenhado. Um `display: none`
+   seguido de `display: ''` obriga o browser a repintar e a fotografia aparece
+   na hora. Não é estado, não é carregamento, não é CSS herdado: é pintura que
+   o browser não faz depois de terminar a transição.
+
+   É o segundo defeito de pintura da mesma família neste site (o primeiro foi o
+   `animation-timeline: view()`, documentado acima). A conclusão é a mesma: numa
+   montra, o modo de falha é «as fotografias dos artigos não aparecem», e isso
+   não se troca por um desvanecimento de 340 ms.
+
+   Se algum dia voltar aqui: o teste é o quadro em cima — carregamento limpo
+   contra navegação interna. Não basta abrir a página inicial e ver que está bem. */
 
 /* --------------------------------------------------------------- impressão -- */
 @media print {

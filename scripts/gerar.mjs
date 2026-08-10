@@ -658,7 +658,9 @@ function paginaProduto(p) {
 
   const galeria = fs.length ? `
 <div class="galeria">
-  <div class="galeria__principal" style="view-transition-name:foto-${esc(p.slug)}">
+  <!-- Sem view-transition-name: as transições entre páginas foram retiradas por
+       deixarem fotografias sem pintar. A razão está por extenso no estilo.css. -->
+  <div class="galeria__principal">
     <img id="foto" src="${fs[0].src}" srcset="${fs[0].srcset}" sizes="(max-width: 940px) 92vw, 660px"
          alt="${esc(p.nome)}" width="1600" height="1600" fetchpriority="high" decoding="async">
     <button class="galeria__lupa" type="button" id="abrir-lupa" aria-label="Ver a fotografia em grande">${ic.lupa}</button>

@@ -1,10 +1,16 @@
 /* ============================================================================
    AMMA CREATIVE — o pouco JavaScript que o site precisa
 
-   É pouco de propósito. O menu de ecrã inteiro é `popover` nativo, as animações
-   de entrada são `animation-timeline: view()`, as transições entre páginas são
-   `@view-transition`, e o carrossel de categorias é uma zona que rola com
-   `scroll-snap`. Nada disso está aqui, porque nada disso precisa de JavaScript.
+   É pouco de propósito. O menu de ecrã inteiro é `popover` nativo, os cartões
+   adaptam-se com container queries, e a prateleira de categorias é uma zona que
+   rola com `scroll-snap` e marcadores nativos. Nada disso está aqui, porque nada
+   disso precisa de JavaScript.
+
+   Houve aqui mais duas funcionalidades de CSS — as animações de entrada com
+   `animation-timeline: view()` e as transições entre páginas com
+   `@view-transition`. As duas deixavam fotografias de artigos sem serem
+   pintadas no Chrome e as duas foram retiradas. O relato completo, com as
+   medições, está no `estilo.css`.
 
    O que ficou:
      1. o logótipo que encolhe no scroll
