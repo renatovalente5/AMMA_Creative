@@ -647,9 +647,12 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .editorial__texto { position: sticky; top: calc(var(--h-topo-min) + 2rem); }
 .editorial__figuras { display: grid; gap: clamp(1rem, 2.5vw, 1.6rem); }
 @media (min-width: 620px) { .editorial__figuras { grid-template-columns: 1fr 1fr; } }
+/* O invólucro existe por causa do defeito de pintura descrito mais abaixo: a
+   revelação vai nele, não na imagem. Herda a proporção para a grelha não mexer. */
+.editorial__figuras > * { border-radius: var(--raio-g); overflow: clip; }
 .editorial__figuras img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: var(--raio-g); }
 /* A segunda coluna desce um pouco, para as fotografias não ficarem a régua. */
-@media (min-width: 620px) { .editorial__figuras > :nth-child(even) { transform: translateY(clamp(1rem, 4vw, 3rem)); } }
+@media (min-width: 620px) { .editorial__figuras > :nth-child(even) { margin-top: clamp(1rem, 4vw, 3rem); } }
 
 /* ================================================================ RODAPÉ === */
 .pe { background: var(--cacau); color: rgba(250, 241, 232, .86); padding-block: clamp(3rem, 6vw, 4.5rem) 1.5rem; }
@@ -750,6 +753,8 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
    simplesmente visível, que é o estado certo. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+    /* .revela vai em invólucros e em blocos, NUNCA num <img> — ver a nota
+       acima. Onde é preciso revelar uma imagem, envolve-se num <div>. */
     .revela {
       animation: revelar linear both;
       animation-timeline: view();
@@ -759,14 +764,24 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: none; }
     }
-    /* A fotografia do hero cresce devagar à medida que a página desce. Subtil de
-       propósito: 4% de escala, não um efeito de parallax. */
-    .hero__figura img {
-      animation: crescer linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 60%;
-    }
-    @keyframes crescer { from { scale: 1.045; } to { scale: 1; } }
+    /* NÃO PÔR ISTO NUM <img>. Está aqui escrito porque me custou uma hora.
+       -----------------------------------------------------------------------
+       Um `animation-timeline: view()` só tem cronómetro activo quando o
+       elemento AINDA NÃO entrou no ecrã. Num elemento que já está visível ao
+       carregar a página — como a fotografia do hero, por definição — o
+       cronómetro fica inactivo, e aí:
+
+         · num elemento normal, a animação simplesmente não se aplica (seguro)
+         · num <img>, o Chrome deixa de PINTAR a imagem (defeito)
+
+       O hero ficou um rectângulo creme vazio, com opacity 1, visibility
+       visible, a imagem carregada com HTTP 200 e dimensões certas. Só não era
+       desenhada. Tirar a animação fez aparecer no instante.
+
+       Por isso: nenhuma animação de scroll vai directamente num <img> neste
+       site. Onde há revelação de imagem, a classe .revela vai num invólucro,
+       nunca na imagem. E o hero não leva animação nenhuma — 4% de escala não
+       vale este risco. */
   }
 }
 

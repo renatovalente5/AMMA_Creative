@@ -484,8 +484,8 @@ function paginaInicial() {
         ${['sweat-mae', 'colar-inicial', 'box-convite-padrinhos', 'porta-chaves-foto']
           .map((s) => produtos.find((p) => p.slug === s)).filter(Boolean)
           .map((p) => { const f = fotos(p)[0]; return f
-            ? `<img class="revela" src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
-                alt="${esc(p.nome)}" width="960" height="960" loading="lazy" decoding="async">` : ''; })
+            ? `<div class="revela"><img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
+                alt="${esc(p.nome)}" width="960" height="960" loading="lazy" decoding="async"></div>` : ''; })
           .join('\n        ')}
       </div>
     </div>
@@ -892,7 +892,7 @@ function paginaSobre() {
         </div>
       </div>
       <div>
-        <img class="revela" src="${u('assets/img/equipa-960.webp')}"
+        <img src="${u('assets/img/equipa-960.webp')}"
              srcset="${u('assets/img/equipa-480.webp')} 480w, ${u('assets/img/equipa-960.webp')} 960w, ${u('assets/img/equipa-1600.webp')} 1600w"
              sizes="(max-width: 900px) 92vw, 640px"
              alt="A equipa da AMMA Creative" width="1179" height="1434"
