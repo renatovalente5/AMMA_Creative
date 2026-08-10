@@ -360,7 +360,7 @@ function cartaoProduto(p, { prioridade = false } = {}) {
          ${prioridade ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`
     : '<div style="aspect-ratio:1;display:grid;place-items:center;color:var(--tinta-3)">Sem fotografia</div>';
 
-  return `<a class="prod revela" href="${u('catalogo/' + p.categoria + '/' + p.slug + '/')}"
+  return `<a class="prod" href="${u('catalogo/' + p.categoria + '/' + p.slug + '/')}"
     data-categoria="${esc(p.categoria)}" data-ocasioes="${esc((p.ocasioes || []).join(' '))}"
     data-procura="${esc([p.nome, p.resumo, nomeCat(p.categoria)].join(' ').toLowerCase())}">
     <div class="prod__figura" style="aspect-ratio:1">
@@ -385,7 +385,7 @@ function cartaoCategoria(c, prioridade = false) {
   const p = produtos.find((x) => x.categoria === c.slug);
   const f = p ? fotos(p)[0] : null;
   const n = contaCat(c.slug);
-  return `<a class="cat revela" href="${u('catalogo/' + c.slug + '/')}">
+  return `<a class="cat" href="${u('catalogo/' + c.slug + '/')}">
     ${f ? `<img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 760px) 78vw, 300px"
         alt="" width="960" height="960" ${prioridade ? '' : 'loading="lazy"'} decoding="async">` : ''}
     <span class="cat__n">${n} ${n === 1 ? 'artigo' : 'artigos'}</span>
@@ -484,7 +484,7 @@ function paginaInicial() {
         ${['sweat-mae', 'colar-inicial', 'box-convite-padrinhos', 'porta-chaves-foto']
           .map((s) => produtos.find((p) => p.slug === s)).filter(Boolean)
           .map((p) => { const f = fotos(p)[0]; return f
-            ? `<div class="revela"><img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
+            ? `<div><img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
                 alt="${esc(p.nome)}" width="960" height="960" loading="lazy" decoding="async"></div>` : ''; })
           .join('\n        ')}
       </div>
@@ -526,7 +526,7 @@ function passosEncomenda() {
     ['Fica pronto', `Combinamos a entrega ou o envio. ${def.textos.portes}.`],
   ];
   return `<div class="passos">
-    ${p.map(([t, d]) => `<div class="passo revela"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('\n    ')}
+    ${p.map(([t, d]) => `<div class="passo"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('\n    ')}
   </div>`;
 }
 
@@ -909,11 +909,11 @@ function paginaSobre() {
       <h2 class="tit-g">Três coisas, e são sempre as mesmas</h2>
     </div>
     <div class="passos" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-      <div class="passo revela"><h3>Detalhes únicos</h3><p>Cada peça é feita para uma
+      <div class="passo"><h3>Detalhes únicos</h3><p>Cada peça é feita para uma
       pessoa só. A frase é sua, o nome é dele, e não há duas iguais.</p></div>
-      <div class="passo revela"><h3>Qualidade e bom gosto</h3><p>Vinil que aguenta a
+      <div class="passo"><h3>Qualidade e bom gosto</h3><p>Vinil que aguenta a
       máquina, aço que não escurece, madeira que não lasca. O barato sai caro.</p></div>
-      <div class="passo revela"><h3>Feito por nós</h3><p>Somos uma casa pequena em
+      <div class="passo"><h3>Feito por nós</h3><p>Somos uma casa pequena em
       Vila Nova de Anha. Quem responde à mensagem é quem faz a peça.</p></div>
     </div>
   </div>

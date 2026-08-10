@@ -647,8 +647,8 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .editorial__texto { position: sticky; top: calc(var(--h-topo-min) + 2rem); }
 .editorial__figuras { display: grid; gap: clamp(1rem, 2.5vw, 1.6rem); }
 @media (min-width: 620px) { .editorial__figuras { grid-template-columns: 1fr 1fr; } }
-/* O invólucro existe por causa do defeito de pintura descrito mais abaixo: a
-   revelação vai nele, não na imagem. Herda a proporção para a grelha não mexer. */
+/* Cada figura tem um invólucro. Ficou de quando havia revelação por scroll, e
+   fica: é o que permite o desfasamento das colunas pares sem mexer na imagem. */
 .editorial__figuras > * { border-radius: var(--raio-g); overflow: clip; }
 .editorial__figuras img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: var(--raio-g); }
 /* A segunda coluna desce um pouco, para as fotografias não ficarem a régua. */
@@ -740,50 +740,32 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .migalhas a:hover { color: var(--cacau); text-decoration: underline; }
 .migalhas svg { width: 13px; height: 13px; color: var(--tinta-3); }
 
-/* ============================================================= MOVIMENTO === */
-/* Revelação conduzida pelo SCROLL, nativa: `animation-timeline: view()` liga a
-   animação à posição do elemento no ecrã, sem JavaScript, sem
-   IntersectionObserver, e sem um único frame na thread principal.
+/* ============================================================= MOVIMENTO ===
+   AS REVELAÇÕES CONDUZIDAS PELO SCROLL FORAM RETIRADAS. Vale a pena explicar,
+   porque a tentação de as voltar a pôr é grande — é a coisa mais moderna que o
+   CSS ganhou nos últimos anos, e são quatro linhas.
 
-   ATENÇÃO: um filho de `column-count` com `animation-timeline: view()` colapsa
-   as colunas todas numa só. Não usar dentro de multicoluna — daí não haver
-   multicoluna neste site.
+   O que aconteceu neste site: com `animation-timeline: view()`, as FOTOGRAFIAS
+   deixavam de ser pintadas. Não era opacidade, não era visibilidade, não era o
+   ficheiro: as imagens vinham com HTTP 200, dimensões certas, `complete: true`,
+   `opacity: 1` — e o Chrome simplesmente não as desenhava. O hero era um
+   rectângulo creme vazio e os cartões do catálogo eram caixas sem fotografia.
+   Tirar a animação fazia aparecer no mesmo instante, sempre.
 
-   Fica atrás de `@supports`: onde a propriedade não existir, o elemento está
-   simplesmente visível, que é o estado certo. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* .revela vai em invólucros e em blocos, NUNCA num <img> — ver a nota
-       acima. Onde é preciso revelar uma imagem, envolve-se num <div>. */
-    .revela {
-      animation: revelar linear both;
-      animation-timeline: view();
-      animation-range: entry 5% cover 26%;
-    }
-    @keyframes revelar {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: none; }
-    }
-    /* NÃO PÔR ISTO NUM <img>. Está aqui escrito porque me custou uma hora.
-       -----------------------------------------------------------------------
-       Um `animation-timeline: view()` só tem cronómetro activo quando o
-       elemento AINDA NÃO entrou no ecrã. Num elemento que já está visível ao
-       carregar a página — como a fotografia do hero, por definição — o
-       cronómetro fica inactivo, e aí:
+   Medido: um cronómetro `view()` só está activo enquanto o elemento ainda não
+   entrou no ecrã. Fica inactivo em tudo o que já esteja visível ao carregar a
+   página, e nesse estado um elemento normal ignora a animação (inofensivo) mas
+   um <img> deixa de ser pintado (defeito). Pôr a classe num invólucro em vez da
+   imagem não resolveu: um <img> dentro de um elemento animado desaparece
+   igualmente.
 
-         · num elemento normal, a animação simplesmente não se aplica (seguro)
-         · num <img>, o Chrome deixa de PINTAR a imagem (defeito)
+   Num site de loja, o modo de falha desta funcionalidade é «as fotografias dos
+   produtos não aparecem». Isso não se arrisca por um desvanecimento.
 
-       O hero ficou um rectângulo creme vazio, com opacity 1, visibility
-       visible, a imagem carregada com HTTP 200 e dimensões certas. Só não era
-       desenhada. Tirar a animação fez aparecer no instante.
-
-       Por isso: nenhuma animação de scroll vai directamente num <img> neste
-       site. Onde há revelação de imagem, a classe .revela vai num invólucro,
-       nunca na imagem. E o hero não leva animação nenhuma — 4% de escala não
-       vale este risco. */
-  }
-}
+   O que FICA, e está tudo verificado a funcionar: transições entre páginas,
+   container queries nos cartões, o menu em Popover API, a prateleira que rola
+   com marcadores nativos, `text-wrap: balance`, e o movimento no hover — que é
+   onde o movimento é seguro, porque só acontece depois de alguém apontar. */
 
 /* Transições entre páginas. O `navigation: auto` faz o browser desvanecer de
    uma página para a outra sem JavaScript; e a fotografia do produto, por ter o
