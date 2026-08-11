@@ -47,6 +47,17 @@ const abs = (p) => `${SITE}/${String(p).replace(/^\/+/, '')}`;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+/* Título com uma parte realçada: `Feito para *uma pessoa* só` sai com «uma
+   pessoa» em itálico e na cor de destaque. É a mesma convenção dos asteriscos
+   que o markdown das páginas legais já usa.
+
+   Existe porque o <h1> da entrada estava escrito à mão no gerador e ignorava o
+   campo `hero_titulo` do backoffice: a cliente mudava a frase e não acontecia
+   nada. Assim manda o backoffice, e manda também no destaque — que é metade do
+   efeito da frase e não faz sentido ficar preso no código. Escapa-se primeiro e
+   só depois se abre a tag, senão o campo passava a aceitar HTML. */
+const comRealce = (s) => esc(s).replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
 /* Impressão digital do ficheiro no endereço, para o browser não servir CSS
    velho depois de uma publicação. */
 function versao(rel) {
@@ -428,7 +439,7 @@ function paginaInicial() {
   <div class="hero__grelha">
     <div class="hero__texto">
       <p class="sobre-linha">${esc(def.empresa.assinatura)}</p>
-      <h1 class="hero__titulo">Feito para <em>uma pessoa</em> só</h1>
+      <h1 class="hero__titulo">${comRealce(def.textos.hero_titulo)}</h1>
       <p class="chamada">${esc(def.textos.hero_texto)}</p>
       <div class="hero__acoes">
         <a class="btn btn--cheio" href="${u('catalogo/')}">Ver o catálogo ${ic.seta}</a>

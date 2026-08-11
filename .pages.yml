@@ -281,7 +281,15 @@ content:
           As frases grandes. Alterações aqui aparecem na página inicial e no
           «Sobre nós» assim que gravar.
         fields:
-          - { name: hero_titulo, label: Título da página inicial, type: string }
+          - name: hero_titulo
+            label: Título da página inicial
+            type: string
+            description: >-
+              A frase grande, a primeira coisa que se vê no site. Ponha
+              *asteriscos* à volta das palavras que quer destacar e elas saem em
+              itálico e noutra cor — por exemplo «Feito para *uma pessoa* só».
+              Funciona melhor entre 16 e 36 letras: mais do que isso e parte em
+              três linhas.
           - { name: hero_texto, label: Texto da página inicial, type: text }
           - { name: reclamo, label: Frase da marca (rodapé), type: string }
           - { name: sobre_titulo, label: Título do «Sobre nós», type: string }
