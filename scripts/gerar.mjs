@@ -135,21 +135,38 @@ const ic = {
   relogio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>',
 };
 
-/* ------------------------------------------------------- telefone e a lei --- */
+/* ------------------------------------------------------ contactos e a lei --- */
 /* Um número de telemóvel português (91/92/93/96) obriga a indicar o custo da
    chamada — DL 59/2021. Em TODO o lado onde o número apareça, e com parênteses.
    Está numa função para não haver um sítio esquecido. */
-const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
+/* NÃO HÁ NÚMERO DE TELEFONE NO SITE. Por decisão da loja, que atende por
+   WhatsApp e por Instagram e não por chamada. Primeiro tiraram-se os botões de
+   ligar; depois o número, por inteiro — do rodapé, da página de contactos, dos
+   dados estruturados e das páginas legais.
+
+   Isto é defensável e não é um descuido. O acórdão do Tribunal de Justiça da
+   União Europeia no processo C-649/17 (Amazon EU, 10 de Julho de 2019) decidiu
+   que a directiva dos direitos dos consumidores NÃO obriga o profissional a ter
+   uma linha telefónica, e que outros meios — mensagem instantânea, por exemplo —
+   servem, desde que permitam um contacto rápido e uma comunicação eficaz. O
+   WhatsApp cumpre isso.
+
+   O QUE CONTINUA A FALTAR, e essa é a peça a sério: o artigo 10.º do
+   Decreto-Lei 7/2004 nomeia expressamente o ENDEREÇO DE CORREIO ELECTRÓNICO
+   entre os elementos de identificação obrigatórios. Sem telefone, o email
+   deixou de ser desejável e passou a ser o que sustenta a identificação da
+   loja. O campo `contactos.email` está vazio e tem de ser preenchido.
+
+   Sem número no site, o aviso do custo da chamada do Decreto-Lei 59/2021
+   deixou de fazer sentido e saiu com ele — não há chamada a anunciar. */
 
 /* PREÇOS. O site nasceu todo «sob consulta» e continua a ser essa a regra: um
    artigo só mostra número se tiver o campo `preco` preenchido no backoffice.
-   Sem ele, escreve-se «Sob consulta», como sempre.
+   Sem ele, escreve-se «Sob consulta».
 
    O número que aqui aparecer é, por obrigação do Decreto-Lei 138/90, o PREÇO
    FINAL ao consumidor: com todos os impostos incluídos e sem nada por somar
    depois além do envio, que se diz à parte e antes de a encomenda ser feita.
-   Quem preencher este campo tem de o preencher com esse valor — está dito no
-   texto de ajuda do backoffice.
 
    O formato é o português: vírgula decimal e o símbolo depois, com espaço
    inquebrável para o «€» não cair sozinho para a linha seguinte. Valores
@@ -157,21 +174,6 @@ const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
 const temPreco = (p) => typeof p.preco === 'number' && p.preco > 0;
 const precoTexto = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(2).replace('.', ',')) + '\u00A0€';
 const precoOuConsulta = (p) => (temPreco(p) ? precoTexto(p.preco) : 'Sob consulta');
-/* O NÚMERO APARECE, MAS NÃO SE LIGA A PARTIR DAQUI. A cliente pediu para tirar
-   a possibilidade de telefonar — atende por WhatsApp e por Instagram, não por
-   chamada. O que se tirou foram as ligações `tel:` e os botões de ligar.
-
-   O número em si FICA, em texto, no rodapé e na página de contactos. Não é
-   teimosia: numa venda à distância, a alínea b) do n.º 1 do artigo 4.º do
-   Decreto-Lei 24/2014 obriga a dar o número de telefone antes de o consumidor
-   se vincular, e o artigo 10.º do Decreto-Lei 7/2004 obriga a identificar-se com
-   meios de contacto directo. Escondê-lo por completo era criar uma falha legal
-   para resolver um incómodo. Assim ninguém é convidado a ligar, e quem precisar
-   do número por direito encontra-o.
-
-   O aviso do custo da chamada acompanha o número onde quer que ele apareça, que
-   é o que o Decreto-Lei 59/2021 pede. */
-const telTexto = () => esc(def.contactos.telefone_texto);
 
 /* ---------------------------------------------------------- páginas legais --- */
 const LEGAIS = [
@@ -325,8 +327,7 @@ ${corpo}
       <div>
         <h3>Contactos</h3>
         <ul>
-          <li class="pe__contacto">${ic.tel}<span>${telTexto()}
-            <small>${CUSTO_CHAMADA}</small></span></li>
+          <li class="pe__contacto">${ic.zap}<span><a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">WhatsApp</a></span></li>
           <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">@_ammacreative</a></span></li>
           <li class="pe__contacto">${ic.pin}<span>${esc(def.local.morada)}<br>${esc(def.local.codigo_postal)} ${esc(def.local.localidade)}<br>${esc(def.local.concelho)}</span></li>
         </ul>
@@ -388,7 +389,6 @@ const negocioLD = {
   url: abs(''),
   image: abs('assets/img/og.jpg'),
   logo: abs('assets/img/logo-marrom.png'),
-  telephone: `+351${def.contactos.telefone}`,
   address: {
     '@type': 'PostalAddress',
     streetAddress: def.local.morada,
@@ -1056,15 +1056,6 @@ function paginaContactos() {
           <div class="painel__acoes">
             <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Ver o Instagram</a>
           </div>
-        </div>
-        <div class="painel" style="position:static">
-          <span class="painel__cat">Telefone</span>
-          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Telefone</h2>
-          <p class="painel__resumo">${telTexto()}<br>
-            <small style="color:var(--tinta-2)">${CUSTO_CHAMADA}</small></p>
-          <p class="painel__resumo" style="margin-top:.7rem;font-size:.9rem;color:var(--tinta-2)">
-            Preferimos mensagem: no WhatsApp ou no Instagram respondemos mais depressa
-            e fica tudo escrito — a frase, o nome, o tamanho.</p>
         </div>
       </div>
     </div>

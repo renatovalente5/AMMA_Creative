@@ -20,8 +20,9 @@ Protecção de Dados obriga — e porque é justo que se possa confirmar.
 A **AMMA Creative**, empresária em nome individual, com sede em Rua do Comércio,
 23-47, 4935-329 Vila Nova de Anha, Viana do Castelo.
 
-Contacto para assuntos de dados pessoais: **925 110 570** *(Chamada para a rede
-móvel nacional)* ou mensagem no [Instagram](https://www.instagram.com/_ammacreative).
+Contacto para assuntos de dados pessoais: mensagem por
+[WhatsApp](https://wa.me/351925110570) ou pelo
+[Instagram](https://www.instagram.com/_ammacreative).
 
 ## Que dados recolhemos
 
@@ -29,7 +30,7 @@ móvel nacional)* ou mensagem no [Instagram](https://www.instagram.com/_ammacrea
 newsletter. Navegar aqui não deixa nome, endereço de email nem qualquer outro
 dado connosco.
 
-**Quando nos contacta**, por WhatsApp, Instagram ou telefone, recebemos o que nos
+**Quando nos contacta**, por WhatsApp ou por Instagram, recebemos o que nos
 enviar:
 
 | Dado | Para quê | Fundamento legal |

@@ -9,7 +9,7 @@ Este site é da **AMMA Creative**, empresária em nome individual, com sede em R
 do Comércio, 23-47, 4935-329 Vila Nova de Anha, Viana do Castelo, Portugal.
 
 - **NIF:** *(a indicar)*
-- **Telefone:** 925 110 570 *(Chamada para a rede móvel nacional)*
+- **WhatsApp:** [falar connosco no WhatsApp](https://wa.me/351925110570)
 - **Instagram:** [@_ammacreative](https://www.instagram.com/_ammacreative)
 
 Estes elementos são prestados nos termos do artigo 10.º do Decreto-Lei n.º
@@ -23,7 +23,7 @@ artigo é feito por medida, e o preço depende do que se personaliza. O que aqui
 está serve para mostrar o que fazemos.
 
 **As encomendas fazem-se a falar** — por WhatsApp, por mensagem no Instagram ou
-por telefone. Quando combinarmos o artigo, dizemos-lhe o preço final, o prazo e
+por mensagem. Quando combinarmos o artigo, dizemos-lhe o preço final, o prazo e
 como se paga.
 
 ## Preços
