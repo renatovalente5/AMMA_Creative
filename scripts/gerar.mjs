@@ -140,6 +140,23 @@ const ic = {
    chamada — DL 59/2021. Em TODO o lado onde o número apareça, e com parênteses.
    Está numa função para não haver um sítio esquecido. */
 const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
+
+/* PREÇOS. O site nasceu todo «sob consulta» e continua a ser essa a regra: um
+   artigo só mostra número se tiver o campo `preco` preenchido no backoffice.
+   Sem ele, escreve-se «Sob consulta», como sempre.
+
+   O número que aqui aparecer é, por obrigação do Decreto-Lei 138/90, o PREÇO
+   FINAL ao consumidor: com todos os impostos incluídos e sem nada por somar
+   depois além do envio, que se diz à parte e antes de a encomenda ser feita.
+   Quem preencher este campo tem de o preencher com esse valor — está dito no
+   texto de ajuda do backoffice.
+
+   O formato é o português: vírgula decimal e o símbolo depois, com espaço
+   inquebrável para o «€» não cair sozinho para a linha seguinte. Valores
+   redondos saem sem os dois zeros, que é como se escreve num preçário. */
+const temPreco = (p) => typeof p.preco === 'number' && p.preco > 0;
+const precoTexto = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(2).replace('.', ',')) + '\u00A0€';
+const precoOuConsulta = (p) => (temPreco(p) ? precoTexto(p.preco) : 'Sob consulta');
 /* O NÚMERO APARECE, MAS NÃO SE LIGA A PARTIR DAQUI. A cliente pediu para tirar
    a possibilidade de telefonar — atende por WhatsApp e por Instagram, não por
    chamada. O que se tirou foram as ligações `tel:` e os botões de ligar.
@@ -382,7 +399,7 @@ const negocioLD = {
   },
   geo: { '@type': 'GeoCoordinates', latitude: def.local.latitude, longitude: def.local.longitude },
   sameAs: [def.contactos.instagram],
-  priceRange: 'Sob consulta',
+  priceRange: produtos.some(temPreco) ? '€' : 'Sob consulta',
   areaServed: { '@type': 'Country', name: 'Portugal' },
 };
 
@@ -425,7 +442,7 @@ function cartaoProduto(p, { prioridade = false } = {}) {
       <h3 class="prod__nome">${esc(p.nome)}</h3>
       <p class="prod__resumo">${esc(p.resumo)}</p>
       <div class="prod__pe">
-        <span class="prod__preco">Sob consulta</span>
+        <span class="prod__preco${temPreco(p) ? ' prod__preco--valor' : ''}">${esc(precoOuConsulta(p))}</span>
         <span class="prod__ver">Ver ${ic.dir}</span>
       </div>
     </div>
@@ -774,13 +791,18 @@ function paginaProduto(p) {
         <span class="painel__cat">${esc(c.nome)}</span>
         <h1 class="painel__nome">${esc(p.nome)}</h1>
         <p class="painel__resumo">${esc(p.resumo)}</p>
-        <p class="painel__preco">Sob consulta</p>
-        <!-- Sem preços no site, por decisão da loja. Cada peça é feita por medida
-             e o preço depende do que se personaliza — pôr um número seria pôr um
-             número errado. Se algum dia entrarem preços, o DL 138/90 obriga a
-             que sejam finais e com impostos incluídos. -->
-        <p class="painel__nota">O preço depende do que escolher personalizar. Diga-nos o
-        que quer e respondemos no mesmo dia.</p>
+        <p class="painel__preco">${esc(precoOuConsulta(p))}</p>
+        ${temPreco(p)
+          /* Com preço à vista, a nota tem de dizer três coisas que a lei pede: que
+             o valor é final e com impostos (DL 138/90), que o envio é à parte
+             (DL 24/2014, alínea e) do n.º 1 do artigo 4.º), e que personalizações
+             fora do que está descrito podem mudar o valor — dito de forma a não
+             transformar o preço anunciado numa isca. */
+          ? `<p class="painel__nota">Preço final, com impostos incluídos. O envio é à parte —
+             ${esc(def.textos.portes.toLowerCase())}. Se quiser algo além do que está aqui
+             descrito, diga-nos e confirmamos o valor antes de avançar.</p>`
+          : `<p class="painel__nota">O preço depende do que escolher personalizar. Diga-nos o
+             que quer e respondemos no mesmo dia.</p>`}
         <div class="painel__acoes">
           <a class="btn btn--cheio" href="https://wa.me/${def.contactos.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse em: ' + p.nome)}"
              target="_blank" rel="noopener">${ic.zap} Pedir pelo WhatsApp</a>
@@ -832,11 +854,23 @@ ${relacionados.length ? `<section class="secao secao--creme">
           '@type': 'Offer',
           availability: 'https://schema.org/InStock',
           priceCurrency: 'EUR',
-          priceSpecification: {
-            '@type': 'PriceSpecification',
-            valueAddedTaxIncluded: true,
-            description: 'Sob consulta — o preço depende da personalização escolhida.',
-          },
+          /* Com preço, declara-se o número — é o que faz o Google poder mostrá-lo
+             no resultado da pesquisa. Sem preço, declara-se a especificação sem
+             valor: inventar um zero aqui seria anunciar «grátis». */
+          ...(temPreco(p)
+            ? { price: p.preco.toFixed(2),
+                priceValidUntil: `${new Date().getFullYear() + 1}-12-31`,
+                priceSpecification: {
+                  '@type': 'PriceSpecification',
+                  price: p.preco.toFixed(2),
+                  priceCurrency: 'EUR',
+                  valueAddedTaxIncluded: true,
+                } }
+            : { priceSpecification: {
+                  '@type': 'PriceSpecification',
+                  valueAddedTaxIncluded: true,
+                  description: 'Sob consulta — o preço depende da personalização escolhida.',
+                } }),
           seller: { '@id': abs('#loja') },
           areaServed: { '@type': 'Country', name: 'Portugal' },
         },

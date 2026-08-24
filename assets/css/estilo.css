@@ -493,6 +493,14 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .prod__resumo { font-size: .9rem; color: var(--tinta-2); margin: 0; }
 .prod__pe { margin-top: auto; padding-top: .8rem; display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
 .prod__preco { font-size: .88rem; font-weight: 600; color: var(--tinta-2); }
+/* Quando há número em vez de «Sob consulta», o preço deixa de ser uma nota e
+   passa a ser informação a ler: ganha a cor da marca e o serif do resto dos
+   números do site. Só isso — nada de caixa colorida, que faria os artigos com
+   preço parecerem promoções ao lado dos que não têm. */
+.prod__preco--valor {
+  font-family: 'Fraunces', Georgia, serif; font-size: 1.02rem;
+  color: var(--cacau); font-variation-settings: 'SOFT' 40;
+}
 .prod__ver { font-size: .86rem; font-weight: 600; color: var(--cacau); display: flex; align-items: center; gap: .35rem; }
 .prod__ver svg { width: 15px; height: 15px; transition: transform var(--t); }
 .prod:hover .prod__ver svg { transform: translateX(3px); }

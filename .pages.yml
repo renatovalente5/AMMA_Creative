@@ -143,6 +143,19 @@ content:
           de cada um — é dos blocos que as clientes mais leem, porque é onde
           percebem que podem pedir o que querem.
 
+      - name: preco
+        label: Preço (€)
+        type: number
+        step: 0.5
+        description: >-
+          DEIXE VAZIO para o artigo ficar «Sob consulta», que é como está a
+          maioria. Se puser um valor, ele aparece no catálogo e na ficha.
+          O valor tem de ser o PREÇO FINAL que a cliente paga, com todos os
+          impostos incluídos — é o que o Decreto-Lei 138/90 obriga. Os portes
+          são à parte e o site di-lo por si. Se o preço depender do que a pessoa
+          escolher personalizar, é melhor deixar vazio do que pôr um valor que
+          depois muda.
+
       # ─────────── publicação
       - name: publicado
         label: Publicado no site

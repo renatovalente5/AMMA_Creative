@@ -28,9 +28,14 @@ como se paga.
 
 ## Preços
 
-Os artigos estão **sob consulta**. Não pomos valores no site porque o preço de uma
-peça personalizada depende do que leva: o número de nomes a gravar, o tamanho, a
+A maior parte dos artigos está **sob consulta**, porque o preço de uma peça
+personalizada depende do que leva: o número de nomes a gravar, o tamanho, a
 quantidade, o material.
+
+Alguns artigos têm o preço indicado no site. Quando isso acontece, o valor que lá
+está é **final e com todos os impostos incluídos**, e é esse que paga pela peça
+tal como está descrita. Se pedir algo além do que está descrito, confirmamos o
+valor consigo antes de avançar.
 
 Quando lhe indicarmos um preço, ele é **final e com todos os impostos incluídos**,
 como a lei exige (Decreto-Lei n.º 138/90). Se houver custos de envio, dizemos
