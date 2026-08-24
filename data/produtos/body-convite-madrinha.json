@@ -12,13 +12,14 @@
     "assets/produtos/body-convite-madrinha/03.jpg"
   ],
   "resumo": "O convite que ninguém recusa.",
-  "texto": "É o nosso pedido mais pedido. Escolhemos juntas a frase — «um bebé especial precisa da madrinha mais especial de todas» é a preferida de quem já cá passou — e nós fazemos o resto.\n\nPara o padrinho é o mesmo pedido com outras palavras: «tio, aceitas ser meu padrinho?», escrito num body e entregue sem aviso. Funciona sempre. A frase é sua, e mudamos o parentesco, o nome e o tratamento por tu ou por você.\n\nVai num body de algodão, no tamanho que quiser, e pode seguir com os sapatinhos e a caixa se preferir entregar tudo junto.",
+  "texto": "Body de algodão no tamanho que quiser, segue junto com os sapatos, tudo dentro da caixa.",
   "personalizavel": [
     "A frase do pedido",
     "O parentesco (madrinha, padrinho, tio, avó…)",
     "O nome de quem convida",
     "O tamanho do body",
-    "A cor do lettering"
+    "A cor do lettering",
+    "A cor dos sapatos"
   ],
   "preco": 18,
   "ordem": 10,
