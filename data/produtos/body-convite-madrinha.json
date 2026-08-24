@@ -1,6 +1,6 @@
 {
   "slug": "body-convite-madrinha",
-  "nome": "Body «aceitas ser a minha madrinha?»",
+  "nome": "Body de convite a madrinha ou padrinho",
   "categoria": "bodies-convites",
   "ocasioes": [
     "baptizado",
@@ -8,12 +8,14 @@
   ],
   "fotos": [
     "assets/produtos/body-convite-madrinha/01.jpg",
-    "assets/produtos/body-convite-madrinha/02.jpg"
+    "assets/produtos/body-convite-madrinha/02.jpg",
+    "assets/produtos/body-convite-madrinha/03.jpg"
   ],
-  "resumo": "O convite que ninguém recusa. Um body com o pedido escrito, para dar em mão à futura madrinha.",
-  "texto": "É o nosso pedido mais pedido. Escolhemos juntas a frase — «um bebé especial precisa da madrinha mais especial de todas» é a preferida de quem já cá passou — e nós fazemos o resto.\n\nVai num body de algodão, no tamanho que quiser, e pode seguir com os sapatinhos e a caixa se preferir entregar tudo junto.",
+  "resumo": "O convite que ninguém recusa, escrito num body para dar em mão. Fazemos para madrinha e para padrinho — ou para o tio que já sabe que vai ser escolhido.",
+  "texto": "É o nosso pedido mais pedido. Escolhemos juntas a frase — «um bebé especial precisa da madrinha mais especial de todas» é a preferida de quem já cá passou — e nós fazemos o resto.\n\nPara o padrinho é o mesmo pedido com outras palavras: «tio, aceitas ser meu padrinho?», escrito num body e entregue sem aviso. Funciona sempre. A frase é sua, e mudamos o parentesco, o nome e o tratamento por tu ou por você.\n\nVai num body de algodão, no tamanho que quiser, e pode seguir com os sapatinhos e a caixa se preferir entregar tudo junto.",
   "personalizavel": [
     "A frase do pedido",
+    "O parentesco (madrinha, padrinho, tio, avó…)",
     "O nome de quem convida",
     "O tamanho do body",
     "A cor do lettering"

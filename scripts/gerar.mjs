@@ -149,6 +149,26 @@ const LEGAIS = [
   ['resolucao-de-litigios/', 'Resolução de litígios'],
 ];
 
+/* Endereços que existiram e deixaram de existir, e para onde vão agora.
+   [de, para]
+
+   O GitHub Pages não faz reencaminhamentos de servidor: não há .htaccess nem
+   regras de redirect. A única forma é deixar no endereço antigo uma página que
+   manda o visitante para o novo — o que se faz aqui.
+
+   Serve para quem tem o link guardado, para quem o partilhou por WhatsApp e
+   para o Google, que assim transfere a página antiga para a nova em vez de a
+   dar por morta. Estas páginas NÃO entram no sitemap, de propósito: um sitemap
+   não deve anunciar endereços que só existem para reencaminhar.
+
+   Isto não está no backoffice porque não é conteúdo — é histórico de endereços,
+   e apagar uma linha destas por engano parte ligações que já andam por aí. */
+const REENCAMINHAR = [
+  // Junho de 2026: o body de convite ao padrinho foi junto ao da madrinha,
+  // a pedido da cliente. Passou a haver um só artigo para os dois pedidos.
+  ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/bodies-convites/body-convite-madrinha/'],
+];
+
 /* ============================================================== esqueleto === */
 function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '' }) {
   const canonico = abs(pag);
@@ -1140,11 +1160,42 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
       <div style="margin-top:1.6rem"><a class="btn btn--cheio" href="${u('catalogo/')}">Ver o catálogo ${ic.seta}</a></div>
     </div></section>`,
   }));
+  /* As páginas de reencaminhamento. Três mecanismos ao mesmo tempo, porque
+     cada um cobre um caso que os outros não cobrem: o `canonical` diz ao Google
+     qual é a página verdadeira, o `meta refresh` leva lá o visitante mesmo sem
+     JavaScript, e o `location.replace` leva-o mais depressa e sem deixar o
+     endereço morto no histórico — senão o botão «voltar» trá-lo outra vez para
+     aqui e fica preso. O `noindex` impede que a própria página de espera
+     apareça nos resultados de pesquisa. */
+  for (const [de, para] of REENCAMINHAR) {
+    const destino = u(para);
+    escrever(`${de}index.html`, `<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mudámos esta página</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="${abs(para)}">
+<meta http-equiv="refresh" content="0; url=${destino}">
+<style>body{font-family:system-ui,sans-serif;background:#FAF1E8;color:#2B1810;
+display:grid;place-items:center;min-height:100svh;margin:0;padding:1.5rem;text-align:center}
+a{color:#602601}</style>
+</head>
+<body>
+<p>Este artigo mudou de sítio.<br><a href="${destino}">Continuar para a página nova</a></p>
+<script>location.replace(${JSON.stringify(destino)});</script>
+</body>
+</html>
+`);
+  }
+
   writeFileSync(join(SAIDA, '.nojekyll'), '');
 
   console.log('gerado em _site/');
   console.log(`  ${produtos.length} produtos em ${categorias.length} categorias`);
   console.log(`  ${urls.length} páginas no sitemap`);
+  if (REENCAMINHAR.length) console.log(`  ${REENCAMINHAR.length} endereço(s) antigo(s) a reencaminhar`);
   console.log(`  base: ${BASE || '/'}   site: ${SITE}`);
   if (naoPublicados.length) {
     console.log(`  ${naoPublicados.length} originais ficaram fora do site (o site usa as variantes)`);
