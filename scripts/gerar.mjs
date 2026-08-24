@@ -853,7 +853,7 @@ function paginaComoEncomendar() {
     <div style="max-width:68ch">
       <p class="sobre-linha">Sem carrinho</p>
       <h1 class="tit-g" style="margin-bottom:1rem">Como se encomenda</h1>
-      <p class="chamada">Este site é a nossa montra, não uma loja em linha. Cada peça é
+      <p class="chamada">Este site é a nossa montra. Cada peça é
       feita por medida — a frase, o nome, o tamanho, a cor — e isso combina-se a
       falar, não a clicar. É mais simples do que parece.</p>
     </div>
