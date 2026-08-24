@@ -562,18 +562,9 @@ function paginaInicial() {
   </div>
 </section>
 
-<section class="secao secao--escura">
-  <div class="envolve">
-    <div style="text-align:center;margin-bottom:clamp(2rem,5vw,3.5rem)">
-      <p class="sobre-linha sobre-linha--claro sobre-linha--centro">Sem carrinho, sem complicações</p>
-      <h2 class="tit-g">Como se encomenda</h2>
-    </div>
-    ${passosEncomenda()}
-    <div style="text-align:center;margin-top:clamp(2rem,4vw,3rem)">
-      <a class="btn btn--claro" href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap} Falar connosco</a>
-    </div>
-  </div>
-</section>`;
+<!-- A secção «Como se encomenda» saiu daqui a pedido. Os passos continuam a
+     existir, na página /como-encomendar/, que é onde vivem — e para lá se chega
+     pelo menu e pelo botão do topo desta página. -->`;
 
   return pagina({
     pag: '',
