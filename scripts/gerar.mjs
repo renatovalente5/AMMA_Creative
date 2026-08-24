@@ -1191,6 +1191,17 @@ function publicavel(origem) {
 }
 
 function main() {
+  /* Uma categoria escrita à mão num artigo, com um erro de letra ou já apagada,
+     não dá erro nenhum: o gerador escreve calmamente uma página em
+     /catalogo/<o-que-lá-estiver>/ — sem ligação de sítio nenhum, sem página de
+     categoria, e dentro do sitemap. Fica escondida até alguém dar por ela. */
+  const conhecidas = new Set(categorias.map((c) => c.slug));
+  const orfaos = produtos.filter((p) => !conhecidas.has(p.categoria));
+  if (orfaos.length) {
+    throw new Error('artigos com uma categoria que não existe:\n' +
+      orfaos.map((p) => `  ${p.slug}: "${p.categoria}"`).join('\n'));
+  }
+
   rmSync(SAIDA, { recursive: true, force: true });
   mkdirSync(SAIDA, { recursive: true });
   cpSync(join(RAIZ, 'assets'), join(SAIDA, 'assets'), { recursive: true, filter: publicavel });
@@ -1256,9 +1267,32 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
      qual é a página verdadeira, o `meta refresh` leva lá o visitante mesmo sem
      JavaScript, e o `location.replace` leva-o mais depressa e sem deixar o
      endereço morto no histórico — senão o botão «voltar» trá-lo outra vez para
-     aqui e fica preso. O `noindex` impede que a própria página de espera
-     apareça nos resultados de pesquisa. */
+     aqui e fica preso.
+
+     SEM `noindex`. Estava aqui e saiu: `noindex` e `canonical` na mesma página
+     são instruções contraditórias — um diz «não indexes isto» e o outro diz «a
+     página a valer é aquela». O risco é o Google consolidar o `noindex` PARA a
+     página de destino, que é precisamente a que se quer ver nos resultados. Um
+     `meta refresh` a 0 segundos já é tratado como reencaminhamento permanente e
+     estas páginas não são indexadas de qualquer maneira; e estão fora do
+     sitemap.
+
+     TRÊS ASSERÇÕES ANTES DE ESCREVER. Este laço corre DEPOIS de todas as
+     páginas do site, e `escrever()` sobrescreve sem avisar. Sem estas
+     verificações, uma entrada mal escrita nesta lista tapava uma página
+     verdadeira em silêncio — e o site ia para o ar com um artigo transformado
+     em página de espera. */
+  const escritos = new Set(REENCAMINHAR.map(([de]) => de));
   for (const [de, para] of REENCAMINHAR) {
+    if (escritos.has(para)) {
+      throw new Error(`reencaminhamento em cadeia: ${de} -> ${para}, e ${para} também reencaminha. Aponte para o destino final.`);
+    }
+    if (!existsSync(join(SAIDA, para, 'index.html'))) {
+      throw new Error(`reencaminhamento para uma página que não existe: ${de} -> ${para}`);
+    }
+    if (existsSync(join(SAIDA, de, 'index.html'))) {
+      throw new Error(`o reencaminhamento ${de} taparia uma página verdadeira. Tire-o da lista.`);
+    }
     const destino = u(para);
     escrever(`${de}index.html`, `<!doctype html>
 <html lang="pt-PT">
@@ -1266,7 +1300,6 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mudámos esta página</title>
-<meta name="robots" content="noindex, follow">
 <link rel="canonical" href="${abs(para)}">
 <meta http-equiv="refresh" content="0; url=${destino}">
 <style>body{font-family:system-ui,sans-serif;background:#FAF1E8;color:#2B1810;
