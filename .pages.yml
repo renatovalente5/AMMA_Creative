@@ -262,9 +262,16 @@ content:
           Aparecem no cabeçalho, no rodapé, na página de contactos e nos botões
           de todas as fichas de artigo. Mudar aqui muda em todo o lado.
         fields:
-          # Sem campos de telefone: por decisão da loja não há número no site,
-          # só WhatsApp e Instagram. Um campo que não aparece em lado nenhum é
-          # um campo que alguém preenche e depois pergunta porque não mudou nada.
+          # O telefone aparece SÓ na página de contactos, por decisão da loja.
+          # Não está no rodapé, nem nas fichas de artigo, nem no menu.
+          - { name: telefone, label: 'Telefone (só dígitos, sem indicativo)', type: string }
+          - name: telefone_texto
+            label: 'Telefone (como aparece escrito)'
+            type: string
+            description: >-
+              Com espaços, como se lê: 925 110 570. Aparece na página de
+              contactos, sempre acompanhado do aviso do custo da chamada, que o
+              site acrescenta sozinho porque a lei obriga.
           - name: whatsapp
             label: WhatsApp
             type: string

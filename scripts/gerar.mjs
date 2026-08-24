@@ -139,26 +139,30 @@ const ic = {
 /* Um número de telemóvel português (91/92/93/96) obriga a indicar o custo da
    chamada — DL 59/2021. Em TODO o lado onde o número apareça, e com parênteses.
    Está numa função para não haver um sítio esquecido. */
-/* NÃO HÁ NÚMERO DE TELEFONE NO SITE. Por decisão da loja, que atende por
-   WhatsApp e por Instagram e não por chamada. Primeiro tiraram-se os botões de
-   ligar; depois o número, por inteiro — do rodapé, da página de contactos, dos
-   dados estruturados e das páginas legais.
+/* O TELEFONE APARECE NUM SÍTIO SÓ: a página de contactos. Não está no rodapé,
+   nem no menu, nem nas fichas de artigo, nem nas páginas legais — e não há em
+   lado nenhum uma ligação `tel:` que dê para ligar com um toque. É o que a loja
+   quis: quem procurar o número encontra-o onde se procuram contactos, mas o
+   site inteiro não convida a telefonar. Atende-se por mensagem.
 
-   Isto é defensável e não é um descuido. O acórdão do Tribunal de Justiça da
+   POR ISSO O NÚMERO NUNCA SE ESCREVE À MÃO. Sai sempre por `telTexto()` e vem
+   sempre com `CUSTO_CHAMADA` ao lado. Um número de telemóvel português
+   (91/92/93/96) obriga a indicar o custo da chamada — Decreto-Lei 59/2021 — e a
+   obrigação é em todo o lado onde o número apareça, com parênteses. Estando numa
+   função e num só sítio, não há como esquecer um.
+
+   Não obriga a lei a ter linha telefónica: o acórdão do Tribunal de Justiça da
    União Europeia no processo C-649/17 (Amazon EU, 10 de Julho de 2019) decidiu
-   que a directiva dos direitos dos consumidores NÃO obriga o profissional a ter
-   uma linha telefónica, e que outros meios — mensagem instantânea, por exemplo —
-   servem, desde que permitam um contacto rápido e uma comunicação eficaz. O
-   WhatsApp cumpre isso.
+   que outros meios servem, desde que permitam contacto rápido e comunicação
+   eficaz — e o WhatsApp serve. O número está aqui por escolha da loja, não por
+   imposição.
 
-   O QUE CONTINUA A FALTAR, e essa é a peça a sério: o artigo 10.º do
-   Decreto-Lei 7/2004 nomeia expressamente o ENDEREÇO DE CORREIO ELECTRÓNICO
-   entre os elementos de identificação obrigatórios. Sem telefone, o email
-   deixou de ser desejável e passou a ser o que sustenta a identificação da
-   loja. O campo `contactos.email` está vazio e tem de ser preenchido.
-
-   Sem número no site, o aviso do custo da chamada do Decreto-Lei 59/2021
-   deixou de fazer sentido e saiu com ele — não há chamada a anunciar. */
+   O QUE CONTINUA A FALTAR: o artigo 10.º do Decreto-Lei 7/2004 nomeia
+   expressamente o ENDEREÇO DE CORREIO ELECTRÓNICO entre os elementos de
+   identificação obrigatórios. O campo `contactos.email` está vazio. Ter
+   telefone não dispensa o email — a lei enumera os dois. */
+const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
+const telTexto = () => esc(def.contactos.telefone_texto);
 
 /* PREÇOS. O site nasceu todo «sob consulta» e continua a ser essa a regra: um
    artigo só mostra número se tiver o campo `preco` preenchido no backoffice.
@@ -381,6 +385,10 @@ ${corpo}
 
 /* ------------------------------------------------------------------ JSON-LD */
 const negocioLD = {
+  /* O `telephone` é dado de identificação da loja, não um convite a ligar: é
+     daqui que o Google tira o número para o painel de conhecimento e para o
+     mapa. Não desenha botão nenhum na página. */
+  telephone: `+351${def.contactos.telefone}`,
   '@context': 'https://schema.org',
   '@type': 'Store',
   '@id': abs('#loja'),
@@ -1047,6 +1055,18 @@ function paginaContactos() {
           <div class="painel__acoes">
             <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Ver o Instagram</a>
           </div>
+        </div>
+        <!-- O ÚNICO sítio do site com o número. Em texto, sem ligação tel: e sem botão
+             de ligar: mostra-se a quem o procura, sem convidar a usá-lo. O aviso
+             do custo da chamada é obrigatório e acompanha-o. -->
+        <div class="painel" style="position:static">
+          <span class="painel__cat">Telefone</span>
+          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Telefone</h2>
+          <p class="painel__resumo">${telTexto()}<br>
+            <small style="color:var(--tinta-2)">${CUSTO_CHAMADA}</small></p>
+          <p class="painel__resumo" style="margin-top:.7rem;font-size:.9rem;color:var(--tinta-2)">
+            Preferimos mensagem: no WhatsApp ou no Instagram respondemos mais depressa
+            e fica tudo escrito — a frase, o nome, o tamanho.</p>
         </div>
       </div>
     </div>
