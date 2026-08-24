@@ -30,8 +30,23 @@
     "reclamo": "Detalhes únicos, feitos para si",
     "sobre_titulo": "Somos uma loja de artigos personalizados",
     "sobre_texto": "A AMMA Creative é uma casa pequena e jovem, em Vila Nova de Anha. Fazemos artigos personalizados para bebés, mamãs e papás — e para os padrinhos, os avós e os amigos que querem dar algo que não se compra feito.\n\nCada peça passa pelas nossas mãos. Escolhe-se a frase, o nome, o tipo de letra e a cor, e nós compomos, imprimimos ou gravamos. É por isso que não há duas iguais, e é por isso que gostamos disto.\n\nObrigada por nos escolher.",
-    "portes": "Portes grátis acima de 60€"
+    "portes": "Portes grátis acima de 60€",
+    "prazo": "Os nossos artigos demoram entre 2 e 3 dias úteis a produzir."
   },
+  "passos": [
+    {
+      "titulo": "Escolha o artigo",
+      "texto": "Veja o catálogo e escolha o que quer. Personalizamos tudo ao seu gosto: pode ficar com um dos nossos desenhos ou trazer o seu."
+    },
+    {
+      "titulo": "Fale connosco",
+      "texto": "Contacte-nos por onde preferir, WhatsApp ou Instagram."
+    },
+    {
+      "titulo": "Produzimos e enviamos",
+      "texto": "Depois de aprovar, produzimos e seguimos com o envio."
+    }
+  ],
   "opcoes": {
     "mostrar_mapa": true
   },

@@ -75,6 +75,7 @@ content:
             - { name: boxes, label: 'Boxes de presente' }
             - { name: textil, label: 'Têxtil personalizado' }
             - { name: lembrancas, label: 'Lembranças' }
+            - { name: concertos, label: 'Concertos e fãs' }
 
       - name: ocasioes
         label: Ocasiões
@@ -300,6 +301,33 @@ content:
             description: >-
               Aparece na página inicial, nas fichas de artigo e nas perguntas
               frequentes. Exemplo: «Portes grátis acima de 60€».
+          - name: prazo
+            label: Prazo de produção
+            type: string
+            description: >-
+              Aparece debaixo dos passos, no «Como encomendar» e na página
+              inicial. Numa venda à distância é informação obrigatória, por isso
+              vale a pena mantê-la preenchida e certa. Exemplo: «Os nossos
+              artigos demoram entre 2 e 3 dias úteis a produzir».
+
+      - name: passos
+        label: Como encomendar (os passos)
+        type: object
+        list: true
+        description: >-
+          Os passos que aparecem na página inicial e no «Como encomendar».
+          Numeram-se sozinhos pela ordem em que estiverem aqui — arraste para
+          trocar. Pode ter três, quatro ou cinco: as colunas ajustam-se.
+        fields:
+          - name: titulo
+            label: Título do passo
+            type: string
+            required: true
+            description: 'Curto, três ou quatro palavras. Exemplo: «Fale connosco».'
+          - name: texto
+            label: Explicação
+            type: text
+            description: Uma ou duas linhas. O que a pessoa tem de fazer nesta fase.
 
       - name: opcoes
         label: Opções

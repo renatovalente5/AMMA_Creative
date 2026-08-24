@@ -140,7 +140,21 @@ const ic = {
    chamada — DL 59/2021. Em TODO o lado onde o número apareça, e com parênteses.
    Está numa função para não haver um sítio esquecido. */
 const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
-const telLink = (extra = '') => `<a href="tel:+351${def.contactos.telefone}"${extra}>${esc(def.contactos.telefone_texto)}</a>`;
+/* O NÚMERO APARECE, MAS NÃO SE LIGA A PARTIR DAQUI. A cliente pediu para tirar
+   a possibilidade de telefonar — atende por WhatsApp e por Instagram, não por
+   chamada. O que se tirou foram as ligações `tel:` e os botões de ligar.
+
+   O número em si FICA, em texto, no rodapé e na página de contactos. Não é
+   teimosia: numa venda à distância, a alínea b) do n.º 1 do artigo 4.º do
+   Decreto-Lei 24/2014 obriga a dar o número de telefone antes de o consumidor
+   se vincular, e o artigo 10.º do Decreto-Lei 7/2004 obriga a identificar-se com
+   meios de contacto directo. Escondê-lo por completo era criar uma falha legal
+   para resolver um incómodo. Assim ninguém é convidado a ligar, e quem precisar
+   do número por direito encontra-o.
+
+   O aviso do custo da chamada acompanha o número onde quer que ele apareça, que
+   é o que o Decreto-Lei 59/2021 pede. */
+const telTexto = () => esc(def.contactos.telefone_texto);
 
 /* ---------------------------------------------------------- páginas legais --- */
 const LEGAIS = [
@@ -167,6 +181,10 @@ const REENCAMINHAR = [
   // Junho de 2026: o body de convite ao padrinho foi junto ao da madrinha,
   // a pedido da cliente. Passou a haver um só artigo para os dois pedidos.
   ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/bodies-convites/body-convite-madrinha/'],
+  // Junho de 2026: os sacos de pano passaram de «Têxtil» para «Lembranças», a
+  // pedido da cliente. A categoria faz parte do endereço, por isso o antigo
+  // deixou de existir.
+  ['catalogo/textil/saco-pano-personalizado/', 'catalogo/lembrancas/saco-pano-personalizado/'],
 ];
 
 /* ============================================================== esqueleto === */
@@ -248,8 +266,7 @@ ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</sc
       ${nav.map(([p, n], i) => `<li><a href="${u(p)}"${activo(p)}><span class="num">0${i + 1}</span>${n}</a></li>`).join('\n      ')}
     </ul>
     <div class="menu__pe">
-      <a href="tel:+351${def.contactos.telefone}">${ic.tel}<span>${esc(def.contactos.telefone_texto)}</span></a>
-      <p class="menu__nota">${CUSTO_CHAMADA}</p>
+      <a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap}<span>WhatsApp</span></a>
       <a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta}<span>@_ammacreative</span></a>
     </div>
   </div>
@@ -268,7 +285,6 @@ ${corpo}
         <div class="pe__redes">
           <a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener" aria-label="Instagram da AMMA Creative">${ic.insta}</a>
           <a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener" aria-label="WhatsApp">${ic.zap}</a>
-          <a href="tel:+351${def.contactos.telefone}" aria-label="Telefonar">${ic.tel}</a>
         </div>
       </div>
 
@@ -292,7 +308,7 @@ ${corpo}
       <div>
         <h3>Contactos</h3>
         <ul>
-          <li class="pe__contacto">${ic.tel}<span><a href="tel:+351${def.contactos.telefone}">${esc(def.contactos.telefone_texto)}</a>
+          <li class="pe__contacto">${ic.tel}<span>${telTexto()}
             <small>${CUSTO_CHAMADA}</small></span></li>
           <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">@_ammacreative</a></span></li>
           <li class="pe__contacto">${ic.pin}<span>${esc(def.local.morada)}<br>${esc(def.local.codigo_postal)} ${esc(def.local.localidade)}<br>${esc(def.local.concelho)}</span></li>
@@ -555,16 +571,22 @@ function paginaInicial() {
   });
 }
 
+/* Os passos vinham escritos aqui dentro e a cliente não lhes chegava. Passaram
+   para `data/definicoes.json` → `passos`, e são editáveis no backoffice: pode
+   mudar o texto, mudar a ordem, acrescentar um quarto passo ou ficar por dois.
+   O número de colunas ajusta-se sozinho ao que lá estiver.
+
+   O prazo de produção sai a seguir, quando estiver preenchido. Fica de fora dos
+   passos de propósito: não é um passo, é uma informação — e, numa venda à
+   distância, é das que a alínea g) do n.º 1 do artigo 4.º do Decreto-Lei
+   24/2014 obriga a dar antes de o cliente se comprometer. */
 function passosEncomenda() {
-  const p = [
-    ['Escolha o artigo', 'Veja o catálogo e guarde o que lhe interessa. Não é preciso decidir tudo agora.'],
-    ['Diga-nos os detalhes', 'A frase, o nome, o tamanho, a cor. Se tiver uma ideia e não souber como a pôr, nós ajudamos.'],
-    ['Aprovamos juntas', 'Enviamos uma pré-visualização antes de imprimir ou gravar. Só avançamos quando estiver como quer.'],
-    ['Fica pronto', `Combinamos a entrega ou o envio. ${def.textos.portes}.`],
-  ];
+  const passos = Array.isArray(def.passos) ? def.passos.filter((x) => x && x.titulo) : [];
+  if (!passos.length) return '';
+  const prazo = (def.textos.prazo || '').trim();
   return `<div class="passos">
-    ${p.map(([t, d]) => `<div class="passo"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('\n    ')}
-  </div>`;
+    ${passos.map((x) => `<div class="passo"><h3>${esc(x.titulo)}</h3><p>${esc(x.texto || '')}</p></div>`).join('\n    ')}
+  </div>${prazo ? `\n  <p class="passos__prazo">${esc(prazo)}</p>` : ''}`;
 }
 
 function paginaCatalogo() {
@@ -763,9 +785,7 @@ function paginaProduto(p) {
           <a class="btn btn--cheio" href="https://wa.me/${def.contactos.whatsapp}?text=${encodeURIComponent('Olá! Tenho interesse em: ' + p.nome)}"
              target="_blank" rel="noopener">${ic.zap} Pedir pelo WhatsApp</a>
           <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Mensagem no Instagram</a>
-          <a class="btn btn--linha" href="tel:+351${def.contactos.telefone}">${ic.tel} ${esc(def.contactos.telefone_texto)}</a>
         </div>
-        <p class="painel__telefone">${CUSTO_CHAMADA}</p>
         <ul class="person" style="margin-top:1.4rem">
           <li>${ic.caixa}<span>${esc(def.textos.portes)}</span></li>
           <li>${ic.relogio}<span>Pré-visualização antes de produzir</span></li>
@@ -891,8 +911,7 @@ function paginaComoEncomendar() {
       <a class="btn btn--claro" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Instagram</a>
     </div>
     <p style="margin-top:1.2rem;font-size:.86rem;color:rgba(250,241,232,.7)">
-      Ou ligue: <a href="tel:+351${def.contactos.telefone}" style="color:#fff">${esc(def.contactos.telefone_texto)}</a><br>
-      ${CUSTO_CHAMADA}
+      Respondemos por mensagem, normalmente no próprio dia.
     </p>
   </div>
 </section>`;
@@ -1006,12 +1025,12 @@ function paginaContactos() {
         </div>
         <div class="painel" style="position:static">
           <span class="painel__cat">Telefone</span>
-          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Ligar</h2>
-          <p class="painel__resumo">${esc(def.contactos.telefone_texto)}<br>
+          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Telefone</h2>
+          <p class="painel__resumo">${telTexto()}<br>
             <small style="color:var(--tinta-2)">${CUSTO_CHAMADA}</small></p>
-          <div class="painel__acoes">
-            <a class="btn btn--linha" href="tel:+351${def.contactos.telefone}">${ic.tel} Ligar agora</a>
-          </div>
+          <p class="painel__resumo" style="margin-top:.7rem;font-size:.9rem;color:var(--tinta-2)">
+            Preferimos mensagem: no WhatsApp ou no Instagram respondemos mais depressa
+            e fica tudo escrito — a frase, o nome, o tamanho.</p>
         </div>
       </div>
     </div>
@@ -1034,7 +1053,12 @@ function paginaContactos() {
   return pagina({
     pag: 'contactos/',
     titulo: `Contactos | ${def.empresa.nome_comercial}`,
-    descricao: `Fale com a AMMA Creative: WhatsApp, Instagram ou telefone ${def.contactos.telefone_texto}. Estamos em ${l.morada}, ${l.codigo_postal} ${l.localidade}, ${l.concelho}.`,
+    /* Sem o número aqui. Esta descrição é o que o Google mostra por baixo do
+       título nos resultados, e um número à vista num resultado de pesquisa é um
+       convite a ligar — que é precisamente o que se quis tirar. Além disso
+       obrigaria a levar o aviso do custo da chamada para dentro dos 155
+       caracteres da descrição. O número continua na página. */
+    descricao: `Fale com a AMMA Creative por WhatsApp ou Instagram. Estamos em ${l.morada}, ${l.codigo_postal} ${l.localidade}, ${l.concelho}.`,
     corpo,
     jsonld: [migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Contactos' }]), negocioLD],
   });
@@ -1053,21 +1077,52 @@ function marcarDown(md) {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, t, h) =>
       `<a href="${h.startsWith('http') || h.startsWith('mailto') ? h : u(h)}"${h.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${t}</a>`);
 
-  const fechar = () => { if (lista) { html += `</${lista}>\n`; lista = null; } };
+  /* UMA LINHA NÃO É UM PARÁGRAFO. Isto parece um pormenor e não é: os ficheiros
+     em `conteudo/` estão escritos com as linhas cortadas aos 80 caracteres, como
+     é hábito, e a versão anterior fazia um <p> por cada linha física. O
+     resultado, publicado, era isto:
+
+       <p>Contacto: <strong>925 110 570</strong> *(Chamada para a rede</p>
+       <p>móvel nacional)*</p>
+
+     ou seja, o negrito e o itálico partiam-se a meio (e apareciam os asteriscos
+     em cru ao visitante), as frases quebravam onde calhava, e o aviso do custo
+     da chamada deixava de acompanhar o número — que é justamente o que a lei
+     manda. Eram quinze parágrafos assim nas três páginas legais.
+
+     Agora acumulam-se as linhas seguidas e só se fecha o parágrafo numa linha em
+     branco, num título, numa lista ou num traço — que é como o markdown sempre
+     funcionou. As linhas de continuação de um item de lista também vão para o
+     item, em vez de saltarem para fora dele. */
+  let paragrafo = [], item = null;
+  const escoarItem = () => { if (item !== null) { html += `<li>${inline(item)}</li>\n`; item = null; } };
+  const escoarParagrafo = () => {
+    if (paragrafo.length) { html += `<p>${inline(paragrafo.join(' '))}</p>\n`; paragrafo = []; }
+  };
+  const fechar = () => { escoarItem(); if (lista) { html += `</${lista}>\n`; lista = null; } };
+  const cortar = () => { escoarParagrafo(); fechar(); };
+
   for (const l of linhas) {
     const t = l.trim();
-    if (!t) { fechar(); continue; }
+    if (!t) { cortar(); continue; }
     let m;
-    if ((m = t.match(/^###\s+(.*)$/))) { fechar(); html += `<h3>${inline(m[1])}</h3>\n`; }
-    else if ((m = t.match(/^##\s+(.*)$/))) { fechar(); html += `<h2>${inline(m[1])}</h2>\n`; }
+    if ((m = t.match(/^###\s+(.*)$/))) { cortar(); html += `<h3>${inline(m[1])}</h3>\n`; }
+    else if ((m = t.match(/^##\s+(.*)$/))) { cortar(); html += `<h2>${inline(m[1])}</h2>\n`; }
+    else if (/^(-{3,}|\*{3,}|_{3,})$/.test(t)) { cortar(); html += '<hr>\n'; }
     else if ((m = t.match(/^[-*]\s+(.*)$/))) {
-      if (lista !== 'ul') { fechar(); html += '<ul>\n'; lista = 'ul'; }
-      html += `<li>${inline(m[1])}</li>\n`;
+      escoarParagrafo(); escoarItem();
+      if (lista !== 'ul') { if (lista) html += `</${lista}>\n`; html += '<ul>\n'; lista = 'ul'; }
+      item = m[1];
     } else if ((m = t.match(/^\d+\.\s+(.*)$/))) {
-      if (lista !== 'ol') { fechar(); html += '<ol>\n'; lista = 'ol'; }
-      html += `<li>${inline(m[1])}</li>\n`;
-    } else { fechar(); html += `<p>${inline(t)}</p>\n`; }
+      escoarParagrafo(); escoarItem();
+      if (lista !== 'ol') { if (lista) html += `</${lista}>\n`; html += '<ol>\n'; lista = 'ol'; }
+      item = m[1];
+    } else if (item !== null) {
+      /* continuação de um item de lista partido em várias linhas */
+      item += ' ' + t;
+    } else { paragrafo.push(t); }
   }
+  cortar();
   fechar();
   return html;
 }
