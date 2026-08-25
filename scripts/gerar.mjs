@@ -214,6 +214,12 @@ const REENCAMINHAR = [
   // seria pior do que lhe mostrar as caixas todas e deixá-la escolher.
   ['catalogo/boxes/box-noivo/', 'catalogo/boxes/'],
   ['catalogo/boxes/ecografia-polaroid/', 'catalogo/boxes/'],
+  // Agosto de 2026: a «Sweat de casal ilustrada» foi absorvida pela «Sweat
+  // personalizada». Aqui há sucessor a sério — a única fotografia que ela tinha
+  // já ERA a 13.ª da outra, a mesma imagem (0,4/255 de diferença média), e o
+  // texto dela passou para lá. Por isso reencaminha para o artigo, e não para a
+  // categoria como os dois que não tinham equivalente.
+  ['catalogo/textil/sweat-casal/', 'catalogo/textil/sweat-mae/'],
 ];
 
 /* ============================================================== esqueleto === */
