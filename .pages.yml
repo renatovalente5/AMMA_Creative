@@ -82,7 +82,7 @@ content:
         list: true
         description: >-
           Para que ocasiões serve. É por aqui que se filtra o catálogo — quem
-          procura um presente de baptizado escolhe «Baptizado» e vê só o que
+          procura um presente de batizado escolhe «Batizado» e vê só o que
           serve. Pode escolher várias.
         # DUAS OCASIÕES FORAM RETIRADAS, em Agosto de 2026, e por medição:
         # «Páscoa» tinha UM artigo, e esse artigo passou a chamar-se «o meu
@@ -97,7 +97,12 @@ content:
           values:
             - { name: anuncio-gravidez, label: 'Anúncio de gravidez' }
             - { name: convite-padrinhos, label: 'Convite a padrinhos' }
-            - { name: baptizado, label: 'Baptizado' }
+            # A CHAVE fica «baptizado» de propósito: é o valor gravado nos
+            # artigos e o que vai no endereço partilhável
+            # (?ocasiao=baptizado). Mudá-la obrigava a reescrever seis
+            # artigos e partia os links que já andam por aí. O que se vê é
+            # o `label`.
+            - { name: baptizado, label: 'Batizado' }
             - { name: casamento, label: 'Casamento' }
             - { name: dia-da-mae, label: 'Dia da Mãe' }
             - { name: dia-do-pai, label: 'Dia do Pai' }

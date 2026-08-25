@@ -105,7 +105,7 @@ const contaCat = (slug) => produtos.filter((p) => p.categoria === slug).length;
 const OCASIOES = {
   'anuncio-gravidez': 'Anúncio de gravidez',
   'convite-padrinhos': 'Convite a padrinhos',
-  'baptizado': 'Baptizado',
+  'baptizado': 'Batizado',
   'casamento': 'Casamento',
   'dia-da-mae': 'Dia da Mãe',
   'dia-do-pai': 'Dia do Pai',
@@ -937,7 +937,7 @@ function paginaComoEncomendar() {
       mesmo dia, com o valor final e o prazo.</p>
 
       <h3>Quanto tempo demora?</h3>
-      <p>Depende da peça e de estarmos com muitos pedidos — em época de baptizados e
+      <p>Depende da peça e de estarmos com muitos pedidos — em época de batizados e
       de Dia da Mãe, estamos. Dizemos-lhe o prazo antes de começar, e cumprimo-lo.</p>
 
       <h3>Posso ver antes de vocês produzirem?</h3>
