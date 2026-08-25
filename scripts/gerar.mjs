@@ -220,6 +220,12 @@ const REENCAMINHAR = [
   // texto dela passou para lá. Por isso reencaminha para o artigo, e não para a
   // categoria como os dois que não tinham equivalente.
   ['catalogo/textil/sweat-casal/', 'catalogo/textil/sweat-mae/'],
+  // Agosto de 2026: a peça de «Concertos e fãs» era uma SWEAT, não uma t-shirt,
+  // e passou para a «Sweat personalizada». O artigo ficou sem fotografias e a
+  // categoria sem artigos, portanto saíram os dois — e o endereço da categoria
+  // também precisa de destino.
+  ['catalogo/concertos/tshirt-concerto/', 'catalogo/textil/sweat-mae/'],
+  ['catalogo/concertos/', 'catalogo/textil/'],
 ];
 
 /* ============================================================== esqueleto === */

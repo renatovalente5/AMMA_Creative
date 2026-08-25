@@ -75,7 +75,6 @@ content:
             - { name: boxes, label: 'Boxes de presente' }
             - { name: textil, label: 'Têxtil personalizado' }
             - { name: lembrancas, label: 'Lembranças' }
-            - { name: concertos, label: 'Concertos e fãs' }
 
       - name: ocasioes
         label: Ocasiões
