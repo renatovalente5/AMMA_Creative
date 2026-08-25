@@ -39,7 +39,11 @@ const produtos = todos.filter((p) => p.publicado !== false);
    TUDO o que o HTML pede dá 404 e o site aparece sem estilos — já aconteceu
    noutro projecto e não é evidente, porque o github.io reencaminha. */
 const BASE = (process.env.BASE ?? '/AMMA_Creative').replace(/\/$/, '');
-const SITE = (process.env.SITE ?? def.tecnico.site).replace(/\/$/, '');
+/* `def.tecnico` não está declarado no .pages.yml. Com `settings.content.merge`
+     o Pages CMS preserva-o, mas isto é o cinto por cima dos suspensórios: uma
+     gravação que o apagasse deixaria o gerador a rebentar numa construção local. */
+  const SITE = (process.env.SITE ?? def.tecnico?.site
+    ?? 'https://renatovalente5.github.io/AMMA_Creative').replace(/\/$/, '');
 
 const u = (p) => `${BASE}/${String(p).replace(/^\/+/, '')}`;
 const abs = (p) => `${SITE}/${String(p).replace(/^\/+/, '')}`;
@@ -101,6 +105,21 @@ function fotos(p) {
 const catDe = (slug) => categorias.find((c) => c.slug === slug);
 const nomeCat = (slug) => catDe(slug)?.nome ?? slug;
 const contaCat = (slug) => produtos.filter((p) => p.categoria === slug).length;
+
+/* CATEGORIAS QUE AINDA NÃO TÊM ARTIGOS NÃO APARECEM AO VISITANTE.
+   Existe por causa de uma armadilha real: a cliente pode criar uma categoria em
+   «Textos das categorias» antes de lhe pôr artigos, e sem isto ela aparecia no
+   rodapé, na prateleira da página inicial, nos filtros e no sitemap — uma secção
+   vazia, e um endereço vazio dado ao Google.
+
+   Era pior do que isso: a verificação do CI recusava a incoerência e a
+   publicação PARAVA, levando consigo tudo o que ela tivesse gravado na mesma
+   sessão, fotografias incluídas. Com isto, criar uma categoria adiantada passa a
+   ser inofensivo: fica invisível até ter o primeiro artigo.
+
+   A PÁGINA de cada categoria continua a gerar-se, mesmo vazia, para nenhum
+   endereço que já esteve no ar passar a dar 404. */
+const catsVisiveis = categorias.filter((c) => contaCat(c.slug) > 0);
 
 const OCASIOES = {
   'anuncio-gravidez': 'Anúncio de gravidez',
@@ -332,7 +351,7 @@ ${corpo}
       <div>
         <h3>Categorias</h3>
         <ul>
-          ${categorias.map((c) => `<li><a href="${u('catalogo/' + c.slug + '/')}">${esc(c.nome)}</a></li>`).join('\n          ')}
+          ${catsVisiveis.map((c) => `<li><a href="${u('catalogo/' + c.slug + '/')}">${esc(c.nome)}</a></li>`).join('\n          ')}
         </ul>
       </div>
 
@@ -545,7 +564,7 @@ function paginaInicial() {
     </div>
   </div>
   <div class="prateleira">
-    ${categorias.map((c, i) => cartaoCategoria(c, i < 2)).join('\n    ')}
+    ${catsVisiveis.map((c, i) => cartaoCategoria(c, i < 2)).join('\n    ')}
   </div>
 </section>
 
@@ -643,7 +662,7 @@ function paginaCatalogo() {
         <legend class="sobre-linha" style="margin-bottom:.7rem">Categoria</legend>
         <div class="filtros__fila">
           <button class="ficha" type="button" data-filtro="categoria" data-valor="" aria-pressed="true">Todas</button>
-          ${categorias.map((c) => `<button class="ficha" type="button" data-filtro="categoria" data-valor="${esc(c.slug)}" aria-pressed="false">${esc(c.curto || c.nome)} <span class="ficha__n">${contaCat(c.slug)}</span></button>`).join('\n          ')}
+          ${catsVisiveis.map((c) => `<button class="ficha" type="button" data-filtro="categoria" data-valor="${esc(c.slug)}" aria-pressed="false">${esc(c.curto || c.nome)} <span class="ficha__n">${contaCat(c.slug)}</span></button>`).join('\n          ')}
         </div>
       </fieldset>
       <fieldset style="border:0;padding:0;margin:0">
@@ -1272,7 +1291,7 @@ function main() {
 
   /* sitemap, robots, 404 */
   const urls = ['', 'catalogo/', 'como-encomendar/', 'sobre/', 'contactos/',
-    ...categorias.map((c) => `catalogo/${c.slug}/`),
+    ...catsVisiveis.map((c) => `catalogo/${c.slug}/`),
     ...produtos.map((p) => `catalogo/${p.categoria}/${p.slug}/`),
     ...LEGAIS.map(([p]) => p)];
   const hoje = new Date().toISOString().slice(0, 10);

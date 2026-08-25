@@ -11,6 +11,18 @@
 # pedido um backoffice simples, e simples aqui quer dizer poucas entradas com
 # ajuda em cada campo — não muitas entradas bem arrumadas.
 # ============================================================================
+# A página «Settings» do Pages CMS mostra ESTE ficheiro e deixa editá-lo. Não é
+# sítio para a dona da loja entrar: o cabeçalho aqui em cima promete três coisas
+# na barra lateral e sem isto seriam quatro.
+#
+# `content.merge` guarda as chaves que este ficheiro não declara. É preciso:
+# data/definicoes.json tem um bloco `tecnico` que não está declarado abaixo, e
+# sem isto a primeira gravação de «Dados da loja» apagava-o em silêncio.
+settings:
+  hide: true
+  content:
+    merge: true
+
 actions:
   - name: publicar
     label: Publicar site agora
@@ -40,18 +52,37 @@ content:
     path: data/produtos
     filename: '{fields.slug}.json'
     format: json
+    # SEM APAGAR e SEM RENOMEAR. Apagar um artigo daqui parte os links que já
+    # andam partilhados, e o histórico de endereços vive na lista REENCAMINHAR do
+    # gerador, fora do alcance do backoffice. O caminho para tirar um artigo do
+    # site é desligar «Publicado no site», que não perde nada e se desfaz com um
+    # clique. Renomear mexeria no nome do ficheiro, que é o endereço.
+    operations:
+      create: true
+      rename: false
+      delete: false
     view:
       # O `slug` na tabela é a referência do artigo: é o que está no endereço da
       # página e o nome do próprio ficheiro. Serve para o distinguir sem
       # ambiguidade quando há nomes parecidos — e há: quatro bodies de convite.
-      fields: [nome, categoria, publicado, destaque, slug]
+      fields: [nome, categoria, publicado, slug]
       primary: nome
       sort: [ordem, nome]
+      # A CAIXA DE PROCURA é a alteração com melhor retorno deste ficheiro. A
+      # primeira coisa que se faz aqui é encontrar o artigo das fotografias que
+      # acabaram de chegar, e vinte linhas percorridas com o olho é como seis
+      # fotografias foram para o artigo errado.
+      search: [nome, resumo, slug]
+      default:
+        sort: ordem
+        order: asc
     fields:
-      # ORDEM DOS CAMPOS: o que o artigo é, as fotografias, os textos, o que se
-      # personaliza, e no fim as opções de publicação. O `slug` fica para último
-      # por ser o único campo técnico do formulário.
-
+      # ORDEM DOS CAMPOS, e é deliberada: primeiro o que ela vem cá fazer.
+      # Antes era nome, categoria, ocasiões, fotografias — ou seja, os dois campos
+      # que ela NÃO manda (as duas listas são fixas) vinham antes daquele que a
+      # traz aqui. Agora abre com o nome, as fotografias e os textos; as escolhas
+      # de arrumação vêm depois; e as opções de publicação ficam no fim, com o
+      # endereço em último por ser o único campo técnico e o único a não tocar.
       - name: nome
         label: Nome do artigo
         type: string
@@ -61,11 +92,89 @@ content:
           cliente — «Body «aceitas ser a minha madrinha?»» diz mais do que
           «Body 03».
 
+      - name: fotos
+        label: 'Fotografias — a primeira é a da capa'
+        type: image
+        options:
+          multiple:
+            # 16 e não 12: estes artigos não têm 3 vistas de uma peça, têm uma
+            # fotografia por FRASE — o do pai tem 8, o do anúncio de gravidez
+            # passou de 7 para 14. A tira de miniaturas rola na horizontal, por
+            # isso o número não parte a página.
+            max: 16
+        description: >-
+          Estas fotografias são as DESTE artigo. Antes de carregar, confirme em cima
+          que o nome é o do artigo certo — é o engano mais fácil de fazer. A
+          PRIMEIRA da lista é a da capa: é a que aparece no catálogo, na página
+          inicial e na pré-visualização quando o link é partilhado no WhatsApp;
+          escolha uma em que se veja bem a peça inteira. Arraste para trocar a
+          ordem. Carregue-as como saem do telemóvel, que são reduzidas sozinhas na
+          publicação. Duas coisas que podem falhar: as fotografias tiradas em iPhone
+          no formato HEIC não são aceites aqui — no telemóvel, em Definições,
+          Câmara, Formatos, escolha «Mais compatível» e passam a sair em JPG; e uma
+          fotografia muito grande, acima de 3 MB, pode dar erro sem explicar porquê
+          — se isso acontecer, mande-a por WhatsApp que nós carregamos.
+
+      # ─────────── textos
+      - name: resumo
+        label: 'Frase curta do catálogo'
+        type: text
+        required: true
+        description: >-
+          Uma ou duas frases, não mais. Aparece no cartão do catálogo e é o que o
+          Google mostra na pesquisa. Diga o que a peça é e para quem serve, sem
+          repetir o nome. NÃO é o mesmo que o texto da página, que vem a seguir: se
+          puser aqui o texto todo, o cartão do catálogo fica com um parágrafo onde
+          devia ter uma linha.
+
+      - name: texto
+        label: 'Texto da página do artigo'
+        type: text
+        required: true
+        description: >-
+          Dois ou três parágrafos, na primeira pessoa, como se estivesse a explicar
+          a uma cliente. Deixe uma linha em branco entre parágrafos, que no site
+          aparecem separados. O que resulta melhor: dizer o que a peça tem de
+          especial, o que as pessoas costumam escolher, e uma frase sobre o
+          material. Este texto aparece só na página do artigo — a frase curta que
+          aparece no catálogo é a de cima.
+
+      - name: personalizavel
+        label: O que se personaliza
+        type: string
+        list: true
+        description: >-
+          Um item por linha, curto. Exemplo: «O nome do bebé», «A cor do
+          lettering», «O tamanho do body». Aparece em lista com um visto ao lado
+          de cada um — é dos blocos que as clientes mais leem, porque é onde
+          percebem que podem pedir o que querem.
+
+      - name: preco
+        label: 'Preço (€) — vazio fica «Sob consulta»'
+        type: number
+        step: 0.5
+        description: >-
+          DEIXE VAZIO para o artigo ficar «Sob consulta», que é como está a maioria.
+          Se puser um valor, ele aparece no catálogo e na ficha do artigo, e tem de
+          ser o preço final que a cliente paga, com todos os impostos incluídos — é
+          o que a lei obriga. Os portes são à parte e o site di-lo por si. Se o
+          preço depender do que a pessoa escolher personalizar, é melhor deixar
+          vazio do que pôr um valor que depois muda.
+
+      # ─────────── publicação
       - name: categoria
-        label: Categoria
+        label: 'Categoria — onde aparece no catálogo'
         type: select
         required: true
-        description: Onde o artigo aparece no catálogo e no menu do rodapé.
+        description: >-
+          Onde o artigo aparece no catálogo e no menu do fim da página. Cada artigo
+          tem uma só. Atenção: a categoria faz parte do link do artigo, por isso
+          mudá-la aqui muda o link, e quem tiver o antigo deixa de o abrir — pode
+          mudar-se, diga-nos e nós deixamos o antigo a levar ao novo. Esta lista tem
+          as cinco categorias do site. Para acrescentar uma sexta, fale connosco
+          primeiro: são duas coisas que têm de entrar ao mesmo tempo e é por isso
+          que se pede. É o único sítio deste backoffice onde precisa de nós — e fica
+          no mesmo dia.
         # A chave de cada opção é `name`, não `value` — está assim documentado, e
         # com `value` arrisca-se gravar vazio sem aviso nenhum.
         options:
@@ -77,13 +186,16 @@ content:
             - { name: lembrancas, label: 'Lembranças' }
 
       - name: ocasioes
-        label: Ocasiões
+        label: 'Ocasiões — os filtros do catálogo'
         type: select
         list: true
         description: >-
-          Para que ocasiões serve. É por aqui que se filtra o catálogo — quem
-          procura um presente de batizado escolhe «Batizado» e vê só o que
-          serve. Pode escolher várias.
+          Para que ocasiões serve o artigo. É por aqui que se filtra o catálogo:
+          quem procura um presente de batizado escolhe «Batizado» e vê só o que
+          serve. Pode escolher várias, e pode não escolher nenhuma — o artigo
+          continua no catálogo. Uma ocasião só aparece como botão de filtro se tiver
+          artigos. Para acrescentar uma ocasião nova à lista, fale connosco, como
+          nas categorias: fica no mesmo dia.
         # DUAS OCASIÕES FORAM RETIRADAS, em Agosto de 2026, e por medição:
         # «Páscoa» tinha UM artigo, e esse artigo passou a chamar-se «o meu
         # primeiro…» — cobre a Páscoa, o Natal e o aniversário, portanto a
@@ -109,121 +221,82 @@ content:
             - { name: presente, label: 'Presente' }
 
       # ─────────── fotografias
-      - name: fotos
-        label: Fotografias
-        type: image
-        options:
-          multiple:
-            # 16 e não 12: estes artigos não têm 3 vistas de uma peça, têm uma
-            # fotografia por FRASE — o do pai tem 8, o do anúncio de gravidez
-            # passou de 7 para 14. A tira de miniaturas rola na horizontal, por
-            # isso o número não parte a página.
-            max: 16
-        description: >-
-          A PRIMEIRA é a mais importante: é a que aparece no catálogo, na página
-          inicial e na pré-visualização quando o link é partilhado no WhatsApp.
-          Escolha uma em que se veja bem a peça inteira.
-          As fotografias são reduzidas sozinhas na publicação — carregue-as como
-          saem do telemóvel. Arraste para reordenar.
-
-      # ─────────── textos
-      - name: resumo
-        label: Resumo
-        type: text
-        required: true
-        description: >-
-          Uma ou duas frases. Aparece no cartão do catálogo e é o que o Google
-          mostra na pesquisa. Diga o que a peça é e para quem serve — não repita
-          o nome.
-
-      - name: texto
-        label: Descrição
-        type: text
-        required: true
-        description: >-
-          Dois ou três parágrafos, na primeira pessoa, como se estivesse a
-          explicar a uma cliente. Deixe uma linha em branco entre parágrafos —
-          aparecem separados no site.
-          O que resulta melhor: dizer o que a peça tem de especial, o que as
-          pessoas costumam escolher, e uma frase sobre o material.
-
-      - name: personalizavel
-        label: O que se personaliza
-        type: string
-        list: true
-        description: >-
-          Um item por linha, curto. Exemplo: «O nome do bebé», «A cor do
-          lettering», «O tamanho do body». Aparece em lista com um visto ao lado
-          de cada um — é dos blocos que as clientes mais leem, porque é onde
-          percebem que podem pedir o que querem.
-
-      - name: preco
-        label: Preço (€)
-        type: number
-        step: 0.5
-        description: >-
-          DEIXE VAZIO para o artigo ficar «Sob consulta», que é como está a
-          maioria. Se puser um valor, ele aparece no catálogo e na ficha.
-          O valor tem de ser o PREÇO FINAL que a cliente paga, com todos os
-          impostos incluídos — é o que o Decreto-Lei 138/90 obriga. Os portes
-          são à parte e o site di-lo por si. Se o preço depender do que a pessoa
-          escolher personalizar, é melhor deixar vazio do que pôr um valor que
-          depois muda.
-
-      # ─────────── publicação
       - name: publicado
-        label: Publicado no site
+        label: 'Publicado no site'
         type: boolean
         default: true
         description: >-
-          Desligue para tirar o artigo do site sem o perder — fica aqui guardado
-          e volta a aparecer quando ligar outra vez. Útil enquanto não tem
-          fotografias boas.
+          Desligue para tirar o artigo do site sem o perder: fica aqui guardado e
+          volta a aparecer quando ligar outra vez. É assim que se retira um artigo —
+          útil enquanto não tem fotografias boas, ou para uma peça que deixou de
+          fazer. Não há botão de apagar, e é de propósito: desligar aqui não perde
+          nada e não parte os links que já andam partilhados por aí. Se quiser mesmo
+          apagar um artigo, diga-nos.
 
       - name: destaque
-        label: Mostrar na página inicial
+        label: 'Mostrar na página inicial'
         type: boolean
         default: false
         description: >-
-          Os artigos em destaque aparecem na secção «O que mais sai por aqui».
-          Quatro a seis é o número que fica bem — mais do que isso e a página
-          inicial fica um catálogo.
+          Estes são os artigos que aparecem na página inicial, na secção «O que mais
+          sai por aqui». A página inicial mostra SEIS no máximo, pela posição na
+          lista — se marcar dez, aparecem só os seis primeiros. Se não marcar
+          nenhum, aparecem os seis primeiros do catálogo. Quatro a seis é o número
+          que fica bem.
 
       - name: ordem
-        label: Ordem
+        label: 'Posição na lista'
         type: number
         default: 500
         description: >-
-          Número mais baixo aparece primeiro, no catálogo e na categoria. Deixe
-          500 se for indiferente.
+          Número mais baixo aparece primeiro, no catálogo e na página da categoria.
+          Deixe 500 se for indiferente: os artigos que ficarem com o mesmo número
+          aparecem por ordem alfabética. Para empurrar um artigo para o topo, ponha
+          10.
         # Sem `min`: no Pages CMS o `min` passa a ser a base do incremento e
         # invalida valores que já existam nos dados.
         step: 10
 
       - name: slug
-        label: Endereço da página
+        label: 'Endereço da página — não mudar'
         type: string
         required: true
         description: >-
-          É o fim do link do artigo. Só letras minúsculas, números e hífens.
-          Exemplo: body-convite-madrinha.
-          DEPOIS DE PUBLICADO, NÃO MUDE — quem tiver o link guardado ou
-          partilhado deixa de o conseguir abrir, e o Google perde a página.
+          É o fim do link do artigo. Depois de o artigo estar publicado, NÃO MUDE:
+          quem tiver o link guardado ou partilhado deixa de o conseguir abrir, e o
+          Google perde a página. Se precisar mesmo de mudar, diga-nos — nós mudamos
+          e deixamos o endereço antigo a levar as pessoas ao novo, como já está
+          feito para sete endereços. Só letras minúsculas, números e hífens, sem
+          acentos. Exemplo: body-convite-madrinha.
         pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
 
   # ------------------------------------------------------------- categorias
+  # «Textos das categorias» e não «Categorias»: aqui editam-se as cinco que
+  # existem, não se criam. Uma entrada chamada «Categorias» com um botão de
+  # acrescentar promete um poder que não existe — e até há pouco usá-lo era o
+  # único gesto capaz de parar a publicação do site.
   - name: categorias
-    label: Categorias
+    label: Textos das categorias
     type: file
     path: data/categorias.json
     format: json
+    # Apagar este ficheiro parava a construção do site inteiro.
+    operations:
+      delete: false
     list: true
     fields:
       - name: nome
         label: Nome
         type: string
         required: true
-        description: Como aparece nos títulos e no rodapé.
+        description: >-
+          Como aparece nos títulos e no menu do fim da página. Pode mudá-lo
+          quando quiser, que muda em todo o site. Se o que quer é uma
+          categoria NOVA, não a acrescente aqui: a lista que aparece dentro de
+          cada artigo é preparada por nós, e uma categoria acrescentada só
+          deste lado não chega aos artigos. Diga-nos e fica no mesmo dia.
+          Aqui, nestas cinco, muda tudo o que é texto — nome, nome curto,
+          resumo, texto da página, título e descrição para o Google.
       - name: curto
         label: Nome curto
         type: string
@@ -268,6 +341,9 @@ content:
     type: file
     path: data/definicoes.json
     format: json
+    # Apagar este ficheiro parava a construção do site inteiro.
+    operations:
+      delete: false
     fields:
       - name: contactos
         label: Contactos
@@ -296,6 +372,12 @@ content:
       - name: local
         label: Onde estão
         type: object
+        description: >-
+          A morada que aparece no fim de todas as páginas, na página de
+          contactos, no mapa e nos dados que o Google lê. A latitude e a
+          longitude são o alfinete do mapa: tiram-se do Google Maps, com o
+          botão direito sobre o local e «Copiar coordenadas». Se não tiver a
+          certeza, não mexa — um número trocado põe o alfinete no mar.
         fields:
           - { name: morada, label: Rua, type: string }
           - { name: codigo_postal, label: Código postal, type: string }
@@ -365,7 +447,7 @@ content:
             description: Uma ou duas linhas. O que a pessoa tem de fazer nesta fase.
 
       - name: opcoes
-        label: Opções
+        label: Mapa
         type: object
         fields:
           - name: mostrar_mapa

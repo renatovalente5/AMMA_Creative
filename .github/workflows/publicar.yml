@@ -80,6 +80,7 @@ jobs:
           opc = {f['name']: {o['name'] for o in f['options']['values']}
                  for f in art['fields'] if f['name'] in ('categoria', 'ocasioes')}
           erros = []
+          avisos = []
           usadas = {'categoria': set(), 'ocasioes': set()}
           for f in sorted(glob.glob('data/produtos/*.json')):
               d = json.load(open(f, encoding='utf-8'))
@@ -95,15 +96,23 @@ jobs:
           cats = {c['slug'] for c in json.load(open('data/categorias.json', encoding='utf-8'))}
           for c in opc['categoria'] - cats:
               erros.append(f"categoria \"{c}\" esta no .pages.yml mas nao em categorias.json")
+          # ESTE CASO NÃO É FATAL, e a razão é a pessoa que o vai causar. A dona da
+          # loja pode criar uma categoria em «Textos das categorias» antes de a
+          # ligar aos artigos — e se isto parasse a publicação, o dia em que ela
+          # experimentasse era o dia em que as fotografias que gravou na mesma
+          # sessão não iam ao ar. O gerador já esconde do visitante as categorias
+          # sem artigos, portanto o site sai correcto. Fica um aviso, para eu ver.
           for c in cats - opc['categoria']:
-              erros.append(f"categoria \"{c}\" esta em categorias.json mas nao no .pages.yml")
+              avisos.append(f"a categoria \"{c}\" foi criada em Textos das categorias mas ainda nao esta na lista dos artigos: o site publica-se e ela fica invisivel ate ter o primeiro artigo")
           if erros:
               print('backoffice desencontrado dos dados:')
               [print(' ', e) for e in erros]
               sys.exit(1)
           orfas = (opc['categoria'] - usadas['categoria']) | (opc['ocasioes'] - usadas['ocasioes'])
           if orfas:
-              print('aviso: opcoes sem nenhum artigo (nao e erro):', ', '.join(sorted(orfas)))
+              avisos.append('opcoes sem nenhum artigo: ' + ', '.join(sorted(orfas)))
+          for a in avisos:
+              print('aviso:', a)
           print('backoffice e dados coerentes')
           PY
 
