@@ -1,21 +1,34 @@
 {
   "slug": "tshirt-pai",
-  "nome": "T-shirt de pai personalizada",
+  "nome": "T-shirt personalizada",
   "categoria": "textil",
   "ocasioes": [
     "dia-do-pai",
+    "dia-da-mae",
+    "casamento",
     "presente"
   ],
   "fotos": [
-    "assets/produtos/tshirt-pai/01.jpg"
+    "assets/produtos/tshirt-pai/02.jpg",
+    "assets/produtos/tshirt-pai/03.jpg",
+    "assets/produtos/tshirt-pai/04.jpg",
+    "assets/produtos/tshirt-pai/05.jpg",
+    "assets/produtos/tshirt-pai/06.jpg",
+    "assets/produtos/tshirt-pai/07.jpg",
+    "assets/produtos/tshirt-pai/08.jpg",
+    "assets/produtos/tshirt-pai/09.jpg",
+    "assets/produtos/tshirt-pai/10.jpg",
+    "assets/produtos/tshirt-pai/11.jpg",
+    "assets/produtos/tshirt-pai/12.jpg",
+    "assets/produtos/tshirt-pai/13.jpg"
   ],
-  "resumo": "«PAPA» com as fotografias dentro das letras, e o ano por baixo.",
-  "texto": "A mesma ideia da sweat de mãe, para ele. Fica bem em escuro, que é o que costumam escolher.\n\nFazemos «PAI», «PAPÁ» e «AVÔ», com o número de fotografias que as letras aguentarem.",
+  "resumo": "O que quiser escrito ou desenhado numa t-shirt: as fotografias dentro das letras, um nome, uma frase, um desenho pequeno ao peito.",
+  "texto": "As fotografias entram dentro do lettering — «MOM», «PAPA», «AVÔ», com o número de fotografias que as letras aguentarem, e o ano por baixo.\n\nMas também fazemos o contrário: um desenho pequeno ao peito, discreto, do género «daddy», «best mom» ou «tired mom club». E frases inteiras, como a da madrinha que não é só tia.\n\nSai em pares a condizer — «Pai» e «Mãe» — e em conjuntos para o grupo, como as do noivo e da equipa de apoio. Diga-nos quantas e os tamanhos.",
   "personalizavel": [
-    "As fotografias",
-    "O texto e o ano",
+    "O texto ou o desenho",
+    "As fotografias, se levar",
     "A cor da t-shirt",
-    "O tamanho"
+    "Os tamanhos, e quantas"
   ],
   "ordem": 180,
   "publicado": true,
