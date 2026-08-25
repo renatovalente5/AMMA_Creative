@@ -834,7 +834,19 @@ ${relacionados.length ? `<section class="secao secao--creme">
 
   return pagina({
     pag: `catalogo/${p.categoria}/${p.slug}/`,
-    titulo: `${p.nome} personalizado | ${def.empresa.nome_comercial}`,
+    /* SEM «personalizado» colado ao nome. Estava aqui e produzia gramática
+       errada: um adjectivo tem de concordar com o nome a que se encosta, e o
+       nome do artigo vem do backoffice — pode acabar em masculino, feminino,
+       plural ou noutro substantivo. Dava «Pulseira gravada personalizado»,
+       «T-shirts de despedida de solteira personalizado», e em quatro artigos
+       dizia-o duas vezes: «Saco de pano personalizado personalizado».
+
+       A palavra continua onde pode estar sem concordância: na descrição que o
+       Google mostra por baixo do título («Personalizamos a frase, o nome e a
+       cor»), no nome de oito artigos que já a trazem, e nas páginas de
+       categoria. Um título com um erro de português vale menos do que a palavra
+       que o erro trazia. */
+    titulo: `${p.nome} | ${def.empresa.nome_comercial}`,
     descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. Feito à mão em Viana do Castelo. ${def.textos.portes}.`,
     og: fs.length ? abs(`assets/produtos/${p.slug}/og.jpg`) : undefined,
     corpo,
