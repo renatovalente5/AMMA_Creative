@@ -359,13 +359,6 @@ ${corpo}
       </div>
 
       <div>
-        <h3>Categorias</h3>
-        <ul>
-          ${catsVisiveis.map((c) => `<li><a href="${u('catalogo/' + c.slug + '/')}">${esc(c.nome)}</a></li>`).join('\n          ')}
-        </ul>
-      </div>
-
-      <div>
         <h3>A loja</h3>
         <ul>
           <li><a href="${u('catalogo/')}">Catálogo</a></li>

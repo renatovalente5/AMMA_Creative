@@ -692,7 +692,10 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
   padding-bottom: 2.5rem;
 }
 @media (min-width: 720px) { .pe__grelha { grid-template-columns: 1.4fr 1fr 1fr; } }
-@media (min-width: 1000px) { .pe__grelha { grid-template-columns: 1.6fr 1fr 1fr 1.1fr; } }
+/* TRÊS colunas, não quatro. A coluna das categorias saiu do rodapé, e um número
+   de colunas maior do que o número de blocos deixava um vão vazio à direita —
+   com o conteúdo todo encostado à esquerda a partir dos 1000 px. */
+@media (min-width: 1000px) { .pe__grelha { grid-template-columns: 1.7fr 1fr 1.2fr; } }
 .pe__marca img { height: 46px; width: auto; margin-bottom: 1rem; }
 .pe__reclamo { font-family: 'Fraunces', Georgia, serif; font-size: 1.1rem; color: var(--creme); margin-bottom: 1.1rem; }
 .pe h3 {

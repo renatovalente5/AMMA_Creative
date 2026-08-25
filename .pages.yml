@@ -7,13 +7,14 @@
 # Cada gravação é guardada no repositório e o site é publicado sozinho em 1 a 3
 # minutos.
 #
-# TRÊS COISAS SÓ, na barra lateral: Artigos, Categorias e Dados da loja. Foi
-# pedido um backoffice simples, e simples aqui quer dizer poucas entradas com
-# ajuda em cada campo — não muitas entradas bem arrumadas.
+# DUAS COISAS SÓ, na barra lateral: Artigos e Dados da loja. Foi pedido um
+# backoffice simples, e simples aqui quer dizer poucas entradas com ajuda em cada
+# campo — não muitas entradas bem arrumadas. Eram três até a entrada das
+# categorias sair, quando a coluna das categorias saiu do rodapé.
 # ============================================================================
 # A página «Settings» do Pages CMS mostra ESTE ficheiro e deixa editá-lo. Não é
-# sítio para a dona da loja entrar: o cabeçalho aqui em cima promete três coisas
-# na barra lateral e sem isto seriam quatro.
+# sítio para a dona da loja entrar: o cabeçalho aqui em cima promete duas coisas
+# na barra lateral e sem isto seriam três.
 #
 # `content.merge` guarda as chaves que este ficheiro não declara. É preciso:
 # data/definicoes.json tem um bloco `tecnico` que não está declarado abaixo, e
@@ -271,69 +272,19 @@ content:
         pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
 
   # ------------------------------------------------------------- categorias
-  # «Textos das categorias» e não «Categorias»: aqui editam-se as cinco que
-  # existem, não se criam. Uma entrada chamada «Categorias» com um botão de
-  # acrescentar promete um poder que não existe — e até há pouco usá-lo era o
-  # único gesto capaz de parar a publicação do site.
-  - name: categorias
-    label: Textos das categorias
-    type: file
-    path: data/categorias.json
-    format: json
-    # Apagar este ficheiro parava a construção do site inteiro.
-    operations:
-      delete: false
-    list: true
-    fields:
-      - name: nome
-        label: Nome
-        type: string
-        required: true
-        description: >-
-          Como aparece nos títulos e no menu do fim da página. Pode mudá-lo
-          quando quiser, que muda em todo o site. Se o que quer é uma
-          categoria NOVA, não a acrescente aqui: a lista que aparece dentro de
-          cada artigo é preparada por nós, e uma categoria acrescentada só
-          deste lado não chega aos artigos. Diga-nos e fica no mesmo dia.
-          Aqui, nestas cinco, muda tudo o que é texto — nome, nome curto,
-          resumo, texto da página, título e descrição para o Google.
-      - name: curto
-        label: Nome curto
-        type: string
-        description: >-
-          Para os botões de filtro do catálogo, onde não cabe o nome todo.
-          «Têxtil» em vez de «Têxtil personalizado».
-      - name: resumo
-        label: Resumo
-        type: text
-        description: Uma frase. Aparece no cartão da categoria na página inicial.
-      - name: texto
-        label: Texto da página
-        type: text
-        description: >-
-          Dois parágrafos, no topo da página da categoria. É o texto que faz esta
-          página aparecer no Google — vale a pena usar as palavras que as pessoas
-          escrevem quando procuram («convite madrinha», «body personalizado»).
-      - name: titulo_seo
-        label: Título para o Google
-        type: string
-        description: >-
-          O que aparece como título azul no resultado da pesquisa. Até 60
-          caracteres, com as palavras que se procuram à frente.
-      - name: descricao_seo
-        label: Descrição para o Google
-        type: text
-        description: >-
-          As duas linhas cinzentas debaixo do título, no resultado da pesquisa.
-          Até 155 caracteres.
-      - name: slug
-        label: Endereço
-        type: string
-        required: true
-        description: >-
-          NÃO MUDE depois de publicado — é o endereço da página, e mudá-lo
-          quebra as ligações e desliga os artigos desta categoria.
-        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+  # A ENTRADA DAS CATEGORIAS SAIU DAQUI, a pedido, quando a coluna das categorias
+  # saiu do rodapé. O ficheiro data/categorias.json continua a existir e continua a
+  # mandar em tudo: a página de cada categoria, o rótulo dos filtros do catálogo, os
+  # cartões da prateleira da página inicial e as migalhas de pão. O que mudou é
+  # quem lhe mexe — passa a ser tratado por nós, não pelo backoffice.
+  #
+  # O que a cliente deixa de poder editar sozinha: o nome de uma categoria, o
+  # resumo do cartão da página inicial, o texto da página da categoria, e o título
+  # e a descrição que o Google mostra para essa página. São cinco categorias e
+  # cinco textos que raramente mudam; se algum tiver de mudar, é um pedido.
+  #
+  # Repor isto é apagar este comentário e voltar a pôr o bloco, que está no
+  # histórico do git. Nada nos dados precisa de mudar.
 
   # ---------------------------------------------------------- dados da loja
   - name: definicoes
