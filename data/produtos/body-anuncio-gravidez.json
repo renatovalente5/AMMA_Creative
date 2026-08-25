@@ -1,7 +1,7 @@
 {
   "slug": "body-anuncio-gravidez",
   "nome": "Body de anúncio de gravidez",
-  "categoria": "bodies-convites",
+  "categoria": "textil",
   "ocasioes": [
     "anuncio-gravidez"
   ],
@@ -29,7 +29,7 @@
     "A cor do lettering",
     "O tamanho do body"
   ],
-  "ordem": 40,
+  "ordem": 80,
   "publicado": true,
   "destaque": true
 }

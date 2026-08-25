@@ -132,8 +132,10 @@ ferramentas.
 
 ## PLANO C — Páginas
 
-- **C1** Início: hero editorial de sangria completa, as seis categorias, montra,
-  «+60€ oferta de portes», prova (equipa/Instagram).
+- **C1** Início: hero editorial de sangria completa, os cartões das categorias,
+  montra, «+60€ oferta de portes», prova (equipa/Instagram). *Eram seis
+  categorias quando isto se escreveu; são quatro desde Agosto de 2026, e os
+  cartões levam agora ao catálogo filtrado e não a uma página própria.*
 - **C2** Catálogo com filtro por categoria e por ocasião (gravidez, baptizado,
   casamento, dia da mãe/pai).
 - **C3** Ficha de produto: galeria, o que é personalizável, prazo, como encomendar.
@@ -162,9 +164,15 @@ ferramentas.
 
 ## PLANO E — SEO
 
-- **E1** Uma página por categoria com texto próprio — é por «body personalizado
-  padrinhos» e «convite madrinha» que se procura, não por «artigos
-  personalizados».
+- **E1** ~~Uma página por categoria com texto próprio~~ — **REVOGADO em Agosto de
+  2026, a pedido da cliente.** As páginas de categoria foram removidas: quem
+  escolhe uma categoria vai para `/catalogo/?categoria=<slug>`, que abre o
+  catálogo já filtrado. O raciocínio de E1 continua a ser verdade em SEO — o
+  site perdeu quatro páginas indexáveis com título próprio, e a variante com
+  parâmetro auto-canoniza para `/catalogo/`, portanto não a substitui. Foi uma
+  troca consciente: a cliente achava que a página de categoria repetia o
+  catálogo sem os filtros. Quem procura «body personalizado padrinhos» chega
+  agora pela ficha do artigo, que continua a existir.
 - **E2** `LocalBusiness` + `Product` + `BreadcrumbList` em JSON-LD.
 - **E3** Sitemap, robots, canónicos, og por produto.
 - **E4** Nomes de ficheiro e `alt` descritivos: as 52 fotografias vêm com nomes
@@ -172,7 +180,9 @@ ferramentas.
 
 ## PLANO F — Backoffice
 
-- **F1** `.pages.yml` simples: **Produtos**, **Categorias**, **Dados da loja**.
+- **F1** `.pages.yml` simples: **Artigos** e **Dados da loja**. *A entrada
+  **Categorias** saiu em Agosto de 2026, a pedido; as categorias passaram a ser
+  tratadas por nós em `data/categorias.json`.*
 - **F2** Ajuda em cada campo, escrita para quem não é técnico.
 - **F3** Só o que ela precisa de mexer. Nada de campos técnicos à vista.
 

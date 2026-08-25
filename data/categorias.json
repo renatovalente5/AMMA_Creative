@@ -1,14 +1,5 @@
 [
   {
-    "slug": "bodies-convites",
-    "nome": "Bodies e convites",
-    "curto": "Bodies",
-    "resumo": "Convites a padrinhos e anúncios de gravidez, escritos num body.",
-    "texto": "É por aqui que muita gente nos conhece. Um body pequeno com uma frase escrita à mão — «aceitas ser a minha madrinha?», «baby loading 2026», «hello daddy» — entregue sem aviso, que faz o pedido ou dá a notícia sem ninguém ter de encontrar as palavras.\n\nA frase é sempre sua. Nós compomos, escolhemos o tipo de letra consigo e imprimimos em vinil que aguenta a máquina.",
-    "titulo_seo": "Bodies personalizados para convite de padrinhos e anúncio de gravidez",
-    "descricao_seo": "Bodies de bebé personalizados com a frase que quiser: convites a madrinha e padrinho, anúncios de gravidez, avós e irmãos. Feitos à mão em Viana do Castelo."
-  },
-  {
     "slug": "aco",
     "nome": "Artigos em aço",
     "curto": "Aço",
@@ -21,19 +12,19 @@
     "slug": "boxes",
     "nome": "Boxes de presente",
     "curto": "Boxes",
-    "resumo": "Caixas de anúncio de gravidez e de convite, montadas por nós.",
-    "texto": "Uma caixa abre-se uma vez, e é isso que a torna diferente de um embrulho. Montamos a nossa com o que faz sentido lá dentro: a carta, os sapatinhos, a peça gravada, a garrafa com o rótulo dele.\n\nA carta é escrita com as suas palavras — ou com as nossas, se preferir que ajudemos a encontrá-las.",
+    "resumo": "Caixas de madeira com o body, os sapatinhos e a carta lá dentro. Para anunciar e para convidar.",
+    "texto": "Uma caixa que se abre uma vez. Leva o body com a frase, os sapatinhos de malha e a carta — e é isso que faz a diferença entre dar uma peça e dar um momento.\n\nFazemos para anunciar a gravidez ao pai, aos avós ou ao irmão mais velho, e para convidar os padrinhos. A frase é sempre sua, e nós compomos.",
     "titulo_seo": "Boxes de anúncio de gravidez e convite a padrinhos",
-    "descricao_seo": "Caixas de presente personalizadas: anúncio de gravidez com sapatinhos e carta, convite a padrinhos, box para o noivo. Montadas à mão."
+    "descricao_seo": "Caixas de madeira personalizadas com body, sapatinhos e carta, para anunciar a gravidez ao pai, aos avós ou ao irmão, e para convidar os padrinhos."
   },
   {
     "slug": "textil",
     "nome": "Têxtil personalizado",
     "curto": "Têxtil",
-    "resumo": "Sweats, t-shirts, bolsas e sacos com o que quiser impresso.",
-    "texto": "Sweats de mãe com a fotografia dos filhos dentro das letras, t-shirts de despedida para o grupo todo, bolsas com monograma, sacos de pano para lembranças de festa.\n\nUm ou quarenta: diga-nos quantos e os tamanhos.",
-    "titulo_seo": "T-shirts, sweats e bolsas personalizadas",
-    "descricao_seo": "Têxtil personalizado: sweats de mãe e pai com fotografia, t-shirts de despedida de solteira, bolsas com monograma e sacos de pano para lembranças."
+    "resumo": "Bodies, sweats, t-shirts e bolsas com o que quiser impresso.",
+    "texto": "Bodies de bebé com a frase escrita, sweats e t-shirts com as fotografias dentro das letras, bolsas com o monograma. Tudo com o que quiser impresso.\n\nA frase é sua, ou o desenho, ou a fotografia. Nós compomos, escolhemos o tipo de letra consigo e imprimimos em vinil que aguenta a máquina.",
+    "titulo_seo": "Bodies, sweats e t-shirts personalizadas",
+    "descricao_seo": "Bodies de bebé, sweats, t-shirts e bolsas personalizadas com frases, nomes e fotografias. Feitas à mão em Viana do Castelo."
   },
   {
     "slug": "lembrancas",

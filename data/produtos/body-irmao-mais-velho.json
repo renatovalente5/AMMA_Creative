@@ -1,7 +1,7 @@
 {
   "slug": "body-irmao-mais-velho",
   "nome": "Box para o irmão com anúncio de gravidez",
-  "categoria": "bodies-convites",
+  "categoria": "boxes",
   "ocasioes": [
     "anuncio-gravidez"
   ],
@@ -19,7 +19,7 @@
     "O tamanho",
     "A cor"
   ],
-  "ordem": 50,
+  "ordem": 40,
   "publicado": true,
   "destaque": true
 }

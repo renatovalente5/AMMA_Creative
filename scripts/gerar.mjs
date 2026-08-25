@@ -222,17 +222,27 @@ const LEGAIS = [
 const REENCAMINHAR = [
   // Junho de 2026: o body de convite ao padrinho foi junto ao da madrinha,
   // a pedido da cliente. Passou a haver um só artigo para os dois pedidos.
-  ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/bodies-convites/body-convite-madrinha/'],
+  // Este apontava para dentro de «bodies-convites», que já não existe: salta directo ao destino final.
+  ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/boxes/body-convite-madrinha/'],
   // Junho de 2026: os sacos de pano passaram de «Têxtil» para «Lembranças», a
   // pedido da cliente. A categoria faz parte do endereço, por isso o antigo
   // deixou de existir.
   ['catalogo/textil/saco-pano-personalizado/', 'catalogo/lembrancas/saco-pano-personalizado/'],
-  // Agosto de 2026: dois artigos retirados a pedido da cliente. Vão para a
-  // página da categoria e não para outro artigo — nenhum dos dois tem sucessor
-  // directo, e mandar quem procurava a box do noivo para uma box de baptizado
-  // seria pior do que lhe mostrar as caixas todas e deixá-la escolher.
-  ['catalogo/boxes/box-noivo/', 'catalogo/boxes/'],
-  ['catalogo/boxes/ecografia-polaroid/', 'catalogo/boxes/'],
+  // Agosto de 2026: dois artigos retirados a pedido da cliente. Vão para o
+  // catálogo e não para outro artigo — nenhum dos dois tem sucessor directo, e
+  // mandar quem procurava a box do noivo para uma box de batizado seria pior do
+  // que lhe mostrar tudo e deixá-la escolher.
+  //
+  // Iam para a página da categoria, que era o destino mais próximo. Essa página
+  // já não existe, e /catalogo/?categoria=boxes não serve de destino: o
+  // `canonical` de um reencaminhamento tem de apontar para uma página, e essa
+  // morada é a mesma página que /catalogo/. Há uma segunda razão para preferir
+  // o catálogo, e é mais forte: os destinos que são fichas de artigo dependem
+  // de `publicado !== false`, por isso o dia em que a cliente desligar o
+  // interruptor de uma delas no backoffice a construção morre na asserção mais
+  // abaixo. /catalogo/ é o único destino que nenhum interruptor faz desaparecer.
+  ['catalogo/boxes/box-noivo/', 'catalogo/'],
+  ['catalogo/boxes/ecografia-polaroid/', 'catalogo/'],
   // Agosto de 2026: a «Sweat de casal ilustrada» foi absorvida pela «Sweat
   // personalizada». Aqui há sucessor a sério — a única fotografia que ela tinha
   // já ERA a 13.ª da outra, a mesma imagem (0,4/255 de diferença média), e o
@@ -242,9 +252,10 @@ const REENCAMINHAR = [
   // Agosto de 2026: a peça de «Concertos e fãs» era uma SWEAT, não uma t-shirt,
   // e passou para a «Sweat personalizada». O artigo ficou sem fotografias e a
   // categoria sem artigos, portanto saíram os dois — e o endereço da categoria
-  // também precisa de destino.
+  // também precisa de destino. Apontava para /catalogo/textil/; agora que as
+  // páginas de categoria não existem, aponta para o catálogo.
   ['catalogo/concertos/tshirt-concerto/', 'catalogo/textil/sweat-mae/'],
-  ['catalogo/concertos/', 'catalogo/textil/'],
+  ['catalogo/concertos/', 'catalogo/'],
   // Agosto de 2026: a «T-shirt super padrinho» foi absorvida pela «T-shirt
   // personalizada». Há sucessor a sério — a fotografia dela, que era a de maior
   // resolução do catálogo (4096x4096), passou para lá, e o texto também. A
@@ -255,6 +266,27 @@ const REENCAMINHAR = [
   // «T-shirt personalizada» e o artigo saiu. Também esta fotografia tinha vindo
   // no lote de quinze e ficou de fora por já estar no artigo próprio.
   ['catalogo/textil/tshirts-despedida/', 'catalogo/textil/tshirt-pai/'],
+  // Agosto de 2026: «Bodies e convites» deixou de existir. O nome já não descrevia
+  // o que tinha dentro — quatro dos seis artigos eram caixas, e os «convites»
+  // eram caixas também. As quatro caixas passaram para «Boxes de presente», que é
+  // o que são, e os dois bodies para «Têxtil personalizado», que é o que são. A
+  // categoria está no endereço de cada artigo, por isso mudam seis endereços mais
+  // o da própria categoria.
+  ['catalogo/bodies-convites/body-convite-madrinha/', 'catalogo/boxes/body-convite-madrinha/'],
+  ['catalogo/bodies-convites/body-convite-avos/', 'catalogo/boxes/body-convite-avos/'],
+  ['catalogo/bodies-convites/body-hello-daddy/', 'catalogo/boxes/body-hello-daddy/'],
+  ['catalogo/bodies-convites/body-irmao-mais-velho/', 'catalogo/boxes/body-irmao-mais-velho/'],
+  ['catalogo/bodies-convites/body-anuncio-gravidez/', 'catalogo/textil/body-anuncio-gravidez/'],
+  ['catalogo/bodies-convites/body-primeira-pascoa/', 'catalogo/textil/body-primeira-pascoa/'],
+  ['catalogo/bodies-convites/', 'catalogo/'],
+  // As páginas de categoria morreram: quem tenha o endereço vai para o catálogo.
+  // Não vão para /catalogo/?categoria=<slug> porque um `meta refresh` com query
+  // string funciona, mas o `canonical` de um reencaminhamento deve apontar para
+  // uma página, e /catalogo/?categoria=aco é a mesma página que /catalogo/.
+  ['catalogo/aco/', 'catalogo/'],
+  ['catalogo/boxes/', 'catalogo/'],
+  ['catalogo/textil/', 'catalogo/'],
+  ['catalogo/lembrancas/', 'catalogo/'],
 ];
 
 /* ============================================================== esqueleto === */
@@ -503,7 +535,7 @@ function cartaoCategoria(c, prioridade = false) {
   const p = produtos.find((x) => x.categoria === c.slug);
   const f = p ? fotos(p)[0] : null;
   const n = contaCat(c.slug);
-  return `<a class="cat" href="${u('catalogo/' + c.slug + '/')}">
+  return `<a class="cat" href="${u('catalogo/') + '?categoria=' + c.slug}">
     ${f ? `<img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 760px) 78vw, 300px"
         alt="" width="960" height="960" ${prioridade ? '' : 'loading="lazy"'} decoding="async">` : ''}
     <span class="cat__n">${n} ${n === 1 ? 'artigo' : 'artigos'}</span>
@@ -655,7 +687,7 @@ function paginaCatalogo() {
     ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Catálogo' }])}
     <div class="secao__topo">
       <div>
-        <p class="sobre-linha">${produtos.length} artigos</p>
+        <p class="sobre-linha" id="rotulo">${produtos.length} artigos</p>
         <h1 class="tit-g">Catálogo</h1>
       </div>
     </div>
@@ -665,7 +697,7 @@ function paginaCatalogo() {
         <legend class="sobre-linha" style="margin-bottom:.7rem">Categoria</legend>
         <div class="filtros__fila">
           <button class="ficha" type="button" data-filtro="categoria" data-valor="" aria-pressed="true">Todas</button>
-          ${catsVisiveis.map((c) => `<button class="ficha" type="button" data-filtro="categoria" data-valor="${esc(c.slug)}" aria-pressed="false">${esc(c.curto || c.nome)} <span class="ficha__n">${contaCat(c.slug)}</span></button>`).join('\n          ')}
+          ${catsVisiveis.map((c) => `<button class="ficha" type="button" data-filtro="categoria" data-valor="${esc(c.slug)}" data-nome="${esc(c.nome)}" aria-pressed="false">${esc(c.curto || c.nome)} <span class="ficha__n">${contaCat(c.slug)}</span></button>`).join('\n          ')}
         </div>
       </fieldset>
       <fieldset style="border:0;padding:0;margin:0">
@@ -711,54 +743,28 @@ function paginaCatalogo() {
   });
 }
 
-function paginaCategoria(c) {
-  const lista = produtos.filter((p) => p.categoria === c.slug);
-  const corpo = `
-<section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
-  <div class="envolve">
-    ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Catálogo', href: 'catalogo/' }, { nome: c.nome }])}
-    <div style="max-width:70ch;margin-bottom:clamp(2rem,4vw,3rem)">
-      <p class="sobre-linha">${lista.length} ${lista.length === 1 ? 'artigo' : 'artigos'}</p>
-      <h1 class="tit-g" style="margin-bottom:1rem">${esc(c.nome)}</h1>
-      ${c.texto.split('\n\n').map((t) => `<p class="chamada">${esc(t)}</p>`).join('\n      ')}
-    </div>
-    <div class="mosaico">
-      ${lista.map((p, i) => cartaoProduto(p, { prioridade: i < 4 })).join('\n      ')}
-    </div>
-  </div>
-</section>
+/* AS PÁGINAS DE CATEGORIA DEIXARAM DE EXISTIR (Agosto de 2026).
+   Havia uma página por categoria em /catalogo/<categoria>/ — um título, o texto
+   da categoria e o mosaico dos artigos dela. Era uma cópia mais pobre do
+   catálogo: quem chegava lá via um subconjunto sem os filtros, e a seguir tinha
+   de voltar atrás para procurar noutra categoria.
 
-<section class="secao secao--creme">
-  <div class="envolve" style="text-align:center">
-    <p class="sobre-linha sobre-linha--centro">Não encontrou?</p>
-    <h2 class="tit-m" style="margin-bottom:1rem">Fazemos por medida</h2>
-    <p class="chamada" style="margin-inline:auto">Se tem uma ideia e não a vê aqui, diga-nos.
-    A maior parte do que fazemos começou por ser um pedido de alguém.</p>
-    <div style="margin-top:1.6rem;display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
-      <a class="btn btn--cheio" href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap} Falar connosco</a>
-      <a class="btn btn--linha" href="${u('catalogo/')}">Ver o catálogo todo</a>
-    </div>
-  </div>
-</section>`;
+   O catálogo faz o mesmo trabalho melhor, porque `site.js` lê ?categoria= da
+   morada e abre já filtrado. Por isso o que antes ia para a página da categoria
+   vai agora para /catalogo/?categoria=<slug>: mesma lista, mais os filtros e a
+   contagem por ocasião ao lado.
 
-  return pagina({
-    pag: `catalogo/${c.slug}/`,
-    titulo: `${c.titulo_seo} | ${def.empresa.nome_comercial}`,
-    descricao: c.descricao_seo,
-    corpo,
-    jsonld: [
-      migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Catálogo', href: 'catalogo/' }, { nome: c.nome }]),
-      {
-        '@context': 'https://schema.org', '@type': 'ItemList',
-        name: c.nome, numberOfItems: lista.length,
-        itemListElement: lista.map((p, i) => ({
-          '@type': 'ListItem', position: i + 1, name: p.nome,
-          url: abs(`catalogo/${p.categoria}/${p.slug}/`),
-        })),
-      },
-    ],
-  });
-}
+   O que se perde, dito sem enfeite: quatro páginas indexáveis com títulos
+   próprios («Boxes de anúncio de gravidez e convite a padrinhos», «Bodies,
+   sweats e t-shirts personalizadas», etc.), e o caminho para quem tem o
+   JavaScript desligado — nesse caso /catalogo/?categoria=textil mostra o
+   catálogo todo em vez de cinco artigos. As fichas de artigo, que são as
+   páginas que interessam para pesquisa, continuam todas lá.
+
+   Os campos `texto`, `titulo_seo` e `descricao_seo` de data/categorias.json
+   ficaram sem quem os leia. Não foram apagados de propósito: se um dia estas
+   páginas voltarem, o texto ainda está escrito. `nome`, `curto`, `slug` e
+   `resumo` continuam a ser usados nos cartões da inicial e nos filtros. */
 
 function paginaProduto(p) {
   const fs = fotos(p);
@@ -801,7 +807,7 @@ function paginaProduto(p) {
 <section class="ficha-prod">
   <div class="envolve">
     ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Catálogo', href: 'catalogo/' },
-                { nome: c.nome, href: `catalogo/${c.slug}/` }, { nome: p.nome }])}
+                { nome: c.nome, href: `catalogo/?categoria=${c.slug}` }, { nome: p.nome }])}
     <div class="ficha-prod__grelha">
       <div>
         ${galeria}
@@ -864,7 +870,7 @@ ${relacionados.length ? `<section class="secao secao--creme">
         <p class="sobre-linha">Da mesma categoria</p>
         <h2 class="tit-m">Também pode gostar</h2>
       </div>
-      <a class="btn btn--fantasma" href="${u('catalogo/' + c.slug + '/')}">Ver ${esc(c.nome.toLowerCase())} ${ic.seta}</a>
+      <a class="btn btn--fantasma" href="${u('catalogo/') + '?categoria=' + c.slug}">Ver ${esc(c.nome.toLowerCase())} ${ic.seta}</a>
     </div>
     <div class="mosaico">
       ${relacionados.map((x) => cartaoProduto(x)).join('\n      ')}
@@ -892,7 +898,7 @@ ${relacionados.length ? `<section class="secao secao--creme">
     corpo,
     jsonld: [
       migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Catálogo', href: 'catalogo/' },
-                  { nome: c.nome, href: `catalogo/${c.slug}/` }, { nome: p.nome }]),
+                  { nome: c.nome, href: `catalogo/?categoria=${c.slug}` }, { nome: p.nome }]),
       {
         '@context': 'https://schema.org', '@type': 'Product',
         name: p.nome, description: p.resumo,
@@ -1265,7 +1271,6 @@ function main() {
   escrever('como-encomendar/index.html', paginaComoEncomendar());
   escrever('sobre/index.html', paginaSobre());
   escrever('contactos/index.html', paginaContactos());
-  for (const c of categorias) escrever(`catalogo/${c.slug}/index.html`, paginaCategoria(c));
   for (const p of produtos) escrever(`catalogo/${p.categoria}/${p.slug}/index.html`, paginaProduto(p));
 
   /* páginas legais, em markdown */
@@ -1294,7 +1299,6 @@ function main() {
 
   /* sitemap, robots, 404 */
   const urls = ['', 'catalogo/', 'como-encomendar/', 'sobre/', 'contactos/',
-    ...catsVisiveis.map((c) => `catalogo/${c.slug}/`),
     ...produtos.map((p) => `catalogo/${p.categoria}/${p.slug}/`),
     ...LEGAIS.map(([p]) => p)];
   const hoje = new Date().toISOString().slice(0, 10);

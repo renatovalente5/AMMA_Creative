@@ -134,9 +134,29 @@ jobs:
           test -f _site/sitemap.xml || { echo "falta o sitemap"; exit 1; }
           grep -q '"/AMMA_Creative/assets/css/estilo.css' _site/index.html \
             || { echo "o HTML nao aponta para o CSS no caminho certo"; exit 1; }
-          n=$(find _site/catalogo -mindepth 2 -maxdepth 2 -type d | wc -l)
-          echo "paginas de produto geradas: $n"
-          test "$n" -gt 0 || { echo "nenhum produto gerado"; exit 1; }
+          # CONTAR NAO SERVE AQUI, e por duas vezes ja enganou: contar pastas
+          # apanhava as pastas dos enderecos antigos que reencaminham, que estao
+          # ao mesmo nivel das fichas; contar os index.html tambem, porque cada
+          # reencaminhamento E um index.html. Um dava 32 quando havia 18 artigos,
+          # o outro tambem. Por isso nao se conta: verifica-se o caminho exacto
+          # de cada artigo publicado, e que o ficheiro la e uma ficha e nao um
+          # reencaminhamento.
+          python3 - <<'PY'
+          import json, glob, pathlib, sys
+          faltam = []
+          for f in sorted(glob.glob('data/produtos/*.json')):
+              d = json.load(open(f, encoding='utf-8'))
+              if d.get('publicado') is False:
+                  continue
+              alvo = pathlib.Path('_site/catalogo') / d['categoria'] / d['slug'] / 'index.html'
+              if not alvo.exists():
+                  faltam.append(f"{d['slug']}: nao foi gerada ({alvo})")
+              elif 'http-equiv="refresh"' in alvo.read_text(encoding='utf-8'):
+                  faltam.append(f"{d['slug']}: onde devia estar a ficha esta um reencaminhamento")
+          if faltam:
+              print('FICHAS DE ARTIGO EM FALTA:'); [print(' ', x) for x in faltam]; sys.exit(1)
+          print('todas as fichas de artigo publicadas existem no caminho certo')
+          PY
           # Nenhuma imagem referenciada pode faltar: uma imagem partida numa
           # montra é pior do que um erro de build.
           python3 - <<'PY'
@@ -155,6 +175,85 @@ jobs:
           if faltam:
               print('imagens em falta:'); [print(' ', f) for f in faltam[:20]]; sys.exit(1)
           print('todas as imagens referenciadas existem')
+          PY
+
+      # AS 43 LIGACOES MORTAS QUE PASSARAM. Em Agosto de 2026 removeram-se as
+      # paginas de categoria e ficaram, no HTML gerado, 43 ligacoes para
+      # /catalogo/<categoria>/ — nas migalhas de pao das 18 fichas, no botao do
+      # fim de cada ficha e nos cartoes da pagina inicial. Nada no CI as viu: as
+      # verificacoes de cima olham para imagens e para o caminho do CSS, nunca
+      # para hrefs. Foram encontradas a mao. Isto e a rede que faltava.
+      - name: Confirmar que nao ha ligacoes internas mortas
+        run: |
+          python3 - <<'PY'
+          import re, sys, pathlib, json, collections
+          raiz = pathlib.Path('_site')
+          BASE = '/AMMA_Creative/'
+
+          def existe(u):
+              """Um endereco interno resolve para um ficheiro no que vai para o ar?"""
+              u = u.split('#')[0].split('?')[0]
+              if not u.startswith('/'):
+                  return True                      # relativo: nao se usa aqui
+              rel = u[len(BASE):] if u.startswith(BASE) else u.lstrip('/')
+              if rel == '' or rel.endswith('/'):
+                  return (raiz / rel / 'index.html').exists()
+              alvo = raiz / rel
+              return alvo.exists() or (alvo / 'index.html').exists()
+
+          mortas = collections.defaultdict(list)
+          for h in sorted(raiz.rglob('*.html')):
+              t = h.read_text(encoding='utf-8')
+              for u in re.findall(r'href="([^"]+)"', t):
+                  if u.startswith(('http://', 'https://', 'mailto:', 'tel:', '#', 'data:')):
+                      continue
+                  if not existe(u):
+                      mortas[u].append(str(h.relative_to(raiz)))
+
+          # O sitemap nao pode anunciar paginas que nao existem: e um convite a
+          # erros de rastreio na Search Console.
+          sm = (raiz / 'sitemap.xml').read_text(encoding='utf-8')
+          fora = [l for l in re.findall(r'<loc>([^<]+)</loc>', sm)
+                  if not existe(re.sub(r'^https?://[^/]+', '', l))]
+
+          # O `item` e obrigatorio em todos os ListItem de um BreadcrumbList
+          # excepto o ultimo. Faltar um da «Missing field item» na Search Console.
+          migalhas_ma = []
+          for h in sorted(raiz.rglob('*.html')):
+              for bloco in re.findall(r'<script type="application/ld\+json">(.*?)</script>',
+                                      h.read_text(encoding='utf-8'), re.S):
+                  try:
+                      dados = json.loads(bloco)
+                  except json.JSONDecodeError as e:
+                      migalhas_ma.append(f'{h.relative_to(raiz)}: JSON-LD invalido ({e})'); continue
+                  for d in (dados if isinstance(dados, list) else [dados]):
+                      if isinstance(d, dict) and d.get('@type') == 'BreadcrumbList':
+                          itens = d.get('itemListElement', [])
+                          for i in itens[:-1]:
+                              if 'item' not in i:
+                                  migalhas_ma.append(
+                                      f"{h.relative_to(raiz)}: degrau {i.get('position')} "
+                                      f"«{i.get('name')}» sem `item`")
+
+          mal = False
+          if mortas:
+              mal = True
+              print(f'LIGACOES INTERNAS MORTAS: {len(mortas)} endereco(s)')
+              for u, paginas in sorted(mortas.items())[:20]:
+                  print(f'  {u}  <- {len(paginas)} pagina(s), ex.: {paginas[0]}')
+          if fora:
+              mal = True
+              print(f'SITEMAP a anunciar {len(fora)} pagina(s) que nao existem:')
+              for l in fora[:20]:
+                  print('  ', l)
+          if migalhas_ma:
+              mal = True
+              print(f'MIGALHAS DE PAO invalidas: {len(migalhas_ma)}')
+              for m in migalhas_ma[:20]:
+                  print('  ', m)
+          if mal:
+              sys.exit(1)
+          print('ligacoes internas, sitemap e migalhas de pao: tudo resolve')
           PY
 
       - uses: actions/upload-pages-artifact@v4

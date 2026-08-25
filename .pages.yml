@@ -172,7 +172,7 @@ content:
           tem uma só. Atenção: a categoria faz parte do link do artigo, por isso
           mudá-la aqui muda o link, e quem tiver o antigo deixa de o abrir — pode
           mudar-se, diga-nos e nós deixamos o antigo a levar ao novo. Esta lista tem
-          as cinco categorias do site. Para acrescentar uma sexta, fale connosco
+          as categorias do site. Para acrescentar outra, fale connosco
           primeiro: são duas coisas que têm de entrar ao mesmo tempo e é por isso
           que se pede. É o único sítio deste backoffice onde precisa de nós — e fica
           no mesmo dia.
@@ -180,7 +180,6 @@ content:
         # com `value` arrisca-se gravar vazio sem aviso nenhum.
         options:
           values:
-            - { name: bodies-convites, label: 'Bodies e convites' }
             - { name: aco, label: 'Artigos em aço' }
             - { name: boxes, label: 'Boxes de presente' }
             - { name: textil, label: 'Têxtil personalizado' }
@@ -267,21 +266,27 @@ content:
           quem tiver o link guardado ou partilhado deixa de o conseguir abrir, e o
           Google perde a página. Se precisar mesmo de mudar, diga-nos — nós mudamos
           e deixamos o endereço antigo a levar as pessoas ao novo, como já está
-          feito para sete endereços. Só letras minúsculas, números e hífens, sem
+          feito para todos os que mudaram até hoje. Só letras minúsculas, números
+          e hífens, sem
           acentos. Exemplo: body-convite-madrinha.
         pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
 
   # ------------------------------------------------------------- categorias
   # A ENTRADA DAS CATEGORIAS SAIU DAQUI, a pedido, quando a coluna das categorias
   # saiu do rodapé. O ficheiro data/categorias.json continua a existir e continua a
-  # mandar em tudo: a página de cada categoria, o rótulo dos filtros do catálogo, os
-  # cartões da prateleira da página inicial e as migalhas de pão. O que mudou é
-  # quem lhe mexe — passa a ser tratado por nós, não pelo backoffice.
+  # mandar no rótulo dos filtros do catálogo, nos cartões da prateleira da página
+  # inicial e nas migalhas de pão. O que mudou é quem lhe mexe — passa a ser
+  # tratado por nós, não pelo backoffice.
   #
-  # O que a cliente deixa de poder editar sozinha: o nome de uma categoria, o
-  # resumo do cartão da página inicial, o texto da página da categoria, e o título
-  # e a descrição que o Google mostra para essa página. São cinco categorias e
-  # cinco textos que raramente mudam; se algum tiver de mudar, é um pedido.
+  # Depois disto as PÁGINAS de categoria também foram removidas, também a pedido:
+  # /catalogo/<categoria>/ deixou de existir e quem escolhe uma categoria vai para
+  # o catálogo já filtrado. Por isso os campos `texto`, `titulo_seo` e
+  # `descricao_seo` de categorias.json já não aparecem em sítio nenhum do site —
+  # ficaram guardados, não apagados, para o caso de essas páginas voltarem.
+  #
+  # O que a cliente deixa de poder editar sozinha: o nome de uma categoria e o
+  # resumo do cartão da página inicial. São textos curtos que raramente mudam;
+  # se algum tiver de mudar, é um pedido.
   #
   # Repor isto é apagar este comentário e voltar a pôr o bloco, que está no
   # histórico do git. Nada nos dados precisa de mudar.
@@ -310,13 +315,13 @@ content:
             label: 'Telefone (como aparece escrito)'
             type: string
             description: >-
-              Com espaços, como se lê: 925 110 570. Aparece na página de
+              Com espaços, como se lê: 930 477 114. Aparece na página de
               contactos, sempre acompanhado do aviso do custo da chamada, que o
               site acrescenta sozinho porque a lei obriga.
           - name: whatsapp
             label: WhatsApp
             type: string
-            description: 'Com o indicativo e sem sinais: 351925110570.'
+            description: 'Com o indicativo e sem sinais: 351930477114.'
           - { name: email, label: Email, type: string }
           - { name: instagram, label: 'Instagram (endereço completo)', type: string }
 

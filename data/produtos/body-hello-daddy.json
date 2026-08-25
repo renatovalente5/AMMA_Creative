@@ -1,7 +1,7 @@
 {
   "slug": "body-hello-daddy",
   "nome": "Box para o pai com anúncio de gravidez",
-  "categoria": "bodies-convites",
+  "categoria": "boxes",
   "ocasioes": [
     "anuncio-gravidez",
     "dia-do-pai"
@@ -23,7 +23,7 @@
     "O tipo de letra",
     "O tamanho do body"
   ],
-  "ordem": 60,
+  "ordem": 30,
   "publicado": true,
   "destaque": true
 }

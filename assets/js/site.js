@@ -96,6 +96,8 @@
     var cartoes = $$('.prod', grelha);
     var vazio = $('#vazio');
     var contagem = $('#contagem');
+    var rotulo = $('#rotulo');
+    var totalInicial = rotulo ? rotulo.textContent : '';
     var limpar = $('#limpar');
     var estado = { categoria: '', ocasiao: '' };
 
@@ -116,6 +118,19 @@
       if (vazio) vazio.hidden = n > 0;
       grelha.hidden = n === 0;
       if (contagem) contagem.innerHTML = '<b>' + n + '</b> ' + (n === 1 ? 'artigo' : 'artigos');
+
+      /* O SOBRETÍTULO DIZ ONDE A PESSOA ESTÁ. Isto não é enfeite: as páginas de
+         categoria foram removidas e agora quem escolhe «Boxes» na página inicial
+         aterra aqui, em /catalogo/?categoria=boxes. Sem isto lia «18 artigos» em
+         cima, «Catálogo» como título, e «7 artigos» a seguir — dois números a
+         contradizerem-se e nenhuma pista de qual era a categoria escolhida.
+         Filtrado mostra o nome da categoria; sem filtro, o total. */
+      if (rotulo) {
+        var pastilha = estado.categoria
+          ? $('[data-filtro="categoria"][data-valor="' + estado.categoria + '"]', forma)
+          : null;
+        rotulo.textContent = (pastilha && pastilha.dataset.nome) || totalInicial;
+      }
       if (limpar) limpar.hidden = !estado.categoria && !estado.ocasiao;
 
       /* PASTILHAS QUE NÃO LEVAM A NADA FICAM DESACTIVADAS, e não escondidas.
