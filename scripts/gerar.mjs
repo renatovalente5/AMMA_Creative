@@ -250,6 +250,11 @@ const REENCAMINHAR = [
   // resolução do catálogo (4096x4096), passou para lá, e o texto também. A
   // cliente já tinha mandado esta fotografia no lote da t-shirt personalizada.
   ['catalogo/textil/tshirt-super-padrinho/', 'catalogo/textil/tshirt-pai/'],
+  // Agosto de 2026: as «T-shirts de despedida de solteira» seguiram o mesmo
+  // caminho, pela mesma razão e a pedido dela: a fotografia passou para a
+  // «T-shirt personalizada» e o artigo saiu. Também esta fotografia tinha vindo
+  // no lote de quinze e ficou de fora por já estar no artigo próprio.
+  ['catalogo/textil/tshirts-despedida/', 'catalogo/textil/tshirt-pai/'],
 ];
 
 /* ============================================================== esqueleto === */
