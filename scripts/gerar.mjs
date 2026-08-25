@@ -208,6 +208,12 @@ const REENCAMINHAR = [
   // pedido da cliente. A categoria faz parte do endereço, por isso o antigo
   // deixou de existir.
   ['catalogo/textil/saco-pano-personalizado/', 'catalogo/lembrancas/saco-pano-personalizado/'],
+  // Agosto de 2026: dois artigos retirados a pedido da cliente. Vão para a
+  // página da categoria e não para outro artigo — nenhum dos dois tem sucessor
+  // directo, e mandar quem procurava a box do noivo para uma box de baptizado
+  // seria pior do que lhe mostrar as caixas todas e deixá-la escolher.
+  ['catalogo/boxes/box-noivo/', 'catalogo/boxes/'],
+  ['catalogo/boxes/ecografia-polaroid/', 'catalogo/boxes/'],
 ];
 
 /* ============================================================== esqueleto === */
