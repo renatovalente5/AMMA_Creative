@@ -3,10 +3,15 @@
   "nome": "Body «o meu primeiro…»",
   "categoria": "bodies-convites",
   "ocasioes": [
-    "pascoa"
+    "pascoa",
+    "dia-da-mae",
+    "dia-do-pai"
   ],
   "fotos": [
-    "assets/produtos/body-primeira-pascoa/01.jpg"
+    "assets/produtos/body-primeira-pascoa/01.jpg",
+    "assets/produtos/body-primeira-pascoa/02.jpg",
+    "assets/produtos/body-primeira-pascoa/03.jpg",
+    "assets/produtos/body-primeira-pascoa/04.jpg"
   ],
   "resumo": "A primeira Páscoa, o primeiro Natal, o primeiro aniversário. Com o desenho da ocasião e o nome do bebé.",
   "texto": "As primeiras vezes são uma só, e ficam em fotografia. Este leva as orelhas desenhadas e o nome do bebé por baixo.\n\nFazemos o mesmo para o primeiro Natal e para o primeiro aniversário.",
