@@ -134,8 +134,9 @@ ferramentas.
 
 - **C1** Início: hero editorial de sangria completa, os cartões das categorias,
   montra, «+60€ oferta de portes», prova (equipa/Instagram). *Eram seis
-  categorias quando isto se escreveu; são quatro desde Agosto de 2026, e os
-  cartões levam agora ao catálogo filtrado e não a uma página própria.*
+  categorias quando isto se escreveu; a estrutura mexeu duas vezes em Agosto de
+  2026 e ficaram cinco — «Bodies» à frente, porque é o que a loja mais faz. Os
+  cartões levam ao catálogo filtrado, não a uma página própria.*
 - **C2** Catálogo com filtro por categoria e por ocasião (gravidez, baptizado,
   casamento, dia da mãe/pai).
 - **C3** Ficha de produto: galeria, o que é personalizável, prazo, como encomendar.

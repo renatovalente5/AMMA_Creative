@@ -180,6 +180,7 @@ content:
         # com `value` arrisca-se gravar vazio sem aviso nenhum.
         options:
           values:
+            - { name: bodies, label: 'Bodies' }
             - { name: aco, label: 'Artigos em aço' }
             - { name: boxes, label: 'Boxes de presente' }
             - { name: textil, label: 'Têxtil personalizado' }
@@ -249,7 +250,7 @@ content:
         type: number
         default: 500
         description: >-
-          Número mais baixo aparece primeiro, no catálogo e na página da categoria.
+          Número mais baixo aparece primeiro, no catálogo e na página inicial.
           Deixe 500 se for indiferente: os artigos que ficarem com o mesmo número
           aparecem por ordem alfabética. Para empurrar um artigo para o topo, ponha
           10.

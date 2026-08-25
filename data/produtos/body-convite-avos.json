@@ -1,7 +1,7 @@
 {
   "slug": "body-convite-avos",
   "nome": "Box para os avós com anúncio de gravidez",
-  "categoria": "boxes",
+  "categoria": "bodies",
   "ocasioes": [
     "anuncio-gravidez"
   ],
@@ -21,7 +21,7 @@
     "A cor das pegadinhas",
     "O tamanho do body"
   ],
-  "ordem": 20,
+  "ordem": 30,
   "publicado": true,
   "destaque": true
 }

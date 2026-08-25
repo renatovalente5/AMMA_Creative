@@ -91,8 +91,11 @@ jobs:
               for o in d.get('ocasioes') or []:
                   if o not in opc['ocasioes']:
                       erros.append(f"{d['slug']}: ocasiao \"{o}\" nao esta nas opcoes do .pages.yml")
-          # As categorias tambem tem de existir em categorias.json, senao o
-          # gerador escreve um endereco sem pagina de categoria.
+          # As categorias tambem tem de existir em categorias.json, senao
+          # `catDe` devolve undefined e o gerador estoura nas migalhas de pao da
+          # ficha. (A razao antiga — «escreve um endereco sem pagina de
+          # categoria» — deixou de valer: essas paginas foram removidas. A
+          # guarda continua a ser precisa, por este outro motivo.)
           cats = {c['slug'] for c in json.load(open('data/categorias.json', encoding='utf-8'))}
           for c in opc['categoria'] - cats:
               erros.append(f"categoria \"{c}\" esta no .pages.yml mas nao em categorias.json")

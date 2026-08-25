@@ -1,7 +1,7 @@
 {
   "slug": "body-convite-madrinha",
   "nome": "Box para os padrinhos com body de convite",
-  "categoria": "boxes",
+  "categoria": "bodies",
   "ocasioes": [
     "baptizado",
     "convite-padrinhos"
@@ -25,7 +25,7 @@
     "A cor dos sapatos"
   ],
   "preco": 18,
-  "ordem": 10,
+  "ordem": 50,
   "publicado": true,
   "destaque": true
 }

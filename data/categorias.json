@@ -1,5 +1,14 @@
 [
   {
+    "slug": "bodies",
+    "nome": "Bodies",
+    "curto": "Bodies",
+    "resumo": "Bodies de bebé com a frase impressa: para anunciar, para convidar, para o primeiro de tudo.",
+    "texto": "O body é a peça, e a frase é a sua. Anunciar a gravidez ao pai, aos avós ou ao irmão mais velho, convidar os padrinhos, marcar o primeiro dia da mãe ou a primeira Páscoa.\n\nEscreve-se o que quiser, nós compomos e imprimimos em vinil que aguenta a máquina. Vai numa caixa de madeira com os sapatinhos, se quiser assim.",
+    "titulo_seo": "Bodies de bebé personalizados com frase",
+    "descricao_seo": "Bodies de bebé personalizados para anunciar a gravidez, convidar os padrinhos e marcar o primeiro dia da mãe ou do pai. Feitos à mão em Viana do Castelo."
+  },
+  {
     "slug": "aco",
     "nome": "Artigos em aço",
     "curto": "Aço",
@@ -12,19 +21,19 @@
     "slug": "boxes",
     "nome": "Boxes de presente",
     "curto": "Boxes",
-    "resumo": "Caixas de madeira com o body, os sapatinhos e a carta lá dentro. Para anunciar e para convidar.",
-    "texto": "Uma caixa que se abre uma vez. Leva o body com a frase, os sapatinhos de malha e a carta — e é isso que faz a diferença entre dar uma peça e dar um momento.\n\nFazemos para anunciar a gravidez ao pai, aos avós ou ao irmão mais velho, e para convidar os padrinhos. A frase é sempre sua, e nós compomos.",
+    "resumo": "Caixa de madeira com os sapatinhos, a carta e o anúncio lá dentro. Abre-se uma vez.",
+    "texto": "A caixa é de madeira, fecha com ferrolho, e leva o cartão impresso colado na tampa. Dentro vão os sapatinhos de malha e o que escolher.\n\nPara anunciar a gravidez e para convidar os padrinhos. O que muda é o texto do cartão, que é seu.",
     "titulo_seo": "Boxes de anúncio de gravidez e convite a padrinhos",
-    "descricao_seo": "Caixas de madeira personalizadas com body, sapatinhos e carta, para anunciar a gravidez ao pai, aos avós ou ao irmão, e para convidar os padrinhos."
+    "descricao_seo": "Caixas de madeira personalizadas com cartão impresso, sapatinhos e carta, para anunciar a gravidez e convidar os padrinhos."
   },
   {
     "slug": "textil",
     "nome": "Têxtil personalizado",
     "curto": "Têxtil",
-    "resumo": "Bodies, sweats, t-shirts e bolsas com o que quiser impresso.",
-    "texto": "Bodies de bebé com a frase escrita, sweats e t-shirts com as fotografias dentro das letras, bolsas com o monograma. Tudo com o que quiser impresso.\n\nA frase é sua, ou o desenho, ou a fotografia. Nós compomos, escolhemos o tipo de letra consigo e imprimimos em vinil que aguenta a máquina.",
-    "titulo_seo": "Bodies, sweats e t-shirts personalizadas",
-    "descricao_seo": "Bodies de bebé, sweats, t-shirts e bolsas personalizadas com frases, nomes e fotografias. Feitas à mão em Viana do Castelo."
+    "resumo": "Sweats, t-shirts e bolsas com o que quiser impresso.",
+    "texto": "Sweats e t-shirts com as fotografias dentro das letras, bolsas com o monograma. A fotografia é sua, ou a frase, ou o desenho.\n\nNós compomos, escolhemos o tipo de letra consigo e imprimimos em vinil que aguenta a máquina.",
+    "titulo_seo": "Sweats, t-shirts e bolsas personalizadas",
+    "descricao_seo": "Sweats, t-shirts e bolsas personalizadas com fotografias, nomes e frases. Feitas à mão em Viana do Castelo."
   },
   {
     "slug": "lembrancas",

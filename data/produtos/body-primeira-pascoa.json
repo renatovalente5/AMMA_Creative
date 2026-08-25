@@ -1,7 +1,7 @@
 {
   "slug": "body-primeira-pascoa",
   "nome": "Body «o meu primeiro…»",
-  "categoria": "textil",
+  "categoria": "bodies",
   "ocasioes": [
     "dia-da-mae",
     "dia-do-pai"
@@ -20,7 +20,7 @@
     "A cor do desenho",
     "O tamanho"
   ],
-  "ordem": 90,
+  "ordem": 60,
   "publicado": true,
   "destaque": false
 }

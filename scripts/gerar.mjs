@@ -117,8 +117,10 @@ const contaCat = (slug) => produtos.filter((p) => p.categoria === slug).length;
    sessão, fotografias incluídas. Com isto, criar uma categoria adiantada passa a
    ser inofensivo: fica invisível até ter o primeiro artigo.
 
-   A PÁGINA de cada categoria continua a gerar-se, mesmo vazia, para nenhum
-   endereço que já esteve no ar passar a dar 404. */
+   Uma categoria vazia fica invisível ao visitante, mas os artigos dela — se
+   existirem e estiverem despublicados — continuam a ter endereço. E as PÁGINAS
+   de categoria já não se geram: /catalogo/<categoria>/ foi removido em Agosto
+   de 2026 e reencaminha para o catálogo. */
 const catsVisiveis = categorias.filter((c) => contaCat(c.slug) > 0);
 
 const OCASIOES = {
@@ -223,7 +225,7 @@ const REENCAMINHAR = [
   // Junho de 2026: o body de convite ao padrinho foi junto ao da madrinha,
   // a pedido da cliente. Passou a haver um só artigo para os dois pedidos.
   // Este apontava para dentro de «bodies-convites», que já não existe: salta directo ao destino final.
-  ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/boxes/body-convite-madrinha/'],
+  ['catalogo/bodies-convites/body-convite-padrinho/', 'catalogo/bodies/body-convite-madrinha/'],
   // Junho de 2026: os sacos de pano passaram de «Têxtil» para «Lembranças», a
   // pedido da cliente. A categoria faz parte do endereço, por isso o antigo
   // deixou de existir.
@@ -272,12 +274,12 @@ const REENCAMINHAR = [
   // o que são, e os dois bodies para «Têxtil personalizado», que é o que são. A
   // categoria está no endereço de cada artigo, por isso mudam seis endereços mais
   // o da própria categoria.
-  ['catalogo/bodies-convites/body-convite-madrinha/', 'catalogo/boxes/body-convite-madrinha/'],
-  ['catalogo/bodies-convites/body-convite-avos/', 'catalogo/boxes/body-convite-avos/'],
-  ['catalogo/bodies-convites/body-hello-daddy/', 'catalogo/boxes/body-hello-daddy/'],
-  ['catalogo/bodies-convites/body-irmao-mais-velho/', 'catalogo/boxes/body-irmao-mais-velho/'],
-  ['catalogo/bodies-convites/body-anuncio-gravidez/', 'catalogo/textil/body-anuncio-gravidez/'],
-  ['catalogo/bodies-convites/body-primeira-pascoa/', 'catalogo/textil/body-primeira-pascoa/'],
+  ['catalogo/bodies-convites/body-convite-madrinha/', 'catalogo/bodies/body-convite-madrinha/'],
+  ['catalogo/bodies-convites/body-convite-avos/', 'catalogo/bodies/body-convite-avos/'],
+  ['catalogo/bodies-convites/body-hello-daddy/', 'catalogo/bodies/body-hello-daddy/'],
+  ['catalogo/bodies-convites/body-irmao-mais-velho/', 'catalogo/bodies/body-irmao-mais-velho/'],
+  ['catalogo/bodies-convites/body-anuncio-gravidez/', 'catalogo/bodies/body-anuncio-gravidez/'],
+  ['catalogo/bodies-convites/body-primeira-pascoa/', 'catalogo/bodies/body-primeira-pascoa/'],
   ['catalogo/bodies-convites/', 'catalogo/'],
   // As páginas de categoria morreram: quem tenha o endereço vai para o catálogo.
   // Não vão para /catalogo/?categoria=<slug> porque um `meta refresh` com query
@@ -287,6 +289,20 @@ const REENCAMINHAR = [
   ['catalogo/boxes/', 'catalogo/'],
   ['catalogo/textil/', 'catalogo/'],
   ['catalogo/lembrancas/', 'catalogo/'],
+  // Agosto de 2026, uma hora depois: a categoria «Bodies» foi criada a pedido da
+  // cliente e os seis bodies foram para lá. Estes seis endereços estiveram no ar
+  // durante cerca de uma hora — o tempo entre dissolver «bodies-convites» e
+  // perceber, olhando as 49 fotografias, que os quatro artigos chamados «Box…»
+  // não são caixas: o body ocupa dois terços do enquadramento, é o único
+  // elemento que muda de foto para foto, e nunca aparece dentro da caixa. A
+  // caixa é cenário. Uma hora é pouco, mas o sitemap com estes endereços foi
+  // publicado, portanto podem ter sido lidos. Custa seis linhas.
+  ['catalogo/boxes/body-convite-madrinha/', 'catalogo/bodies/body-convite-madrinha/'],
+  ['catalogo/boxes/body-convite-avos/', 'catalogo/bodies/body-convite-avos/'],
+  ['catalogo/boxes/body-hello-daddy/', 'catalogo/bodies/body-hello-daddy/'],
+  ['catalogo/boxes/body-irmao-mais-velho/', 'catalogo/bodies/body-irmao-mais-velho/'],
+  ['catalogo/textil/body-anuncio-gravidez/', 'catalogo/bodies/body-anuncio-gravidez/'],
+  ['catalogo/textil/body-primeira-pascoa/', 'catalogo/bodies/body-primeira-pascoa/'],
 ];
 
 /* ============================================================== esqueleto === */
