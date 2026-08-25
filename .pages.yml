@@ -85,6 +85,14 @@ content:
           Para que ocasiões serve. É por aqui que se filtra o catálogo — quem
           procura um presente de baptizado escolhe «Baptizado» e vê só o que
           serve. Pode escolher várias.
+        # DUAS OCASIÕES FORAM RETIRADAS, em Agosto de 2026, e por medição:
+        # «Páscoa» tinha UM artigo, e esse artigo passou a chamar-se «o meu
+        # primeiro…» — cobre a Páscoa, o Natal e o aniversário, portanto a
+        # etiqueta prendia-o a um terço do que é. «Lembranças» devolvia
+        # exactamente os MESMOS dois artigos da categoria com o mesmo nome: eram
+        # duas pastilhas com a mesma palavra na mesma página a fazer o mesmo.
+        # Uma ocasião só serve se separar o catálogo em dois grupos com gente
+        # dos dois lados.
         options:
           multiple: true
           values:
@@ -94,9 +102,7 @@ content:
             - { name: casamento, label: 'Casamento' }
             - { name: dia-da-mae, label: 'Dia da Mãe' }
             - { name: dia-do-pai, label: 'Dia do Pai' }
-            - { name: pascoa, label: 'Páscoa' }
             - { name: presente, label: 'Presente' }
-            - { name: lembrancas, label: 'Lembranças' }
 
       # ─────────── fotografias
       - name: fotos

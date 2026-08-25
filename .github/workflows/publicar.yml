@@ -51,8 +51,8 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Instalar o Pillow
-        run: pip install --quiet Pillow
+      - name: Instalar o Pillow e o PyYAML
+        run: pip install --quiet Pillow PyYAML
 
       # O Pages CMS grava a fotografia exactamente como saiu do telemóvel — 3000
       # px e vários MB. Aqui geram-se as versões de 480/960/1600 px em WebP que o
@@ -60,6 +60,52 @@ jobs:
       # chegam ao visitante.
       - name: Preparar as fotografias
         run: python3 scripts/otimizar-imagens.py
+
+      # O backoffice pode partir sem o SITE dar sinal. As opções de «categoria» e
+      # «ocasiões» vivem no .pages.yml, e os valores gravados vivem nos JSON dos
+      # artigos: se as duas listas se desencontrarem, o site gera-se
+      # perfeitamente e é a cliente que descobre, ao abrir um artigo e encontrar
+      # um campo OBRIGATÓRIO em branco, sem saber o que lá estava.
+      #
+      # Aconteceu: uma linha de remoção apanhou a lista errada — «Lembranças»
+      # existe como categoria E como ocasião, com texto idêntico — e tirou a
+      # categoria a dois artigos que a usavam. Nenhuma verificação de então
+      # apanhava isto, porque nenhuma olhava para o backoffice.
+      - name: Confirmar o backoffice contra os dados
+        run: |
+          python3 - <<'PY'
+          import yaml, json, glob, sys
+          y = yaml.safe_load(open('.pages.yml', encoding='utf-8'))
+          art = [c for c in y['content'] if c['name'] == 'artigos'][0]
+          opc = {f['name']: {o['name'] for o in f['options']['values']}
+                 for f in art['fields'] if f['name'] in ('categoria', 'ocasioes')}
+          erros = []
+          usadas = {'categoria': set(), 'ocasioes': set()}
+          for f in sorted(glob.glob('data/produtos/*.json')):
+              d = json.load(open(f, encoding='utf-8'))
+              usadas['categoria'].add(d['categoria'])
+              usadas['ocasioes'] |= set(d.get('ocasioes') or [])
+              if d['categoria'] not in opc['categoria']:
+                  erros.append(f"{d['slug']}: categoria \"{d['categoria']}\" nao esta nas opcoes do .pages.yml")
+              for o in d.get('ocasioes') or []:
+                  if o not in opc['ocasioes']:
+                      erros.append(f"{d['slug']}: ocasiao \"{o}\" nao esta nas opcoes do .pages.yml")
+          # As categorias tambem tem de existir em categorias.json, senao o
+          # gerador escreve um endereco sem pagina de categoria.
+          cats = {c['slug'] for c in json.load(open('data/categorias.json', encoding='utf-8'))}
+          for c in opc['categoria'] - cats:
+              erros.append(f"categoria \"{c}\" esta no .pages.yml mas nao em categorias.json")
+          for c in cats - opc['categoria']:
+              erros.append(f"categoria \"{c}\" esta em categorias.json mas nao no .pages.yml")
+          if erros:
+              print('backoffice desencontrado dos dados:')
+              [print(' ', e) for e in erros]
+              sys.exit(1)
+          orfas = (opc['categoria'] - usadas['categoria']) | (opc['ocasioes'] - usadas['ocasioes'])
+          if orfas:
+              print('aviso: opcoes sem nenhum artigo (nao e erro):', ', '.join(sorted(orfas)))
+          print('backoffice e dados coerentes')
+          PY
 
       - name: Gerar o site
         run: node scripts/gerar.mjs
