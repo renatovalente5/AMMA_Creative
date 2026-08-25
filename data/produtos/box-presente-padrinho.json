@@ -1,8 +1,9 @@
 {
   "slug": "box-presente-padrinho",
-  "nome": "Box de presente para padrinho",
+  "nome": "Box de presente",
   "categoria": "boxes",
   "ocasioes": [
+    "presente",
     "baptizado",
     "convite-padrinhos",
     "dia-do-pai"
@@ -12,7 +13,7 @@
     "assets/produtos/box-presente-padrinho/02.jpg"
   ],
   "resumo": "Garrafa personalizada, abre-cápsulas gravado e caixa a condizer.",
-  "texto": "«O melhor padrinho do mundo» — escrito no rótulo da garrafa, que fazemos com o nome dele. Vai com o abre-cápsulas gravado e o resto assente em palha, na caixa.\n\nÉ o presente que se dá no dia do baptizado, ou no dia em que se faz o pedido.",
+  "texto": "O rótulo da garrafa é o que quiser, com o nome de quem recebe. «O melhor padrinho do mundo» é o que mais fazemos, e é o que está nas fotografias, mas sai igual para o pai, para o tio ou para o avô.\n\nVai com o abre-cápsulas gravado e o resto assente em palha, na caixa.\n\nÉ o presente que se dá no dia do baptizado, ou no dia em que se faz o pedido.",
   "personalizavel": [
     "O rótulo da garrafa",
     "A gravação no abre-cápsulas",
