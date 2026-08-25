@@ -6,11 +6,14 @@
     "dia-do-pai",
     "dia-da-mae",
     "casamento",
-    "presente"
+    "presente",
+    "baptizado",
+    "convite-padrinhos"
   ],
   "fotos": [
     "assets/produtos/tshirt-pai/02.jpg",
     "assets/produtos/tshirt-pai/03.jpg",
+    "assets/produtos/tshirt-pai/15.jpg",
     "assets/produtos/tshirt-pai/04.jpg",
     "assets/produtos/tshirt-pai/05.jpg",
     "assets/produtos/tshirt-pai/06.jpg",
@@ -23,9 +26,10 @@
     "assets/produtos/tshirt-pai/13.jpg"
   ],
   "resumo": "O que quiser escrito ou desenhado numa t-shirt: as fotografias dentro das letras, um nome, uma frase, um desenho pequeno ao peito.",
-  "texto": "As fotografias entram dentro do lettering — «MOM», «PAPA», «AVÔ», com o número de fotografias que as letras aguentarem, e o ano por baixo.\n\nMas também fazemos o contrário: um desenho pequeno ao peito, discreto, do género «daddy», «best mom» ou «tired mom club». E frases inteiras, como a da madrinha que não é só tia.\n\nSai em pares a condizer — «Pai» e «Mãe» — e em conjuntos para o grupo, como as do noivo e da equipa de apoio. Diga-nos quantas e os tamanhos.",
+  "texto": "As fotografias entram dentro do lettering — «MOM», «PAPA», «AVÔ», com o número de fotografias que as letras aguentarem, e o ano por baixo.\n\nMas também fazemos o contrário: um desenho pequeno ao peito, discreto, do género «daddy», «best mom» ou «tired mom club». E frases inteiras, como a da madrinha que não é só tia.\n\nSai em pares a condizer — «Pai» e «Mãe» — e em conjuntos para o grupo, como as do noivo e da equipa de apoio. Diga-nos quantas e os tamanhos.\n\nE fazemos emblemas: o de super-herói com o nome dentro, que é o que mais sai para os padrinhos, com a versão de «super madrinha» e o par a condizer.",
   "personalizavel": [
     "O texto ou o desenho",
+    "O nome no emblema",
     "As fotografias, se levar",
     "A cor da t-shirt",
     "Os tamanhos, e quantas"
