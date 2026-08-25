@@ -118,6 +118,20 @@
       if (contagem) contagem.innerHTML = '<b>' + n + '</b> ' + (n === 1 ? 'artigo' : 'artigos');
       if (limpar) limpar.hidden = !estado.categoria && !estado.ocasiao;
 
+      /* PASTILHAS QUE NÃO LEVAM A NADA FICAM DESACTIVADAS, e não escondidas.
+         Esconder faz a fila reorganizar-se a cada toque e a pessoa perde a
+         referência de onde estava a ler; desactivar deixa a fila quieta e diz
+         «aqui não há nada» sem obrigar a tentar.
+
+         Nos DOIS eixos, e não só nas ocasiões: se só as ocasiões se
+         desactivassem, escolher uma ocasião e depois uma categoria continuava a
+         dar página vazia — que é justamente o que isto evita.
+
+         Duas pastilhas nunca se desactivam: a «Todas» e a que está escolhida. Se
+         a escolhida se desactivasse quando a outra escolha a esvazia, a pessoa
+         ficava presa sem poder desfazer o que fez. */
+      marcarInuteis();
+
       /* O endereço acompanha o filtro, para se poder partilhar ou recarregar sem
          perder a escolha. `replaceState` e não `pushState`: cada toque num filtro
          não é um passo do histórico que o botão «voltar» tenha de desfazer. */
@@ -126,6 +140,36 @@
       if (estado.ocasiao) q.set('ocasiao', estado.ocasiao);
       var s = q.toString();
       history.replaceState(null, '', s ? '?' + s : location.pathname);
+    }
+
+    /* Quantos artigos sobram com esta combinação. Conta sobre os cartões, que já
+       trazem a categoria e as ocasiões nos data-, e não sobre uma cópia dos dados
+       em JavaScript — assim não há duas verdades para manter de acordo. */
+    function contarCom(cat, oca) {
+      var n = 0;
+      cartoes.forEach(function (c) {
+        var okCat = !cat || c.dataset.categoria === cat;
+        var okOca = !oca || (c.dataset.ocasioes || '').split(' ').indexOf(oca) !== -1;
+        if (okCat && okOca) n++;
+      });
+      return n;
+    }
+
+    function marcarInuteis() {
+      $$('[data-filtro="ocasiao"]', forma).forEach(function (b) {
+        var v = b.dataset.valor;
+        b.disabled = !!v && v !== estado.ocasiao && contarCom(estado.categoria, v) === 0;
+      });
+      $$('[data-filtro="categoria"]', forma).forEach(function (b) {
+        var v = b.dataset.valor;
+        var n = contarCom(v, estado.ocasiao);
+        /* O número ao lado do nome passa a ser o que a escolha actual permite. Um
+           número fixo ao lado de uma pastilha que pode estar desactivada é um
+           número a mentir. */
+        var span = b.querySelector('.ficha__n');
+        if (span) span.textContent = n;
+        b.disabled = !!v && v !== estado.categoria && n === 0;
+      });
     }
 
     function marcar(tipo) {
@@ -160,7 +204,14 @@
       }
     });
     if (estado.categoria || estado.ocasiao) aplicar();
-    else if (limpar) limpar.hidden = true;
+    else {
+      if (limpar) limpar.hidden = true;
+      /* Sem filtros nada fica desactivado — mas corre-se de qualquer maneira,
+         para o estado das pastilhas ser sempre o que o código diz e não o que o
+         HTML trouxe. Se um dia existir uma ocasião sem artigos, aparece
+         desactivada logo à entrada em vez de só depois do primeiro toque. */
+      marcarInuteis();
+    }
   })();
 
   /* --------------------------------------------- 4. galeria e lupa do produto */

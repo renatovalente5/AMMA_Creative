@@ -530,6 +530,18 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .ficha:hover { border-color: var(--linha-forte); color: var(--tinta); }
 .ficha[aria-pressed="true"] { background: var(--cacau); border-color: var(--cacau); color: var(--creme); font-weight: 600; }
 .ficha__n { font-size: .78rem; opacity: .7; }
+/* Pastilha que não leva a nada. Fica legível — não se apaga ao ponto de parecer
+   um erro de contraste — mas perde a borda, o cursor e a resposta ao hover, que
+   é o que diz «isto não é para clicar». O `not-allowed` só aparece no rato; no
+   telemóvel o que informa é o tom. */
+.ficha:disabled {
+  cursor: not-allowed;
+  color: var(--tinta-3);
+  border-color: transparent;
+  background: var(--creme-fundo);
+}
+.ficha:disabled:hover { border-color: transparent; color: var(--tinta-3); }
+.ficha:disabled .ficha__n { opacity: .5; }
 
 .filtros__pe {
   display: flex; align-items: center; justify-content: space-between;
