@@ -8,7 +8,7 @@ descricao: Em caso de conflito de consumo com a AMMA Creative, a entidade compet
 Antes de tudo: diga-nos. A maior parte dos problemas resolve-se numa mensagem, e
 resolve-se mais depressa assim do que por qualquer outra via.
 
-Mande-nos mensagem por [WhatsApp](https://wa.me/351925110570) ou pelo
+Mande-nos mensagem por [WhatsApp](https://wa.me/{{whatsapp}}) ou pelo
 [Instagram](https://www.instagram.com/_ammacreative).
 
 ## Livro de Reclamações

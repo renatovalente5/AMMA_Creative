@@ -1298,7 +1298,31 @@ function main() {
     const caminho = join(RAIZ, 'conteudo', ficheiro);
     if (!existsSync(caminho)) continue;
     const bruto = readFileSync(caminho, 'utf8');
-    const [, cab, md] = bruto.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/) ?? [null, '', bruto];
+    const [, cab, cru] = bruto.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/) ?? [null, '', bruto];
+
+    /* OS CONTACTOS NÃO SE ESCREVEM À MÃO NOS TEXTOS LEGAIS. Em Agosto de 2026 o
+       número de WhatsApp mudou nos dados e ficou o antigo escrito nos três
+       ficheiros de conteudo/ — ou seja, as páginas onde a lei manda estar um
+       canal de contacto a funcionar passaram a apontar para um canal morto, e
+       durante uma hora ninguém viu. O gerador não podia ver: para ele aquilo
+       era texto.
+
+       Agora sai daqui. Se um marcador não tiver valor, a construção morre em
+       vez de publicar um link vazio numa página legal. */
+    const CONTACTOS = {
+      whatsapp: def.contactos.whatsapp,
+      telefone: def.contactos.telefone_texto,
+      email: def.contactos.email,
+    };
+    const md = cru.replace(/\{\{(\w+)\}\}/g, (_, chave) => {
+      const v = CONTACTOS[chave];
+      if (!v) {
+        throw new Error(
+          `${caminho}: o marcador {{${chave}}} não tem valor em data/definicoes.json. ` +
+          `Marcadores disponíveis: ${Object.keys(CONTACTOS).join(', ')}.`);
+      }
+      return v;
+    });
     const meta = Object.fromEntries(cab.split('\n').filter(Boolean)
       .map((l) => [l.slice(0, l.indexOf(':')).trim(), l.slice(l.indexOf(':') + 1).trim()]));
     escrever(destino, pagina({

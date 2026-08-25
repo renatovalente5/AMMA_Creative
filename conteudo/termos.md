@@ -9,7 +9,7 @@ Este site é da **AMMA Creative**, empresária em nome individual, com sede em R
 do Comércio, 23-47, 4935-329 Vila Nova de Anha, Viana do Castelo, Portugal.
 
 - **NIF:** *(a indicar)*
-- **WhatsApp:** [falar connosco no WhatsApp](https://wa.me/351925110570)
+- **WhatsApp:** [falar connosco no WhatsApp](https://wa.me/{{whatsapp}})
 - **Instagram:** [@_ammacreative](https://www.instagram.com/_ammacreative)
 
 Estes elementos são prestados nos termos do artigo 10.º do Decreto-Lei n.º

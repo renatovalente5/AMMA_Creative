@@ -21,7 +21,7 @@ A **AMMA Creative**, empresária em nome individual, com sede em Rua do Comérci
 23-47, 4935-329 Vila Nova de Anha, Viana do Castelo.
 
 Contacto para assuntos de dados pessoais: mensagem por
-[WhatsApp](https://wa.me/351925110570) ou pelo
+[WhatsApp](https://wa.me/{{whatsapp}}) ou pelo
 [Instagram](https://www.instagram.com/_ammacreative).
 
 ## Que dados recolhemos
