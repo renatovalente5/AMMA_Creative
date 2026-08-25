@@ -104,7 +104,11 @@ content:
         type: image
         options:
           multiple:
-            max: 12
+            # 16 e não 12: estes artigos não têm 3 vistas de uma peça, têm uma
+            # fotografia por FRASE — o do pai tem 8, o do anúncio de gravidez
+            # passou de 7 para 14. A tira de miniaturas rola na horizontal, por
+            # isso o número não parte a página.
+            max: 16
         description: >-
           A PRIMEIRA é a mais importante: é a que aparece no catálogo, na página
           inicial e na pré-visualização quando o link é partilhado no WhatsApp.
