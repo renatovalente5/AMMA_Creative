@@ -306,7 +306,7 @@ const REENCAMINHAR = [
 ];
 
 /* ============================================================== esqueleto === */
-function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '' }) {
+function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '', naoIndexar = false, extras = '', semAviso = false }) {
   const canonico = abs(pag);
   const imagem = og ?? abs('assets/img/og.jpg');
   const nav = [
@@ -326,7 +326,7 @@ function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = 
 <title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
 <link rel="canonical" href="${canonico}">
-<meta name="theme-color" content="#602601">
+${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="theme-color" content="#602601">
 <meta name="author" content="${esc(def.empresa.nome_comercial)}">
 
 <meta property="og:type" content="website">
@@ -454,7 +454,14 @@ ${corpo}
 </footer>
 
 <!-- O aviso existe SÓ por causa do mapa: fora dele, o site não instala cookie
-     nenhuma. Dois botões, e não um painel de preferências — a escolha é uma. -->
+     nenhuma. Dois botões, e não um painel de preferências — a escolha é uma.
+
+     Não aparece na ferramenta /reduzir-fotos/, e a razão não é comodidade: aquela
+     página não tem mapa nem nada de terceiros, portanto o aviso pediria
+     autorização para coisa nenhuma — e, por ser centrado no ecrã, ficava
+     exactamente em cima da zona onde se largam as fotografias. Numa página cujo
+     único objectivo é tirar atrito, é o pior sítio possível para uma janela. -->
+${semAviso ? '' : `
 <div class="cc" id="cc" role="region" aria-label="Aviso de cookies" hidden>
   <p>Este site não tem analítica nem publicidade. Só precisamos da sua autorização
   para o <strong>mapa do Google</strong> na página de contactos.
@@ -464,8 +471,9 @@ ${corpo}
     <button class="btn btn--linha" type="button" data-cc="nao">Recusar</button>
   </div>
 </div>
-
+`}
 <script src="${versao('assets/js/site.js')}" defer></script>
+${extras}
 </body>
 </html>
 `;
@@ -563,6 +571,7 @@ function cartaoCategoria(c, prioridade = false) {
 }
 
 function mapa() {
+  if (!def.local.mapa) return '';
   const q = encodeURIComponent(`${def.local.morada}, ${def.local.codigo_postal} ${def.local.localidade}`);
   return `<div class="mapa" id="mapa" data-mapa="https://www.google.com/maps?q=${q}&output=embed">
     <div class="mapa__consent" id="mapa-consent">
@@ -1264,6 +1273,76 @@ function publicavel(origem) {
   return !tem;
 }
 
+/* A PÁGINA QUE O BACKOFFICE NÃO TEM. O Pages CMS recusa fotografias acima de
+   ~3,37 MB com «Failed to upload file: 413» — um número nu, sem explicação. O
+   413 vem da Vercel, que o aloja, e que corta pedidos acima de 4,5 MB antes de
+   o código da aplicação correr; como a fotografia vai em base64 dentro de um
+   JSON, engorda um terço, e o tecto por ficheiro cai para os tais 3,37 MB.
+
+   Não há como melhorar aquela mensagem: não é código nosso, não existe opção de
+   tamanho na configuração (o pedido está aberto na issue #346), e o gancho de
+   validação no navegador que o Pages CMS tem só olha para o tipo do ficheiro,
+   nunca para o tamanho. O autor fechou a issue com «This is a known limit of
+   Vercel».
+
+   Isto é a resposta possível: uma página que diz o que a mensagem não diz —
+   quanto pesa cada fotografia, se passa, e devolve-a reduzida se não passar.
+   Corre toda no navegador; nenhuma fotografia sai do computador de quem a usa.
+
+   Não está no menu nem no sitemap, e leva `noindex`: é uma ferramenta de
+   trabalho, não uma página da loja. O endereço é /reduzir-fotos/. */
+function paginaReduzir() {
+  const corpo = `
+<section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+  <div class="envolve envolve--estreito">
+    <p class="sobre-linha">Ferramenta</p>
+    <h1 class="tit-g" style="margin-bottom:1rem">Reduzir fotografias</h1>
+    <p class="chamada">Se o backoffice disser <strong>«Failed to upload file: 413»</strong>,
+    a fotografia é grande demais — acima de 3 MB. Arraste-as para aqui: eu digo quanto
+    pesa cada uma e devolvo reduzidas as que não passam.</p>
+    <p style="color:var(--tinta-2);font-size:.95rem">As fotografias não saem deste
+    computador. Tudo acontece aqui, no seu navegador — nada é enviado para lado nenhum.</p>
+
+    <div class="red__zona" id="zona">
+      <input type="file" id="ficheiros" accept="image/jpeg,image/png,image/webp" multiple hidden>
+      <p><strong>Arraste as fotografias para aqui</strong></p>
+      <p style="color:var(--tinta-2);font-size:.95rem;margin:.3rem 0 1rem">ou</p>
+      <label class="btn btn--cheio" for="ficheiros" style="cursor:pointer">Escolher fotografias</label>
+    </div>
+
+    <div class="red__resumo" id="resumo" hidden>
+      <p class="red__quantas"></p>
+      <button class="btn btn--linha" type="button" id="guardar-todas">Guardar todas</button>
+    </div>
+
+    <ul class="red__lista" id="lista"></ul>
+
+    <div class="red__ajuda">
+      <h2 class="tit-m">Depois de guardar</h2>
+      <p>As fotografias reduzidas ficam na pasta das transferências, com
+      <code>-reduzida</code> no fim do nome. São essas que deve carregar no backoffice.</p>
+      <h2 class="tit-m">Se disser que é HEIC</h2>
+      <p>É o formato do iPhone, e o backoffice não o aceita. No telemóvel:
+      <strong>Definições, Câmara, Formatos</strong>, escolha «Mais compatível» — as
+      fotografias que tirar a partir daí saem em JPG. As que já tirou, abra esta página
+      no Safari do iPhone, que sabe ler HEIC.</p>
+      <h2 class="tit-m">Se nada disto funcionar</h2>
+      <p>Mande a fotografia por WhatsApp que nós carregamos. Não perde tempo com isso.</p>
+    </div>
+  </div>
+</section>`;
+
+  return pagina({
+    pag: 'reduzir-fotos/',
+    titulo: `Reduzir fotografias | ${def.empresa.nome_comercial}`,
+    descricao: 'Ferramenta interna para reduzir fotografias antes de as carregar no backoffice.',
+    naoIndexar: true,
+    semAviso: true,
+    extras: `<script src="${versao('assets/js/reduzir.js')}" defer></script>`,
+    corpo,
+  });
+}
+
 function main() {
   /* Uma categoria escrita à mão num artigo, com um erro de letra ou já apagada,
      não dá erro nenhum: o gerador escreve calmamente uma página em
@@ -1276,6 +1355,56 @@ function main() {
       orfaos.map((p) => `  ${p.slug}: "${p.categoria}"`).join('\n'));
   }
 
+  /* OS DADOS QUE A LEI OBRIGA NÃO PODEM SAIR EM SILÊNCIO. Em Agosto de 2026
+     alguém abriu «Dados da loja» no backoffice e gravou com a morada em branco.
+     O Pages CMS não guarda campos de texto vazios: apagou as chaves. O gerador
+     escreveu `undefined` — que o `esc()` transforma em nada —, o CI passou verde
+     nas quatro verificações que tem, e o site foi publicado sem morada no rodapé
+     e na página de contactos. Ninguém deu por isso a não ser por acaso.
+
+     O DL 7/2004 art. 10 obriga a morada geográfica e a identificação. Portanto:
+     em falta, a construção morre. Vale mais o site ficar na versão anterior do
+     que ir para o ar sem o que a lei manda.
+
+     Repare-se no que NÃO está aqui: o NIF é verificado por existir, não por ser
+     válido — está lá um `000000000` de propósito, à espera do número verdadeiro,
+     e transformar isso em erro fatal trancaria a publicação hoje. */
+  const OBRIGATORIOS = [
+    ['local.morada', 'Dados da loja › Onde estão › Rua'],
+    ['local.codigo_postal', 'Dados da loja › Onde estão › Código postal'],
+    ['local.localidade', 'Dados da loja › Onde estão › Localidade'],
+    ['local.concelho', 'Dados da loja › Onde estão › Concelho'],
+    ['local.pais', 'Dados da loja › Onde estão › País'],
+    ['empresa.nome_comercial', 'Dados da loja › A empresa › Nome comercial'],
+    ['empresa.nif', 'Dados da loja › A empresa › NIF'],
+  ];
+  const valorEm = (caminho) => caminho.split('.').reduce((o, k) => (o == null ? o : o[k]), def);
+  const emFalta = OBRIGATORIOS
+    .filter(([caminho]) => {
+      const v = valorEm(caminho);
+      return v == null || String(v).trim() === '';
+    })
+    .map(([caminho, onde]) => `  ${caminho}  →  ${onde}`);
+
+  /* Um canal de contacto, pelo menos. O WhatsApp serve (CJEU C-649/17: não há
+     obrigação de manter linha telefónica, mensagens instantâneas bastam), mas
+     zero canais não serve de forma nenhuma. */
+  if (!def.contactos?.whatsapp && !def.contactos?.email && !def.contactos?.telefone) {
+    emFalta.push('  contactos  →  Dados da loja › Contactos: é preciso pelo menos um (WhatsApp, email ou telefone)');
+  }
+
+  if (emFalta.length) {
+    throw new Error(
+      'faltam dados que a lei obriga (DL 7/2004 art. 10), e por isso não se publica:\n' +
+      emFalta.join('\n') +
+      '\n\nSe isto apareceu depois de alguém gravar no backoffice, o mais provável é ' +
+      'ter-se gravado o formulário com campos em branco — o Pages CMS apaga as chaves ' +
+      'vazias em vez de as deixar vazias. Os valores anteriores estão no histórico do git.');
+  }
+
+  /* O mapa é a única parte deste bloco que pode faltar sem ser ilegal: se não
+     houver coordenadas nem link, mostra-se a morada sem mapa em vez de um botão
+     que não leva a sítio nenhum. */
   rmSync(SAIDA, { recursive: true, force: true });
   mkdirSync(SAIDA, { recursive: true });
   cpSync(join(RAIZ, 'assets'), join(SAIDA, 'assets'), { recursive: true, filter: publicavel });
@@ -1288,6 +1417,7 @@ function main() {
   escrever('sobre/index.html', paginaSobre());
   escrever('contactos/index.html', paginaContactos());
   for (const p of produtos) escrever(`catalogo/${p.categoria}/${p.slug}/index.html`, paginaProduto(p));
+  escrever('reduzir-fotos/index.html', paginaReduzir());
 
   /* páginas legais, em markdown */
   for (const [ficheiro, destino] of Object.entries({

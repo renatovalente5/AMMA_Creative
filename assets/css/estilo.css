@@ -838,3 +838,62 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
   main { padding-top: 0; }
   a[href^="http"]::after { content: ' (' attr(href) ')'; font-size: .8em; }
 }
+
+/* ══════════════════════════════════════════════════════ REDUZIR FOTOGRAFIAS ══
+   Só a página /reduzir-fotos/ usa isto. É uma ferramenta de trabalho, não uma
+   página da loja: reaproveita as cores e a tipografia e não inventa desenho.
+   Existe porque o backoffice recusa fotografias acima de ~3,37 MB com um «413»
+   sem explicação, e não há forma de melhorar essa mensagem — o limite é da
+   Vercel, que aloja o Pages CMS, e o código não é nosso. */
+.red__zona {
+  margin: clamp(1.5rem, 4vw, 2.5rem) 0 1.5rem;
+  padding: clamp(2rem, 6vw, 3.5rem) 1.5rem;
+  text-align: center;
+  border: 2px dashed var(--linha);
+  border-radius: 18px;
+  background: var(--creme-fundo);
+  transition: border-color .18s, background .18s;
+}
+.red__zona--sobre { border-color: var(--cacau); background: var(--creme); }
+
+.red__resumo {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 1.2rem; margin-bottom: 1.5rem;
+  border-radius: 14px; background: var(--creme);
+}
+.red__resumo .red__quantas { margin: 0; flex: 1 1 14ch; font-weight: 600; }
+
+.red__lista { list-style: none; margin: 0 0 clamp(2rem, 5vw, 3rem); padding: 0; }
+.red__item {
+  display: grid; gap: .3rem 1rem; align-items: center;
+  grid-template-columns: 1fr auto;
+  padding: .9rem 1.1rem; margin-bottom: .6rem;
+  border: 1px solid var(--linha); border-left-width: 4px; border-radius: 12px;
+}
+.red__item--ok     { border-left-color: #4a7c3f; }
+.red__item--grande { border-left-color: #b3651a; }
+.red__item--feito  { border-left-color: var(--cacau); }
+.red__nome {
+  grid-column: 1; font-weight: 600; word-break: break-all;
+}
+.red__estado { grid-column: 1; font-size: .95rem; color: var(--tinta-2); }
+.red__acao   { grid-column: 2; grid-row: 1 / span 2; }
+.red__ok  { color: #3d6835; }
+.red__mau { color: #a8410f; }
+
+/* Um botão pequeno para caber na linha de cada fotografia sem a esticar. */
+.btn--pequeno { padding: .45rem .9rem; font-size: .9rem; }
+
+.red__ajuda { border-top: 1px solid var(--linha); padding-top: clamp(1.5rem, 4vw, 2.2rem); }
+.red__ajuda .tit-m { margin: 1.4rem 0 .4rem; }
+.red__ajuda .tit-m:first-child { margin-top: 0; }
+.red__ajuda p { color: var(--tinta-2); }
+.red__ajuda code {
+  padding: .1em .35em; border-radius: 5px;
+  background: var(--creme); font-size: .9em;
+}
+
+@media (max-width: 480px) {
+  .red__item { grid-template-columns: 1fr; }
+  .red__acao { grid-column: 1; grid-row: auto; }
+}

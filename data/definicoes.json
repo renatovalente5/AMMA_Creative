@@ -14,7 +14,14 @@
     "instagram": "https://www.instagram.com/_ammacreative"
   },
   "local": {
-    "pais": "Portugal"
+    "morada": "Rua do Comércio, 23-47",
+    "codigo_postal": "4935-329",
+    "localidade": "Vila Nova de Anha",
+    "concelho": "Viana do Castelo",
+    "pais": "Portugal",
+    "latitude": 41.6704,
+    "longitude": -8.8072,
+    "mapa": "https://maps.google.com/?q=Rua+do+Com%C3%A9rcio+23-47+4935-329+Vila+Nova+de+Anha"
   },
   "textos": {
     "hero_titulo": "Feito para *uma pessoa* só",

@@ -43,7 +43,12 @@ actions:
 media:
   input: assets/produtos
   output: assets/produtos
-  categories: [image]
+  # `extensions` em vez de `categories: [image]`: a categoria `image` do Pages CMS
+  # são doze extensões (svg, ico, bmp, tif, apng, avif…) e é essa lista inteira que
+  # aparece na mensagem de recusa, «Invalid file type. Allowed: …», que fica
+  # ilegível. Com quatro, a mensagem diz algo. Nota: as duas chaves NÃO se somam —
+  # se coexistirem, `categories` é apagada em silêncio e `extensions` ganha.
+  extensions: [jpg, jpeg, png, webp]
 
 content:
   # ---------------------------------------------------------------- artigos
@@ -104,17 +109,26 @@ content:
             # isso o número não parte a página.
             max: 16
         description: >-
-          Estas fotografias são as DESTE artigo. Antes de carregar, confirme em cima
-          que o nome é o do artigo certo — é o engano mais fácil de fazer. A
+          CADA FOTOGRAFIA TEM DE ESTAR ABAIXO DE 3 MB. Acima disso o carregamento
+          falha com a mensagem «Failed to upload file: 413», que não explica nada — e
+          as fotografias tiradas com telemóvel passam muitas vezes desse tamanho. Para
+          saber quanto pesa cada uma, e para reduzir as que são grandes, abra esta
+          página: renatovalente5.github.io/AMMA_Creative/reduzir-fotos/ — arraste as
+          fotografias para lá, ela diz-lhe o que se passa com cada uma e devolve
+          reduzidas as que não passam. Não instala nada e as fotografias não saem do
+          seu computador. Se preferir, mande-as por WhatsApp que nós carregamos.
+          •
+          As fotografias em HEIC, o formato do iPhone, também não são aceites: no
+          telemóvel, em Definições, Câmara, Formatos, escolha «Mais compatível» e as
+          próximas saem em JPG.
+          •
+          Estas fotografias são as DESTE artigo — antes de carregar, confirme em cima
+          que o nome é o do artigo certo, que é o engano mais fácil de fazer. A
           PRIMEIRA da lista é a da capa: é a que aparece no catálogo, na página
           inicial e na pré-visualização quando o link é partilhado no WhatsApp;
-          escolha uma em que se veja bem a peça inteira. Arraste para trocar a
-          ordem. Carregue-as como saem do telemóvel, que são reduzidas sozinhas na
-          publicação. Duas coisas que podem falhar: as fotografias tiradas em iPhone
-          no formato HEIC não são aceites aqui — no telemóvel, em Definições,
-          Câmara, Formatos, escolha «Mais compatível» e passam a sair em JPG; e uma
-          fotografia muito grande, acima de 3 MB, pode dar erro sem explicar porquê
-          — se isso acontecer, mande-a por WhatsApp que nós carregamos.
+          escolha uma em que se veja bem a peça inteira. Arraste para trocar a ordem.
+          O tamanho da imagem no site é tratado sozinho na publicação — o limite dos
+          3 MB é só para o carregamento aqui.
 
       # ─────────── textos
       - name: resumo
