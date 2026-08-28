@@ -49,6 +49,15 @@ media:
   # ilegível. Com quatro, a mensagem diz algo. Nota: as duas chaves NÃO se somam —
   # se coexistirem, `categories` é apagada em silêncio e `extensions` ganha.
   extensions: [jpg, jpeg, png, webp]
+  # `rename: safe` porque os nomes vêm do telemóvel e trazem espaços, acentos e
+  # maiúsculas. A cliente carregou «1 - 9-pronta.jpg» e o endereço foi para o HTML
+  # com os espaços em cru — no `srcset`, onde é o espaço que separa o endereço do
+  # descritor «480w». O gerador passou a codificar os endereços, o que resolve o
+  # problema em qualquer caso, mas é melhor os nomes nascerem limpos: «safe» faz
+  # slugify (minúsculas, sem acentos, sem espaços) e mantém o nome reconhecível,
+  # ao contrário de «random». Atenção ao que isto NÃO resolve: dois ficheiros que
+  # dêem o mesmo nome depois de limpo escrevem um por cima do outro, em silêncio.
+  rename: safe
 
 content:
   # ---------------------------------------------------------------- artigos

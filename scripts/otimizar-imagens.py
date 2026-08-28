@@ -97,6 +97,14 @@ def varrer():
     # que o site mostra em primeiro lugar. Refaz-se sempre: é barato, e evita
     # ficar com a fotografia antiga quando a cliente troca a de capa.
     for pasta in sorted({p.parent for p in PRODUTOS.rglob('*-1600.webp')}):
+        # A RAIZ NÃO É UMA PASTA DE ARTIGO. Quando a cliente carrega uma fotografia
+        # pelo backoffice, ela cai em assets/produtos/ directamente — a biblioteca
+        # de media aponta para ali — e não numa subpasta. Sem esta linha a raiz
+        # passava a contar como artigo e escrevia-se um assets/produtos/og.jpg que
+        # não serve a página nenhuma: o cartão de partilha de cada artigo vive na
+        # pasta dele, e o do site vive em assets/img/og.jpg.
+        if pasta == PRODUTOS:
+            continue
         primeira = sorted(pasta.glob('*-1600.webp'))
         if not primeira:
             continue

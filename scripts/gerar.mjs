@@ -45,7 +45,29 @@ const BASE = (process.env.BASE ?? '/AMMA_Creative').replace(/\/$/, '');
   const SITE = (process.env.SITE ?? def.tecnico?.site
     ?? 'https://renatovalente5.github.io/AMMA_Creative').replace(/\/$/, '');
 
-const u = (p) => `${BASE}/${String(p).replace(/^\/+/, '')}`;
+/* CADA PEDAÇO DO CAMINHO VAI CODIFICADO. Em Agosto de 2026 a cliente carregou uma
+   fotografia chamada «1 - 9-pronta.jpg» pelo backoffice — com espaços, que é o que
+   sai de um telemóvel — e o endereço foi para o HTML com os espaços em cru. No
+   `src` o navegador perdoa; no `srcset` NÃO devia, porque é o espaço que separa o
+   endereço do descritor («… 480w»). O Chrome perdoou também, testado, mas isso é
+   tolerância dele e não a norma — e o Safari é onde a cliente estaria.
+
+   Codifica-se pedaço a pedaço e não o caminho todo, senão as barras iriam também.
+   E `encodeURIComponent` é idempotente aqui só porque nenhum nome de ficheiro
+   deste projecto tem `%`; se algum dia tiver, isto tem de olhar antes. */
+const codificar = (p) => {
+  /* A QUERY STRING FICA DE FORA. A primeira versão disto codificava a cadeia toda
+     e transformou `catalogo/?categoria=aco` em `catalogo/%3Fcategoria%3Daco` nas
+     migalhas de pão das 18 fichas — as ligações para o catálogo filtrado ficaram
+     todas mortas. Só se viu porque se comparou o site gerado byte a byte antes e
+     depois; nenhuma das guardas o apanhava, porque o ficheiro de destino existe
+     nos dois casos. */
+  const i = String(p).indexOf('?');
+  const caminho = i === -1 ? String(p) : String(p).slice(0, i);
+  const resto = i === -1 ? '' : String(p).slice(i);
+  return caminho.split('/').map((x) => encodeURIComponent(x)).join('/') + resto;
+};
+const u = (p) => `${BASE}/${codificar(String(p).replace(/^\/+/, ''))}`;
 const abs = (p) => `${SITE}/${String(p).replace(/^\/+/, '')}`;
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
