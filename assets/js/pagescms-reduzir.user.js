@@ -12,6 +12,17 @@
 // ==/UserScript==
 
 /* ============================================================================
+   PARA QUEM É ISTO: para quem desenvolve o site, não para a dona da loja.
+
+   Ela pediu — e é uma exigência, não uma preferência — que não tenha de instalar
+   nada no computador dela. Portanto este script NÃO lhe é oferecido, e a página
+   /reduzir-fotos/ não fala dele. Fica aqui porque quem desenvolve também carrega
+   fotografias (as 99 que estão no site entraram todas por essa via) e, nessa
+   máquina, poupa o trabalho de reduzir à mão.
+
+   Se algum dia a restrição mudar, as instruções de instalação estão no histórico
+   do git, no commit que as retirou.
+
    PORQUE É QUE ISTO EXISTE
 
    O Pages CMS recusa fotografias grandes com «Failed to upload file: 413», que

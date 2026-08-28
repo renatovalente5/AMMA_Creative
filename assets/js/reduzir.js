@@ -22,15 +22,106 @@
 (function () {
   'use strict';
 
-  /* O tecto real é ~3 370 000 bytes, mas o orçamento da Vercel é o PEDIDO
-     INTEIRO: cabeçalhos, cookie de sessão e o caminho do URL comem do mesmo
-     saco. No navegador da cliente, com a sessão do Pages CMS, o tecto está
-     algumas centenas de bytes mais abaixo do que num pedido nu. Por isso o
-     limite que se anuncia é 3 MB e o alvo da compressão é 2,4 MB: sobra margem
-     e não se anda a apurar bytes. */
-  var LIMITE = 3 * 1024 * 1024;          // acima disto, avisa
-  var ALVO = Math.round(2.4 * 1024 * 1024); // ao reduzir, aponta para aqui
-  var LADO_MAX = 2560;                   // o site só precisa de 1600 px
+  /* ESTES NÚMEROS SÃO MEDIDOS, NÃO ESCOLHIDOS A OLHO. Vêm do site da LR Motors,
+     onde este mesmo problema foi resolvido primeiro e a calibração foi feita por
+     medição de PSNR contra o original:
+
+         1600 px q82 ... custa 2,07 dB   ← apertado de mais
+         2048 px q92 ... custa 0,14 dB
+         2048 px q95 ... custa 0,01 dB   ← escolhido: sem diferença mensurável
+
+     Acima de 2048 px não se ganha nada, porque o site reduz a 1600 px de
+     qualquer maneira. E reduz-se o MENOS possível, não o mais: o objectivo é
+     caber, não poupar. */
+  var LADO_MAX = 2048;
+  var ORCAMENTO = Math.round(2.6 * 1024 * 1024);
+  var DEGRAUS = [0.95, 0.90, 0.85, 0.78, 0.70];
+  var LIMITE = ORCAMENTO;                // acima disto é preciso reduzir
+
+  /* ══════════════ APAGAR OS METADADOS ══════════════
+     Uma fotografia de telemóvel traz dentro dela a marca do aparelho, a data e
+     — o que importa aqui — as COORDENADAS DE GPS de onde foi tirada. A AMMA
+     trabalha de casa e o repositório do site é público: uma fotografia tirada na
+     sala publica a morada de casa com precisão de metros, sem ninguém dar por
+     isso. Hoje não acontece porque as 99 fotografias que lá estão vieram do
+     Instagram, que apaga o EXIF. A primeira que subir directamente do telemóvel
+     já o traz.
+
+     Isto apaga os segmentos privados e MANTÉM o APP2 de propósito: é lá que vive
+     o perfil de cor. As fotografias do iPhone são em Display P3 e, sem o perfil,
+     o navegador lê-as como sRGB — as cores saem lavadas. Deitar fora tudo o que
+     começa por APP era o caminho fácil, e estragava-as.
+
+     Não recomprime nada: mexe nos bytes dos cabeçalhos e deixa a imagem
+     intacta. Por isso vale a pena mesmo nas fotografias que já passam. */
+  function lerOrientacao(b) {
+    for (var i = 2; i + 4 < b.length && b[i] === 0xFF;) {
+      var marca = b[i + 1];
+      var tam = (b[i + 2] << 8) | b[i + 3];
+      if (marca === 0xDA || marca === 0xD9) break;
+      if (marca === 0xE1 && String.fromCharCode.apply(null, b.slice(i + 4, i + 8)) === 'Exif') {
+        var t = i + 10;
+        var le = b[t] === 0x49;
+        var d = new DataView(b.buffer, b.byteOffset + t, b.length - t);
+        var ifd = d.getUint32(4, le);
+        var n = d.getUint16(ifd, le);
+        for (var e = 0; e < n; e++) {
+          var pos = ifd + 2 + e * 12;
+          if (d.getUint16(pos, le) === 0x0112) return d.getUint16(pos + 8, le) || 1;
+        }
+        return 1;
+      }
+      i += 2 + tam;
+    }
+    return 1;
+  }
+
+  /* Um EXIF do tamanho mínimo, só com a orientação. Apagar o EXIF inteiro numa
+     fotografia que precisa de ser rodada deixá-la-ia deitada; por isso a
+     orientação volta a entrar, e só ela. */
+  function exifMinimo(orientacao) {
+    var buf = new ArrayBuffer(34);
+    var d = new DataView(buf);
+    d.setUint16(0, 34);
+    var m = 'Exif\u0000\u0000';
+    for (var i = 0; i < m.length; i++) d.setUint8(2 + i, m.charCodeAt(i));
+    d.setUint16(8, 0x4949, true);
+    d.setUint16(10, 42, true);
+    d.setUint32(12, 8, true);
+    d.setUint16(16, 1, true);
+    d.setUint16(18, 0x0112, true);
+    d.setUint16(20, 3, true);
+    d.setUint32(22, 1, true);
+    d.setUint16(26, orientacao, true);
+    d.setUint32(30, 0, true);
+    return new Uint8Array(buf);
+  }
+
+  async function semMetadados(ficheiro) {
+    try {
+      var b = new Uint8Array(await ficheiro.arrayBuffer());
+      if (b[0] !== 0xFF || b[1] !== 0xD8) return ficheiro;   // não é JPEG: fica como está
+      var orientacao = lerOrientacao(b);
+      var pedacos = [new Uint8Array([0xFF, 0xD8])];
+      if (orientacao !== 1) pedacos.push(new Uint8Array([0xFF, 0xE1]), exifMinimo(orientacao));
+
+      var i = 2;
+      while (i + 4 <= b.length && b[i] === 0xFF) {
+        var marca = b[i + 1];
+        if (marca === 0xDA) { pedacos.push(b.subarray(i)); break; }
+        var tam = 2 + ((b[i + 2] << 8) | b[i + 3]);
+        var privado = marca === 0xE1 || marca === 0xED || marca === 0xFE;
+        if (!privado) pedacos.push(b.subarray(i, i + tam));
+        i += tam;
+      }
+      var limpo = new Blob(pedacos, { type: 'image/jpeg' });
+      /* Maior, ou vazio, quer dizer que a leitura dos segmentos correu mal:
+         devolve-se o original, que é sempre seguro. */
+      return limpo.size > 0 && limpo.size <= ficheiro.size ? limpo : ficheiro;
+    } catch (e) {
+      return ficheiro;
+    }
+  }
 
   var zona = document.getElementById('zona');
   var entrada = document.getElementById('ficheiros');
@@ -60,36 +151,54 @@
     };
   }
 
-  /* O canvas devolve sempre JPEG: é o formato que o backoffice aceita e o que a
-     máquina fotográfica do telefone já produz. Baixa-se a qualidade por passos
-     e, se ao fim de todos ainda não couber, encolhe-se o lado maior. */
-  function comprimir(bitmap, ladoMax, qualidades) {
-    var escala = Math.min(1, ladoMax / Math.max(bitmap.width, bitmap.height));
-    var l = Math.round(bitmap.width * escala);
-    var a = Math.round(bitmap.height * escala);
-    var tela = document.createElement('canvas');
-    tela.width = l;
-    tela.height = a;
-    var ctx = tela.getContext('2d');
-    ctx.drawImage(bitmap, 0, 0, l, a);
+  /* Descodificar honrando a rotação. `imageOrientation: 'from-image'` é o que
+     impede uma fotografia tirada na vertical de sair deitada: a rotação vive nos
+     metadados e o canvas ignora-os a não ser que se peça. O Chrome de hoje já usa
+     isso por omissão — testei —, mas o valor por omissão nunca foi garantido pela
+     norma e o Safari do iPhone é exactamente onde ela estaria. Pede-se. */
+  async function abrir(ficheiro) {
+    if (self.createImageBitmap) {
+      var bm = await createImageBitmap(ficheiro, { imageOrientation: 'from-image' });
+      return { fonte: bm, largura: bm.width, altura: bm.height, fechar: function () { if (bm.close) bm.close(); } };
+    }
+    var url = URL.createObjectURL(ficheiro);
+    try {
+      var im = await new Promise(function (ok, falha) {
+        var el = new Image();
+        el.onload = function () { ok(el); };
+        el.onerror = function () { falha(new Error('formato não reconhecido')); };
+        el.src = url;
+      });
+      return { fonte: im, largura: im.naturalWidth, altura: im.naturalHeight, fechar: function () {} };
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
 
-    return new Promise(function (resolve) {
-      var i = 0;
-      (function tenta() {
-        if (i >= qualidades.length) {
-          resolve(null);   // não coube: quem chama volta a chamar com lado menor
-          return;
+  /* Só se baixa a qualidade quando é preciso, e só se corta a dimensão se nem a
+     qualidade mais baixa chegar. Na prática nunca chega lá — mas assim não há
+     hipótese de esta página devolver algo que o backoffice recuse. */
+  async function comprimir(aberto) {
+    var lados = [LADO_MAX, Math.round(LADO_MAX / 1.5)];
+    for (var k = 0; k < lados.length; k++) {
+      var escala = Math.min(1, lados[k] / Math.max(aberto.largura, aberto.altura));
+      var tela = document.createElement('canvas');
+      tela.width = Math.round(aberto.largura * escala);
+      tela.height = Math.round(aberto.altura * escala);
+      var ctx = tela.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(aberto.fonte, 0, 0, tela.width, tela.height);
+
+      for (var q = 0; q < DEGRAUS.length; q++) {
+        var blob = await new Promise(function (ok) { tela.toBlob(ok, 'image/jpeg', DEGRAUS[q]); });
+        if (!blob) continue;
+        var ultimo = k === lados.length - 1 && q === DEGRAUS.length - 1;
+        if (blob.size <= ORCAMENTO || ultimo) {
+          return { blob: blob, largura: tela.width, altura: tela.height };
         }
-        tela.toBlob(function (blob) {
-          if (blob && (blob.size <= ALVO || i === qualidades.length - 1)) {
-            resolve({ blob: blob, largura: l, altura: a, qualidade: qualidades[i] });
-          } else {
-            i++;
-            tenta();
-          }
-        }, 'image/jpeg', qualidades[i]);
-      })();
-    });
+      }
+    }
+    return null;
   }
 
   async function trata(ficheiro) {
@@ -106,9 +215,9 @@
        confirmar que era uma imagem — um ficheiro vazio, um PDF ou um HEIC de
        200 KB arrastados para aqui recebiam luz verde e só falhavam depois, no
        backoffice, outra vez sem explicação. É o oposto do que esta página serve. */
-    var bitmap;
+    var aberto;
     try {
-      bitmap = await createImageBitmap(ficheiro);
+      aberto = await abrir(ficheiro);
     } catch (e) {
       /* Quase sempre HEIC: o formato do iPhone, que a maior parte dos
          navegadores não sabe descodificar. O Safari do iPhone sabe. */
@@ -123,43 +232,47 @@
       return;
     }
 
-    /* Passa como está? Então não se mexe. Recomprimir uma fotografia que já cabe
-       só a piora — cada passagem por JPEG perde qualidade. */
+    var saida, nome, mensagem;
+
     if (ficheiro.size <= LIMITE) {
-      ui.estado.innerHTML = '<b class="red__ok">' + kb(ficheiro.size) + ' — passa.</b> ' +
-        bitmap.width + '×' + bitmap.height + ' px. Carregue esta como está.';
+      /* JÁ CABE: não se recomprime. Voltar a gravá-la não a melhorava e chegou a
+         PIORÁ-LA — no LR Motors uma fotografia de 822 KB saía com 1,2 MB, maior e
+         com mais uma compressão em cima. Mas limpam-se os metadados, que é uma
+         operação de bytes e não toca na imagem: é o que tira as coordenadas de
+         GPS antes de a fotografia ir para um repositório público. */
+      saida = await semMetadados(ficheiro);
+      var poupado = ficheiro.size - saida.size;
+      nome = ficheiro.name;
+      mensagem = '<b class="red__ok">' + kb(ficheiro.size) + ' — já passa.</b> ' +
+        aberto.largura + '×' + aberto.altura + ' px.' +
+        (poupado > 0 ? ' Limpei o que a fotografia trazia dentro, incluindo as coordenadas de GPS.'
+                     : ' Não trazia metadados para limpar.');
       ui.raiz.classList.add('red__item--ok');
-      if (bitmap.close) bitmap.close();
-      return;
+    } else {
+      ui.estado.innerHTML = '<b class="red__mau">' + kb(ficheiro.size) +
+        ' — grande demais.</b> O backoffice recusa acima de 3 MB. A reduzir…';
+      ui.raiz.classList.add('red__item--grande');
+
+      var r = await comprimir(aberto);
+      aberto.fechar();
+      if (!r) {
+        ui.estado.innerHTML = '<b class="red__mau">Não consegui reduzir esta.</b> ' +
+          'Mande-a por WhatsApp que nós carregamos.';
+        return;
+      }
+      /* Passar pelo canvas já apaga tudo o que a fotografia trazia dentro: o
+         canvas só conhece píxeis. */
+      saida = r.blob;
+      nome = ficheiro.name.replace(/\.[^.]+$/, '') + '-reduzida.jpg';
+      mensagem = 'Era <s>' + kb(ficheiro.size) + '</s>, ficou <b class="red__ok">' +
+        kb(r.blob.size) + '</b> — ' + r.largura + '×' + r.altura + ' px. Passa.';
+      ui.raiz.classList.remove('red__item--grande');
     }
 
-    ui.estado.innerHTML = '<b class="red__mau">' + kb(ficheiro.size) +
-      ' — grande demais.</b> O backoffice recusa acima de 3 MB. A reduzir…';
-    ui.raiz.classList.add('red__item--grande');
-
-    var lado = LADO_MAX;
-    var r = null;
-    while (lado >= 800) {
-      r = await comprimir(bitmap, lado, [0.92, 0.85, 0.78, 0.7, 0.62]);
-      if (r && r.blob.size <= ALVO) break;
-      lado = Math.round(lado * 0.8);
-    }
-    if (bitmap.close) bitmap.close();
-
-    if (!r) {
-      ui.estado.innerHTML = '<b class="red__mau">Não consegui reduzir esta.</b> ' +
-        'Mande-a por WhatsApp que nós carregamos.';
-      return;
-    }
-
-    var nome = ficheiro.name.replace(/\.[^.]+$/, '') + '-reduzida.jpg';
-    var url = URL.createObjectURL(r.blob);
+    var url = URL.createObjectURL(saida);
     feitos.push({ url: url, nome: nome });
-
-    ui.raiz.classList.remove('red__item--grande');
     ui.raiz.classList.add('red__item--feito');
-    ui.estado.innerHTML = 'Era <s>' + kb(ficheiro.size) + '</s>, ficou <b class="red__ok">' +
-      kb(r.blob.size) + '</b> — ' + r.largura + '×' + r.altura + ' px. Passa.';
+    ui.estado.innerHTML = mensagem;
 
     var a = document.createElement('a');
     a.className = 'btn btn--cheio btn--pequeno';
@@ -167,6 +280,9 @@
     a.download = nome;
     a.textContent = 'Guardar';
     ui.acao.appendChild(a);
+    /* A que já cabia sai com o MESMO nome do original. É de propósito: é a mesma
+       fotografia, só sem os metadados, e dois nomes diferentes para a mesma
+       imagem punham-na a escolher entre duas coisas iguais. */
 
     contaResumo();
   }
