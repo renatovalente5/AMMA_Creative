@@ -145,17 +145,22 @@ jobs:
           # de cada artigo publicado, e que o ficheiro la e uma ficha e nao um
           # reencaminhamento.
           python3 - <<'PY'
-          import json, glob, pathlib, sys
+          import json, glob, os, pathlib, sys
           faltam = []
           for f in sorted(glob.glob('data/produtos/*.json')):
               d = json.load(open(f, encoding='utf-8'))
               if d.get('publicado') is False:
                   continue
-              alvo = pathlib.Path('_site/catalogo') / d['categoria'] / d['slug'] / 'index.html'
+              # O endereco vem do NOME DO FICHEIRO, como no gerador. Havia aqui um
+              # d['slug'] e rebentou com KeyError no dia em que esse campo saiu dos
+              # dados: esta guarda tem de ler a MESMA fonte que o gerador le, senao e
+              # uma segunda versao da verdade a envelhecer sozinha.
+              slug = os.path.basename(f)[:-5]
+              alvo = pathlib.Path('_site/catalogo') / d['categoria'] / slug / 'index.html'
               if not alvo.exists():
-                  faltam.append(f"{d['slug']}: nao foi gerada ({alvo})")
+                  faltam.append(f"{slug}: nao foi gerada ({alvo})")
               elif 'http-equiv="refresh"' in alvo.read_text(encoding='utf-8'):
-                  faltam.append(f"{d['slug']}: onde devia estar a ficha esta um reencaminhamento")
+                  faltam.append(f"{slug}: onde devia estar a ficha esta um reencaminhamento")
           if faltam:
               print('FICHAS DE ARTIGO EM FALTA:'); [print(' ', x) for x in faltam]; sys.exit(1)
           print('todas as fichas de artigo publicadas existem no caminho certo')
