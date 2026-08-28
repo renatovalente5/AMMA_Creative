@@ -303,6 +303,11 @@ const REENCAMINHAR = [
   ['catalogo/boxes/body-irmao-mais-velho/', 'catalogo/bodies/body-irmao-mais-velho/'],
   ['catalogo/textil/body-anuncio-gravidez/', 'catalogo/bodies/body-anuncio-gravidez/'],
   ['catalogo/textil/body-primeira-pascoa/', 'catalogo/bodies/body-primeira-pascoa/'],
+  // A ferramenta chamava-se /reduzir-fotos/ e passou a /preparar-fotos/ no mesmo
+  // dia: o nome dizia à cliente que as fotografias eram reduzidas, e ela não
+  // precisa de saber isso. O endereço antigo esteve algumas horas no ar e foi
+  // escrito no texto de ajuda do backoffice, portanto reencaminha.
+  ['reduzir-fotos/', 'preparar-fotos/'],
 ];
 
 /* ============================================================== esqueleto === */
@@ -1290,13 +1295,21 @@ function publicavel(origem) {
    Corre toda no navegador; nenhuma fotografia sai do computador de quem a usa.
 
    Não está no menu nem no sitemap, e leva `noindex`: é uma ferramenta de
-   trabalho, não uma página da loja. O endereço é /reduzir-fotos/. */
+   trabalho, não uma página da loja. O endereço é /preparar-fotos/.
+
+   CHAMA-SE «PREPARAR» E NÃO «REDUZIR», e nada aqui diz à cliente que houve
+   redução — nem o título, nem o nome do ficheiro que sai, nem a linha de cada
+   fotografia, que diz «Pronta.» e mais nada, igual para a que foi reduzida e para
+   a que já cabia. Foi pedido, e a razão é boa: ela não decide nada com essa
+   informação, e uma pessoa a quem se diz que a fotografia foi mexida fica a
+   pensar se perdeu qualidade. Perde 0,01 dB — medido —, mas isso é uma conversa
+   que não tem de existir. */
 function paginaReduzir() {
   const corpo = `
 <section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
   <div class="envolve envolve--estreito">
     <p class="sobre-linha">Ferramenta</p>
-    <h1 class="tit-g" style="margin-bottom:1rem">Reduzir fotografias</h1>
+    <h1 class="tit-g" style="margin-bottom:1rem">Preparar fotografias</h1>
     <p class="chamada">Deixe aqui as fotografias e eu devolvo-as prontas a carregar
     no backoffice.</p>
 
@@ -1316,8 +1329,8 @@ function paginaReduzir() {
 
     <div class="red__ajuda">
       <h2 class="tit-m">Depois de guardar</h2>
-      <p>As fotografias reduzidas ficam na pasta das transferências, com
-      <code>-reduzida</code> no fim do nome. São essas que deve carregar no backoffice.</p>
+      <p>Ficam na pasta das transferências, com <code>-pronta</code> no fim do nome.
+      São essas que deve carregar no backoffice.</p>
       <h2 class="tit-m">Se disser que é HEIC</h2>
       <p>É o formato do iPhone, e o backoffice não o aceita. No telemóvel:
       <strong>Definições, Câmara, Formatos</strong>, escolha «Mais compatível» — as
@@ -1330,8 +1343,8 @@ function paginaReduzir() {
 </section>`;
 
   return pagina({
-    pag: 'reduzir-fotos/',
-    titulo: `Reduzir fotografias | ${def.empresa.nome_comercial}`,
+    pag: 'preparar-fotos/',
+    titulo: `Preparar fotografias | ${def.empresa.nome_comercial}`,
     descricao: 'Ferramenta interna para reduzir fotografias antes de as carregar no backoffice.',
     naoIndexar: true,
     semAviso: true,
@@ -1414,7 +1427,7 @@ function main() {
   escrever('sobre/index.html', paginaSobre());
   escrever('contactos/index.html', paginaContactos());
   for (const p of produtos) escrever(`catalogo/${p.categoria}/${p.slug}/index.html`, paginaProduto(p));
-  escrever('reduzir-fotos/index.html', paginaReduzir());
+  escrever('preparar-fotos/index.html', paginaReduzir());
 
   /* páginas legais, em markdown */
   for (const [ficheiro, destino] of Object.entries({

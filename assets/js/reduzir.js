@@ -15,7 +15,7 @@
    a subida vai até ao fim antes de falhar.
 
    O que esta página faz é dizer o que a mensagem não diz: o tamanho de cada
-   fotografia, se passa ou não, e devolvê-la reduzida se não passar.
+   fotografia, se passa ou não, e devolvê-la pronta a carregar.
 
    Tudo acontece neste navegador. Nenhuma fotografia sai deste computador.
    ========================================================================== */
@@ -146,6 +146,23 @@
       : Math.round(b / 1024) + ' KB';
   };
 
+  /* TODAS saem com o mesmo sufixo, tenham sido reduzidas ou não. Dar «-pronta» só
+     às reduzidas devolvia pela porta do lado a informação que se quer fora daqui:
+     dois nomes diferentes na pasta das transferências dizem exactamente quais
+     foram mexidas. E precisa de sufixo — sem ele o navegador guarda como
+     «IMG_0042 (1).jpg», ao lado do original, e ela tem de adivinhar qual é qual. */
+  var EXTENSAO = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+
+  /* A EXTENSÃO SEGUE O CONTEÚDO, não o nome que entrou. Uma fotografia reduzida sai
+     sempre em JPEG; uma que já cabia sai no formato em que entrou, porque só se lhe
+     tiraram os cabeçalhos. Escrever «.jpg» num ficheiro que é PNG dava um ficheiro
+     com o nome errado dentro do repositório — e o backoffice valida a extensão. */
+  function nomeDeSaida(nome, blob) {
+    var ext = EXTENSAO[blob && blob.type] ||
+      (nome.match(/\.([a-z0-9]+)$/i) || [, 'jpg'])[1].toLowerCase();
+    return nome.replace(/\.[^.]+$/, '') + '-pronta.' + ext;
+  }
+
   function linha(nome) {
     var li = document.createElement('li');
     li.className = 'red__item';
@@ -252,9 +269,8 @@
          operação de bytes e não toca na imagem: é o que tira as coordenadas de
          GPS antes de a fotografia ir para um repositório público. */
       saida = await semMetadados(ficheiro);
-      nome = ficheiro.name;
-      mensagem = '<b class="red__ok">Pronta.</b> ' +
-        aberto.largura + '×' + aberto.altura + ' px, ' + kb(saida.size) + '.';
+      nome = nomeDeSaida(ficheiro.name, saida);
+      mensagem = '<b class="red__ok">Pronta.</b>';
       ui.raiz.classList.add('red__item--ok');
     } else {
       ui.estado.innerHTML = 'A preparar…';
@@ -263,19 +279,18 @@
       var r = await comprimir(aberto);
       aberto.fechar();
       if (!r) {
-        ui.estado.innerHTML = '<b class="red__mau">Não consegui reduzir esta.</b> ' +
+        ui.estado.innerHTML = '<b class="red__mau">Esta não deu.</b> ' +
           'Mande-a por WhatsApp que nós carregamos.';
         return;
       }
       /* Passar pelo canvas já apaga tudo o que a fotografia trazia dentro: o
          canvas só conhece píxeis. */
       saida = r.blob;
-      nome = ficheiro.name.replace(/\.[^.]+$/, '') + '-reduzida.jpg';
-      /* `--tinta-2` e não `--tinta-3`: o cabeçalho do CSS diz que o terceiro tom
-         tem 3,1:1 e é «SÓ para ícones e traços, nunca texto». */
-      mensagem = '<b class="red__ok">Pronta.</b> ' +
-        r.largura + '×' + r.altura + ' px, ' + kb(r.blob.size) +
-        ' <span style="color:var(--tinta-2)">(era ' + kb(ficheiro.size) + ')</span>.';
+      nome = nomeDeSaida(ficheiro.name, saida);
+      /* EXACTAMENTE A MESMA FRASE da que não foi tocada, e é esse o ponto: a dona
+         da loja não precisa de saber que houve redução nenhuma. Duas fotografias
+         lado a lado, uma reduzida e outra não, dizem as duas «Pronta.» */
+      mensagem = '<b class="red__ok">Pronta.</b>';
       ui.raiz.classList.remove('red__item--grande');
     }
 
