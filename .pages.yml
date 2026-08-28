@@ -176,7 +176,11 @@ content:
       - name: preco
         label: 'Preço (€) — vazio fica «Sob consulta»'
         type: number
-        step: 0.5
+        # `step` VAI DENTRO DE `options:`. Ao nível do campo é descartado em silêncio
+        # — o Pages CMS lê `field.options.step` e mais nada — e sem ele o campo
+        # assume o passo 1 e recusa decimais.
+        options:
+          step: 0.5
         description: >-
           DEIXE VAZIO para o artigo ficar «Sob consulta», que é como está a maioria.
           Se puser um valor, ele aparece no catálogo e na ficha do artigo, e tem de
@@ -212,7 +216,14 @@ content:
       - name: ocasioes
         label: 'Ocasiões — os filtros do catálogo'
         type: select
-        list: true
+        # SEM `list: true`. Estava cá e estava a mais: são as duas maneiras de dizer
+        # «vários» e o Pages CMS aplica-as uma por cima da outra. O `options.multiple`
+        # já torna o esquema `z.array(opção)`; o `list` embrulha isso outra vez e passa
+        # a exigir uma LISTA DE LISTAS. Os 18 artigos guardam
+        # ["anuncio-gravidez", "dia-do-pai"] — uma lista de textos — portanto QUALQUER
+        # gravação de artigo era recusada pela validação do formulário. Nunca deu por
+        # si porque os três commits que vieram do backoffice até hoje tocaram só em
+        # definicoes.json: gravar um artigo nunca chegou a ser exercitado.
         description: >-
           Para que ocasiões serve o artigo. É por aqui que se filtra o catálogo:
           quem procura um presente de batizado escolhe «Batizado» e vê só o que
@@ -279,8 +290,11 @@ content:
           10.
         # Sem `min`: no Pages CMS o `min` passa a ser a base do incremento e
         # invalida valores que já existam nos dados.
-        step: 10
-
+        # `step` VAI DENTRO DE `options:`. Ao nível do campo é descartado em silêncio
+        # — o Pages CMS lê `field.options.step` e mais nada — e sem ele o campo
+        # assume o passo 1 e recusa decimais.
+        options:
+          step: 10
       - name: slug
         label: 'Endereço da página — não mudar'
         type: string
@@ -343,11 +357,12 @@ content:
               contactos, sempre acompanhado do aviso do custo da chamada, que o
               site acrescenta sozinho porque a lei obriga.
           - name: whatsapp
+            required: true
             label: WhatsApp
             type: string
             description: 'Com o indicativo e sem sinais: 351930477114.'
           - { name: email, label: Email, type: string }
-          - { name: instagram, label: 'Instagram (endereço completo)', type: string }
+          - { name: instagram, label: 'Instagram (endereço completo)', type: string, required: true }
 
       - name: local
         label: Onde estão
@@ -370,12 +385,22 @@ content:
           - { name: localidade, label: Localidade, type: string, required: true }
           - { name: concelho, label: Concelho, type: string, required: true }
           - { name: pais, label: País, type: string, required: true }
+          # `step` VAI DENTRO DE `options:` — ao nível do campo é descartado em
+          # silêncio (o Pages CMS lê `field.options.step` e mais nada), e sem ele
+          # o <input type="number"> assume 1 e recusa decimais. Estes dois têm
+          # valores decimais gravados, portanto o ecrã abria com dois campos em
+          # estado inválido antes de se tocar em nada.
           - name: latitude
             label: Latitude
             type: number
-            description: 'Para o mapa e para o Google. Sem `step`, o backoffice recusa decimais.'
-            step: 0.0000001
-          - { name: longitude, label: Longitude, type: number, step: 0.0000001 }
+            description: 'Para o mapa e para o Google. Tira-se do Google Maps, com o botão direito sobre o local e «Copiar coordenadas».'
+            options:
+              step: 0.0000001
+          - name: longitude
+            label: Longitude
+            type: number
+            options:
+              step: 0.0000001
           - { name: mapa, label: Link do Google Maps, type: string }
 
       - name: textos
@@ -397,8 +422,9 @@ content:
           - { name: hero_texto, label: Texto da página inicial, type: text }
           - { name: reclamo, label: Frase da marca (rodapé), type: string }
           - { name: sobre_titulo, label: Título do «Sobre nós», type: string }
-          - { name: sobre_texto, label: Texto do «Sobre nós», type: text }
+          - { name: sobre_texto, label: Texto do «Sobre nós», type: text, required: true }
           - name: portes
+            required: true
             label: Frase dos portes
             type: string
             description: >-
@@ -451,7 +477,7 @@ content:
           um site com actividade comercial tem de se identificar de forma
           permanente. Altere só se algum destes dados mudar.
         fields:
-          - { name: nome_comercial, label: Nome comercial, type: string }
+          - { name: nome_comercial, label: Nome comercial, type: string, required: true }
           - { name: assinatura, label: Assinatura (Artigos personalizados), type: string }
           - name: denominacao_social
             label: Nome completo da titular
@@ -462,6 +488,7 @@ content:
               substitui-se aqui.
           - { name: forma_juridica, label: Forma jurídica, type: string }
           - name: nif
+            required: true
             label: NIF
             type: string
             description: Obrigatório no rodapé. Está com um valor de espera até ser indicado.

@@ -164,6 +164,7 @@ jobs:
           # montra é pior do que um erro de build.
           python3 - <<'PY'
           import re, sys, pathlib
+          from urllib.parse import unquote
           raiz = pathlib.Path('_site')
           faltam = []
           for h in raiz.rglob('*.html'):
@@ -172,7 +173,14 @@ jobs:
                   for parte in attr.split(','):
                       u = parte.strip().split(' ')[0]
                       if u.startswith('/') and re.search(r'\.(webp|jpg|png|svg)$', u):
-                          rel = u.replace('/AMMA_Creative/', '', 1).lstrip('/')
+                          # PERCENT-DECODE. Desde que o gerador passou a codificar os
+                          # caminhos, uma fotografia com espaco no nome sai como
+                          # `1%20-%209-pronta.webp` no HTML e no disco chama-se
+                          # `1 - 9-pronta.webp`. Sem descodificar, a guarda dizia que
+                          # faltavam 16 imagens que existem — e como o passo de publicar
+                          # depende deste, NADA ia ao ar. A cliente carrega fotografias
+                          # com o nome que vem do telemovel; e so uma questao de tempo.
+                          rel = unquote(u).replace('/AMMA_Creative/', '', 1).lstrip('/')
                           if not (raiz / rel).exists():
                               faltam.append(f'{h.relative_to(raiz)} -> {u}')
           if faltam:
@@ -190,12 +198,13 @@ jobs:
         run: |
           python3 - <<'PY'
           import re, sys, pathlib, json, collections
+          from urllib.parse import unquote
           raiz = pathlib.Path('_site')
           BASE = '/AMMA_Creative/'
 
           def existe(u):
               """Um endereco interno resolve para um ficheiro no que vai para o ar?"""
-              u = u.split('#')[0].split('?')[0]
+              u = unquote(u.split('#')[0].split('?')[0])
               if not u.startswith('/'):
                   return True                      # relativo: nao se usa aqui
               rel = u[len(BASE):] if u.startswith(BASE) else u.lstrip('/')

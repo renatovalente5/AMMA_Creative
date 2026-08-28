@@ -1248,10 +1248,37 @@ function marcarDown(md) {
   const fechar = () => { escoarItem(); if (lista) { html += `</${lista}>\n`; lista = null; } };
   const cortar = () => { escoarParagrafo(); fechar(); };
 
+  let tabela = null;
+  const escoarTabela = () => {
+    if (!tabela || !tabela.length) { tabela = null; return; }
+    const [cab, ...corpo] = tabela;
+    html += '<div class="tabela-rolar"><table>\n<thead><tr>'
+      + cab.map((c) => `<th>${inline(c)}</th>`).join('') + '</tr></thead>\n<tbody>\n'
+      + corpo.map((linha) => '<tr>' + linha.map((c) => `<td>${inline(c)}</td>`).join('') + '</tr>').join('\n')
+      + '\n</tbody>\n</table></div>\n';
+    tabela = null;
+  };
+
   for (const l of linhas) {
     const t = l.trim();
     if (!t) { cortar(); continue; }
     let m;
+    /* TABELAS. A política de privacidade tem uma — que dado se recolhe, para quê,
+       e com que fundamento legal — e sem isto saía em cru, com os `|` à vista, tudo
+       colapsado num parágrafo só, porque o laço acumula linhas seguidas. Era a
+       página que a lei manda ser clara, e a mais ilegível do site.
+
+       Só o formato que os ficheiros usam: cabeçalho, linha de traços, corpo. Sem
+       alinhamento por `:---:`, que aqui não faz falta. */
+    if (t.startsWith('|') && t.endsWith('|')) {
+      const celulas = (linha) => linha.slice(1, -1).split('|').map((c) => c.trim());
+      if (/^\|[\s:|-]+\|$/.test(t)) continue;          // a linha dos traços não se escreve
+      if (!tabela) { cortar(); tabela = []; }
+      tabela.push(celulas(t));
+      continue;
+    }
+    if (tabela) escoarTabela();
+
     if ((m = t.match(/^###\s+(.*)$/))) { cortar(); html += `<h3>${inline(m[1])}</h3>\n`; }
     else if ((m = t.match(/^##\s+(.*)$/))) { cortar(); html += `<h2>${inline(m[1])}</h2>\n`; }
     else if (/^(-{3,}|\*{3,}|_{3,})$/.test(t)) { cortar(); html += '<hr>\n'; }
@@ -1269,6 +1296,7 @@ function marcarDown(md) {
     } else { paragrafo.push(t); }
   }
   cortar();
+  escoarTabela();
   fechar();
   return html;
 }
@@ -1409,6 +1437,15 @@ function main() {
     ['local.pais', 'Dados da loja › Onde estão › País'],
     ['empresa.nome_comercial', 'Dados da loja › A empresa › Nome comercial'],
     ['empresa.nif', 'Dados da loja › A empresa › NIF'],
+    /* Estes três não são exigência da lei, são exigência do código: apagá-los
+       rebentava a construção com um `TypeError` cru — «Cannot read properties of
+       undefined» — que não diz a ninguém o que fazer. Descobertos apagando uma a
+       uma as 26 chaves de definicoes.json e vendo o que acontecia; foram os
+       únicos três de 26. O Pages CMS APAGA a chave quando o campo fica vazio, por
+       isso o cenário é a distância de um campo limpo sem querer. */
+    ['textos.sobre_texto', 'Dados da loja › Textos › Texto do «Sobre nós»'],
+    ['textos.portes', 'Dados da loja › Textos › Frase dos portes'],
+    ['contactos.whatsapp', 'Dados da loja › Contactos › WhatsApp'],
   ];
   const valorEm = (caminho) => caminho.split('.').reduce((o, k) => (o == null ? o : o[k]), def);
   const emFalta = OBRIGATORIOS
@@ -1427,8 +1464,11 @@ function main() {
 
   if (emFalta.length) {
     throw new Error(
-      'faltam dados que a lei obriga (DL 7/2004 art. 10), e por isso não se publica:\n' +
+      'faltam dados sem os quais não se publica:\n' +
       emFalta.join('\n') +
+      '\n\nA morada, a localidade, o concelho, o país, o nome comercial e o NIF são ' +
+      'exigência do DL 7/2004 art. 10. Os restantes são exigência do site: sem eles ' +
+      'há páginas que não se conseguem escrever.' +
       '\n\nSe isto apareceu depois de alguém gravar no backoffice, o mais provável é ' +
       'ter-se gravado o formulário com campos em branco — o Pages CMS apaga as chaves ' +
       'vazias em vez de as deixar vazias. Os valores anteriores estão no histórico do git.');
@@ -1551,12 +1591,34 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
      verdadeira em silêncio — e o site ia para o ar com um artigo transformado
      em página de espera. */
   const escritos = new Set(REENCAMINHAR.map(([de]) => de));
-  for (const [de, para] of REENCAMINHAR) {
+
+  /* DESPUBLICAR UM ARTIGO NÃO PODE MATAR A PUBLICAÇÃO INTEIRA. Nove dos onze
+     destinos desta lista são fichas de artigo, e uma ficha só se escreve para
+     artigos publicados. Com a versão anterior desta verificação, a cliente
+     desligar o interruptor «Publicado no site» num desses nove — que é
+     precisamente o que o texto do campo lhe recomenda fazer enquanto não tem
+     fotografias boas — rebentava a construção, e o site parava de publicar
+     TUDO sem ela saber porquê.
+
+     Agora distingue-se: se o destino é um artigo que existe mas está
+     despublicado, o reencaminhamento vai para o catálogo, que é o destino que
+     nunca desaparece. Se o destino não corresponde a artigo nenhum, é erro de
+     escrita nosso e continua a rebentar — que é para isso que serve. */
+  const slugsConhecidos = new Set(todos.map((p) => `catalogo/${p.categoria}/${p.slug}/`));
+  const desviados = [];
+
+  for (const [de, paraOriginal] of REENCAMINHAR) {
+    let para = paraOriginal;
     if (escritos.has(para)) {
       throw new Error(`reencaminhamento em cadeia: ${de} -> ${para}, e ${para} também reencaminha. Aponte para o destino final.`);
     }
     if (!existsSync(join(SAIDA, para, 'index.html'))) {
-      throw new Error(`reencaminhamento para uma página que não existe: ${de} -> ${para}`);
+      if (slugsConhecidos.has(para)) {
+        desviados.push(`${de} -> ${para} (despublicado)`);
+        para = 'catalogo/';
+      } else {
+        throw new Error(`reencaminhamento para uma página que não existe: ${de} -> ${para}`);
+      }
     }
     if (existsSync(join(SAIDA, de, 'index.html'))) {
       throw new Error(`o reencaminhamento ${de} taparia uma página verdadeira. Tire-o da lista.`);
@@ -1588,6 +1650,10 @@ a{color:#602601}</style>
   console.log(`  ${produtos.length} produtos em ${categorias.length} categorias`);
   console.log(`  ${urls.length} páginas no sitemap`);
   if (REENCAMINHAR.length) console.log(`  ${REENCAMINHAR.length} endereço(s) antigo(s) a reencaminhar`);
+  if (desviados.length) {
+    console.log(`  ${desviados.length} desviado(s) para o catálogo por o artigo estar despublicado:`);
+    desviados.forEach((d) => console.log(`    ${d}`));
+  }
   console.log(`  base: ${BASE || '/'}   site: ${SITE}`);
   if (naoPublicados.length) {
     console.log(`  ${naoPublicados.length} originais ficaram fora do site (o site usa as variantes)`);

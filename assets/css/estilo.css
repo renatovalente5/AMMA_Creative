@@ -901,3 +901,13 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 /* A lista numerada dos dois passos de instalação, na página /reduzir-fotos/. */
 .red__passos { margin: .6rem 0 1rem 1.2rem; padding: 0; color: var(--tinta-2); }
 .red__passos li { margin-bottom: .45rem; }
+
+/* ══════════════════════════════════════════════ TABELAS DAS PÁGINAS LEGAIS ══
+   A política de privacidade tem uma tabela — que dado, para quê, com que
+   fundamento legal. Rola dentro da própria caixa em ecrã estreito, para a
+   página nunca rolar na horizontal. */
+.tabela-rolar { overflow-x: auto; margin: 1.2rem 0; }
+.texto table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .95rem; }
+.texto th, .texto td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid var(--linha); vertical-align: top; }
+.texto th { font-weight: 600; color: var(--tinta); background: var(--creme); }
+.texto td { color: var(--tinta-2); }
