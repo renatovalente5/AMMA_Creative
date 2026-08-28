@@ -17,8 +17,8 @@ Protecção de Dados obriga — e porque é justo que se possa confirmar.
 
 ## Quem é responsável
 
-A **AMMA Creative**, empresária em nome individual, com sede em Rua do Comércio,
-23-47, 4935-329 Vila Nova de Anha, Viana do Castelo.
+A **AMMA Creative**, empresária em nome individual, com sede em
+{{morada_completa}}.
 
 Contacto para assuntos de dados pessoais: mensagem por
 [WhatsApp](https://wa.me/{{whatsapp}}) ou pelo

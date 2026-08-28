@@ -1445,6 +1445,16 @@ function main() {
       whatsapp: def.contactos.whatsapp,
       telefone: def.contactos.telefone_texto,
       email: def.contactos.email,
+      /* A MORADA TAMBÉM NÃO, e por uma razão que se descobriu da pior maneira:
+         em Agosto de 2026 a morada foi apagada no backoffice e saiu do rodapé e
+         da página de contactos — mas CONTINUOU publicada nas três páginas legais,
+         porque lá estava escrita à mão. Quem a apagou não podia saber disso, e
+         quem lê o backoffice não tem como adivinhar que há cópias.
+
+         Seja para a mudar ou para a tirar, tem de haver um só sítio onde se mexe. */
+      morada: def.local.morada,
+      morada_completa: [def.local.morada, `${def.local.codigo_postal} ${def.local.localidade}`,
+                        def.local.concelho].filter(Boolean).join(', '),
     };
     const md = cru.replace(/\{\{(\w+)\}\}/g, (_, chave) => {
       const v = CONTACTOS[chave];

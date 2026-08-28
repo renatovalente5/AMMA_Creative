@@ -344,17 +344,23 @@ content:
         label: Onde estão
         type: object
         description: >-
+          ESTES CAMPOS NÃO PODEM FICAR VAZIOS. A lei portuguesa obriga um site que
+          vende a identificar a morada (DL 7/2004, artigo 10), e por isso o backoffice
+          não deixa gravar sem eles. Se precisar de mudar a morada, ou de deixar de a
+          mostrar, fale connosco — há maneiras de o fazer sem o site ficar ilegal, mas
+          apagar o campo não é uma delas: a morada continuava publicada nas páginas
+          legais e o site deixava de se publicar.
           A morada que aparece no fim de todas as páginas, na página de
           contactos, no mapa e nos dados que o Google lê. A latitude e a
           longitude são o alfinete do mapa: tiram-se do Google Maps, com o
           botão direito sobre o local e «Copiar coordenadas». Se não tiver a
           certeza, não mexa — um número trocado põe o alfinete no mar.
         fields:
-          - { name: morada, label: Rua, type: string }
-          - { name: codigo_postal, label: Código postal, type: string }
-          - { name: localidade, label: Localidade, type: string }
-          - { name: concelho, label: Concelho, type: string }
-          - { name: pais, label: País, type: string }
+          - { name: morada, label: Rua, type: string, required: true }
+          - { name: codigo_postal, label: Código postal, type: string, required: true }
+          - { name: localidade, label: Localidade, type: string, required: true }
+          - { name: concelho, label: Concelho, type: string, required: true }
+          - { name: pais, label: País, type: string, required: true }
           - name: latitude
             label: Latitude
             type: number
