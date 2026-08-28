@@ -131,8 +131,19 @@
 
   var feitos = [];
 
+  /* O QUE ESTAS MENSAGENS NÃO DIZEM, e é de propósito. A dona da loja não precisa
+     de saber que o limite são 3 MB, que o erro do backoffice se chama «413», nem
+     que se lhe apagam as coordenadas de GPS da fotografia — foi pedido, e com
+     razão: nada disso é accionável por ela, e o que não é accionável só assusta.
+     Cada linha diz uma coisa só — esta está pronta, ou esta não deu. O trabalho
+     continua a ser feito exactamente como antes. */
+  /* Vírgula decimal, não ponto: `toFixed` devolve «2.38» e em português lê-se
+     «2,38». Detalhe pequeno que, numa página que ela vai usar, é a diferença
+     entre parecer feita para ela ou traduzida. */
   var kb = function (b) {
-    return b >= 1048576 ? (b / 1048576).toFixed(2) + ' MB' : Math.round(b / 1024) + ' KB';
+    return b >= 1048576
+      ? (b / 1048576).toFixed(2).replace('.', ',') + ' MB'
+      : Math.round(b / 1024) + ' KB';
   };
 
   function linha(nome) {
@@ -241,16 +252,12 @@
          operação de bytes e não toca na imagem: é o que tira as coordenadas de
          GPS antes de a fotografia ir para um repositório público. */
       saida = await semMetadados(ficheiro);
-      var poupado = ficheiro.size - saida.size;
       nome = ficheiro.name;
-      mensagem = '<b class="red__ok">' + kb(ficheiro.size) + ' — já passa.</b> ' +
-        aberto.largura + '×' + aberto.altura + ' px.' +
-        (poupado > 0 ? ' Limpei o que a fotografia trazia dentro, incluindo as coordenadas de GPS.'
-                     : ' Não trazia metadados para limpar.');
+      mensagem = '<b class="red__ok">Pronta.</b> ' +
+        aberto.largura + '×' + aberto.altura + ' px, ' + kb(saida.size) + '.';
       ui.raiz.classList.add('red__item--ok');
     } else {
-      ui.estado.innerHTML = '<b class="red__mau">' + kb(ficheiro.size) +
-        ' — grande demais.</b> O backoffice recusa acima de 3 MB. A reduzir…';
+      ui.estado.innerHTML = 'A preparar…';
       ui.raiz.classList.add('red__item--grande');
 
       var r = await comprimir(aberto);
@@ -264,8 +271,11 @@
          canvas só conhece píxeis. */
       saida = r.blob;
       nome = ficheiro.name.replace(/\.[^.]+$/, '') + '-reduzida.jpg';
-      mensagem = 'Era <s>' + kb(ficheiro.size) + '</s>, ficou <b class="red__ok">' +
-        kb(r.blob.size) + '</b> — ' + r.largura + '×' + r.altura + ' px. Passa.';
+      /* `--tinta-2` e não `--tinta-3`: o cabeçalho do CSS diz que o terceiro tom
+         tem 3,1:1 e é «SÓ para ícones e traços, nunca texto». */
+      mensagem = '<b class="red__ok">Pronta.</b> ' +
+        r.largura + '×' + r.altura + ' px, ' + kb(r.blob.size) +
+        ' <span style="color:var(--tinta-2)">(era ' + kb(ficheiro.size) + ')</span>.';
       ui.raiz.classList.remove('red__item--grande');
     }
 
@@ -291,9 +301,11 @@
     if (!resumo) return;
     if (!feitos.length) { resumo.hidden = true; return; }
     resumo.hidden = false;
+    /* «Prontas», não «reduzidas»: as que já cabiam não foram reduzidas, e dizer
+       que foram era mentira em cima de um número. */
     resumo.querySelector('.red__quantas').textContent = feitos.length === 1
-      ? 'Uma fotografia reduzida e pronta a carregar.'
-      : feitos.length + ' fotografias reduzidas e prontas a carregar.';
+      ? 'Uma fotografia pronta a carregar.'
+      : feitos.length + ' fotografias prontas a carregar.';
   }
 
   var todas = document.getElementById('guardar-todas');

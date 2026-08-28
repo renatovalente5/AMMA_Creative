@@ -1297,13 +1297,8 @@ function paginaReduzir() {
   <div class="envolve envolve--estreito">
     <p class="sobre-linha">Ferramenta</p>
     <h1 class="tit-g" style="margin-bottom:1rem">Reduzir fotografias</h1>
-    <p class="chamada">Se o backoffice disser <strong>«Failed to upload file: 413»</strong>,
-    a fotografia é grande demais — acima de 3 MB. Arraste-as para aqui: eu digo quanto
-    pesa cada uma, reduzo as que não passam, e devolvo todas prontas a carregar.</p>
-    <p style="color:var(--tinta-2);font-size:.95rem">As fotografias não saem deste
-    computador — tudo acontece aqui, no seu navegador. Aproveito para apagar o que cada
-    fotografia traz escondido lá dentro, incluindo <strong>o local onde foi tirada</strong>,
-    que o telemóvel grava em todas.</p>
+    <p class="chamada">Deixe aqui as fotografias e eu devolvo-as prontas a carregar
+    no backoffice.</p>
 
     <div class="red__zona" id="zona">
       <input type="file" id="ficheiros" accept="image/jpeg,image/png,image/webp" multiple hidden>
