@@ -897,3 +897,7 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
   .red__item { grid-template-columns: 1fr; }
   .red__acao { grid-column: 1; grid-row: auto; }
 }
+
+/* A lista numerada dos dois passos de instalação, na página /reduzir-fotos/. */
+.red__passos { margin: .6rem 0 1rem 1.2rem; padding: 0; color: var(--tinta-2); }
+.red__passos li { margin-bottom: .45rem; }

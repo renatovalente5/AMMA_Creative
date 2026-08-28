@@ -1318,6 +1318,21 @@ function paginaReduzir() {
     <ul class="red__lista" id="lista"></ul>
 
     <div class="red__ajuda">
+      <h2 class="tit-m">Para nunca mais precisar desta página</h2>
+      <p>Há uma forma de isto acontecer sozinho, dentro do próprio backoffice: instala-se
+      uma vez no computador e a partir daí as fotografias grandes são reduzidas no momento
+      em que são enviadas, sem aviso e sem passo nenhum. São dois cliques, uma vez só:</p>
+      <ol class="red__passos">
+        <li>Instalar o <strong>Violentmonkey</strong> na loja de extensões do navegador
+        (é grátis e serve para correr pequenos programas em páginas).</li>
+        <li>Abrir <a href="${u('assets/js/pagescms-reduzir.user.js')}"><code>pagescms-reduzir.user.js</code></a>
+        e confirmar «Instalar» na janela que aparece.</li>
+      </ol>
+      <p>Depois disso não há nada a fazer: arrasta-se a fotografia no backoffice como
+      sempre e ela passa. Se um dia deixar de funcionar, volta a aparecer o erro
+      «413» — nunca fica nada mal gravado por causa disto. Só funciona em computador;
+      no telemóvel use esta página.</p>
+
       <h2 class="tit-m">Depois de guardar</h2>
       <p>As fotografias reduzidas ficam na pasta das transferências, com
       <code>-reduzida</code> no fim do nome. São essas que deve carregar no backoffice.</p>
