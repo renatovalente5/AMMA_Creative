@@ -65,7 +65,12 @@ content:
     label: Artigos
     type: collection
     path: data/produtos
-    filename: '{fields.slug}.json'
+    # O nome do ficheiro sai do NOME DO ARTIGO, e o Pages CMS slugifica-o sozinho
+    # («Box para o pai» → box-para-o-pai.json). Antes saía de um campo «Endereço da
+    # página» que a cliente tinha de preencher à mão, com as regras de um endereço,
+    # e sem o qual não conseguia gravar. O nome do ficheiro É o endereço da página,
+    # e só se gera na CRIAÇÃO: mudar o nome de um artigo depois não lhe mexe no link.
+    filename: '{fields.nome}.json'
     format: json
     # SEM APAGAR e SEM RENOMEAR. Apagar um artigo daqui parte os links que já
     # andam partilhados, e o histórico de endereços vive na lista REENCAMINHAR do
@@ -80,14 +85,14 @@ content:
       # O `slug` na tabela é a referência do artigo: é o que está no endereço da
       # página e o nome do próprio ficheiro. Serve para o distinguir sem
       # ambiguidade quando há nomes parecidos — e há: quatro bodies de convite.
-      fields: [nome, categoria, publicado, slug]
+      fields: [nome, categoria, publicado]
       primary: nome
       sort: [ordem, nome]
       # A CAIXA DE PROCURA é a alteração com melhor retorno deste ficheiro. A
       # primeira coisa que se faz aqui é encontrar o artigo das fotografias que
       # acabaram de chegar, e vinte linhas percorridas com o olho é como seis
       # fotografias foram para o artigo errado.
-      search: [nome, resumo, slug]
+      search: [nome, resumo]
       default:
         sort: ordem
         order: asc
@@ -295,19 +300,12 @@ content:
         # assume o passo 1 e recusa decimais.
         options:
           step: 10
-      - name: slug
-        label: 'Endereço da página — não mudar'
-        type: string
-        required: true
-        description: >-
-          É o fim do link do artigo. Depois de o artigo estar publicado, NÃO MUDE:
-          quem tiver o link guardado ou partilhado deixa de o conseguir abrir, e o
-          Google perde a página. Se precisar mesmo de mudar, diga-nos — nós mudamos
-          e deixamos o endereço antigo a levar as pessoas ao novo, como já está
-          feito para todos os que mudaram até hoje. Só letras minúsculas, números
-          e hífens, sem
-          acentos. Exemplo: body-convite-madrinha.
-        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+      # O CAMPO «ENDEREÇO DA PÁGINA» SAIU DAQUI. Era obrigatório e a cliente ficava
+      # presa nele: para criar um artigo tinha de inventar um endereço com regras de
+      # endereço, e o texto de ajuda — escrito para quem EDITA — dizia-lhe «NÃO
+      # MUDE», que não quer dizer nada a quem preenche pela primeira vez. Sem o
+      # preencher: «Please fix the errors before saving», e mais nada. Agora o
+      # endereço sai do nome do artigo, pelo `filename` lá em cima.
 
   # ------------------------------------------------------------- categorias
   # A ENTRADA DAS CATEGORIAS SAIU DAQUI, a pedido, quando a coluna das categorias

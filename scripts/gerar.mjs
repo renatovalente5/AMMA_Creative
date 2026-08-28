@@ -27,9 +27,32 @@ const categorias = JSON.parse(readFileSync(join(RAIZ, 'data/categorias.json'), '
 /* Um ficheiro JSON por produto. É assim que o backoffice os trata: cada artigo é
    uma entrada própria, cria-se e apaga-se sozinha, e dois artigos editados ao
    mesmo tempo não colidem no mesmo ficheiro. */
+/* O SLUG VEM DO NOME DO FICHEIRO, e não de um campo dentro dele.
+
+   Havia um campo «Endereço da página» no backoffice, obrigatório, e a cliente
+   ficou presa nele: para criar um artigo tinha de inventar um endereço com as
+   regras de um endereço — minúsculas, sem acentos, hífens em vez de espaços — e
+   o texto de ajuda, escrito para quem EDITA, dizia-lhe «NÃO MUDE», que não faz
+   sentido nenhum para quem está a preencher pela primeira vez. Sem o preencher,
+   «Please fix the errors before saving» e mais nada.
+
+   Agora o Pages CMS deriva o nome do ficheiro do nome do artigo — o
+   `generateFilename` dele slugifica sempre, portanto «Box para o pai» dá
+   `box-para-o-pai.json` — e o gerador lê o endereço desse nome. Um só sítio, e
+   ela nunca vê o assunto.
+
+   Isto é seguro para os endereços que já andam por aí, e não é por acaso: os 18
+   ficheiros já se chamavam `<slug>.json`, verificado um a um, portanto derivar do
+   nome do ficheiro dá exactamente os mesmos valores. E o Pages CMS só gera o
+   nome do ficheiro na CRIAÇÃO — num artigo que já existe usa o caminho que tem,
+   confirmado em components/entry/entry.tsx:195-199 — logo mudar o nome de um
+   artigo não lhe mexe no endereço. O `rename: false` fecha o resto. */
 const todos = readdirSync(join(RAIZ, 'data/produtos'))
   .filter((f) => f.endsWith('.json'))
-  .map((f) => JSON.parse(readFileSync(join(RAIZ, 'data/produtos', f), 'utf8')))
+  .map((f) => ({
+    ...JSON.parse(readFileSync(join(RAIZ, 'data/produtos', f), 'utf8')),
+    slug: f.slice(0, -5),
+  }))
   .sort((a, b) => (a.ordem ?? 999) - (b.ordem ?? 999) || a.nome.localeCompare(b.nome, 'pt'));
 
 const produtos = todos.filter((p) => p.publicado !== false);
