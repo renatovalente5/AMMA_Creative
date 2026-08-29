@@ -1,0 +1,21 @@
+{
+  "nome": "Convite dama de honor",
+  "resumo": "Ocasiões especiais, merecem prendas especiais.",
+  "texto": "Um convite especial para fazer uma pergunta inesquecível: “Aceitas ser a minha dama de honor?” \nUm detalhe cheio de carinho, pensado para surpreender aquela pessoa especial e convidá-la a fazer parte de um dos dias mais importantes da sua vida. ",
+  "personalizavel": [
+    "Frase do cartão ",
+    "Dourado ou prateado",
+    "Colar ou pulseira ",
+    "Pendentes"
+  ],
+  "preco": 15,
+  "categoria": "boxes",
+  "ocasioes": [
+    "casamento",
+    "convite-padrinhos",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 500
+}
