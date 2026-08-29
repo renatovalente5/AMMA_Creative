@@ -1,5 +1,10 @@
 {
   "nome": "Convite dama de honor",
+  "fotos": [
+    "assets/produtos/1-2-pronta.jpg",
+    "assets/produtos/1-6-pronta.jpg",
+    "assets/produtos/1-9-pronta.jpg"
+  ],
   "resumo": "Ocasiões especiais, merecem prendas especiais.",
   "texto": "Um convite especial para fazer uma pergunta inesquecível: “Aceitas ser a minha dama de honor?” \nUm detalhe cheio de carinho, pensado para surpreender aquela pessoa especial e convidá-la a fazer parte de um dos dias mais importantes da sua vida. ",
   "personalizavel": [

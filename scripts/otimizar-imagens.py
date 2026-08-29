@@ -93,26 +93,44 @@ def varrer():
             novas += 1
             print(f'  + {f.relative_to(RAIZ)}  ({im.width}x{im.height}, {n} variantes)')
 
-    # Um cartão de partilha por produto, feito da PRIMEIRA fotografia — a mesma
-    # que o site mostra em primeiro lugar. Refaz-se sempre: é barato, e evita
-    # ficar com a fotografia antiga quando a cliente troca a de capa.
-    for pasta in sorted({p.parent for p in PRODUTOS.rglob('*-1600.webp')}):
-        # A RAIZ NÃO É UMA PASTA DE ARTIGO. Quando a cliente carrega uma fotografia
-        # pelo backoffice, ela cai em assets/produtos/ directamente — a biblioteca
-        # de media aponta para ali — e não numa subpasta. Sem esta linha a raiz
-        # passava a contar como artigo e escrevia-se um assets/produtos/og.jpg que
-        # não serve a página nenhuma: o cartão de partilha de cada artigo vive na
-        # pasta dele, e o do site vive em assets/img/og.jpg.
-        if pasta == PRODUTOS:
+    # UM CARTÃO DE PARTILHA POR ARTIGO, feito da fotografia de CAPA — a primeira da
+    # lista do artigo, que é a que o site mostra primeiro.
+    #
+    # Isto lia-se do disco, e estava errado por duas razões que só apareceram quando
+    # a cliente criou o primeiro artigo pelo backoffice:
+    #
+    #   1. Percorria as PASTAS e apanhava a primeira fotografia por ordem
+    #      ALFABÉTICA. A ordem das fotografias de um artigo é escolhida por ela e
+    #      não é alfabética — no «Box de presente» é 01, 04, 05, 03… — portanto o
+    #      cartão podia ser uma fotografia qualquer, e reordenar a galeria não o
+    #      mudava. O comentário antigo prometia o contrário.
+    #   2. As fotografias que ela carrega pelo backoffice caem na RAIZ de
+    #      assets/produtos/, não numa subpasta. O gerador aponta o og:image para
+    #      assets/produtos/<slug>/og.jpg, que nunca era escrito — ou seja, TODOS os
+    #      artigos criados por ela ficavam sem imagem de partilha no WhatsApp, que
+    #      para esta loja é o canal principal.
+    #
+    # A capa só a ficha do artigo a conhece. Por isso lê-se dos dados.
+    import json
+    for ficheiro in sorted((RAIZ / 'data' / 'produtos').glob('*.json')):
+        artigo = json.loads(ficheiro.read_text(encoding='utf-8'))
+        if artigo.get('publicado') is False:
             continue
-        primeira = sorted(pasta.glob('*-1600.webp'))
-        if not primeira:
+        capa = (artigo.get('fotos') or [None])[0]
+        if not capa:
             continue
+        origem = RAIZ / capa
+        variante = origem.with_name(f'{origem.stem}-1600.webp')
+        if not variante.exists():
+            print(f'  !! {ficheiro.stem}: a capa {capa} não tem variantes')
+            continue
+        destino = PRODUTOS / ficheiro.stem
+        destino.mkdir(parents=True, exist_ok=True)
         try:
-            cartao_partilha(Image.open(primeira[0]), pasta)
+            cartao_partilha(Image.open(variante), destino)
             cartoes += 1
         except Exception as e:
-            print(f'  !! cartão de {pasta.name}: {e}')
+            print(f'  !! cartão de {ficheiro.stem}: {e}')
 
     print(f'\nvariantes novas: {novas} · já existentes: {existentes} · '
           f'cartões de partilha: {cartoes}')

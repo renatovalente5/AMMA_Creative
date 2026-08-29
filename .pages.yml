@@ -115,7 +115,15 @@ content:
       - name: fotos
         label: 'Fotografias — a primeira é a da capa'
         type: image
+        # OBRIGATÓRIO. Um artigo foi publicado sem fotografia nenhuma e ficou no
+        # catálogo com uma caixa a dizer «Sem fotografias» — as três fotografias
+        # tinham sido carregadas para a biblioteca mas nunca chegaram a ser
+        # escolhidas neste campo, e nada avisou. Se ainda não houver fotografias, o
+        # caminho é desligar «Publicado no site», não gravar sem elas.
+        required: true
         options:
+          # `unique`: a mesma fotografia duas vezes no mesmo artigo é sempre engano.
+          unique: true
           multiple:
             # 16 e não 12: estes artigos não têm 3 vistas de uma peça, têm uma
             # fotografia por FRASE — o do pai tem 8, o do anúncio de gravidez
@@ -123,6 +131,10 @@ content:
             # isso o número não parte a página.
             max: 16
         description: >-
+          CARREGUE-AS AQUI, NESTE CAMPO — não na secção «Media» do menu. As que forem
+          para lá ficam guardadas mas não ficam ligadas a artigo nenhum, e o artigo sai
+          no site com uma caixa a dizer «Sem fotografias».
+          •
           CADA FOTOGRAFIA TEM DE ESTAR ABAIXO DE 3 MB. Acima disso o carregamento
           falha com a mensagem «Failed to upload file: 413», que não explica nada — e
           as fotografias tiradas com telemóvel passam muitas vezes desse tamanho. Para

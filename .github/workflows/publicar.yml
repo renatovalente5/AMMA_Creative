@@ -233,6 +233,30 @@ jobs:
           fora = [l for l in re.findall(r'<loc>([^<]+)</loc>', sm)
                   if not existe(re.sub(r'^https?://[^/]+', '', l))]
 
+          # O og:image E A IMAGEM QUE O WHATSAPP MOSTRA, e para esta loja o WhatsApp
+
+          # e o canal principal. Nao era verificado por ninguem: a guarda das imagens
+
+          # so olha para `src` e `srcset`, e o og:image e um `<meta content=>`. Um
+
+          # artigo criado pelo backoffice ficou com o og:image a apontar para um
+
+          # ficheiro que nunca chegou a ser escrito, e ninguem deu por isso.
+
+          og_maus = []
+
+          for h in sorted(raiz.rglob('*.html')):
+
+              t = h.read_text(encoding='utf-8')
+
+              for u in re.findall(r'property="og:image" content="([^"]+)"', t):
+
+                  if not existe(re.sub(r'^https?://[^/]+', '', u)):
+
+                      og_maus.append(f'{h.relative_to(raiz)} -> {u}')
+
+          
+
           # O `item` e obrigatorio em todos os ListItem de um BreadcrumbList
           # excepto o ultimo. Faltar um da «Missing field item» na Search Console.
           migalhas_ma = []
@@ -263,6 +287,11 @@ jobs:
               print(f'SITEMAP a anunciar {len(fora)} pagina(s) que nao existem:')
               for l in fora[:20]:
                   print('  ', l)
+          if og_maus:
+              mal = True
+              print(f'og:image que nao existe: {len(og_maus)}')
+              for x in og_maus[:20]:
+                  print('  ', x)
           if migalhas_ma:
               mal = True
               print(f'MIGALHAS DE PAO invalidas: {len(migalhas_ma)}')
