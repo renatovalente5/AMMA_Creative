@@ -11,24 +11,22 @@
     "telefone": "930477114",
     "telefone_texto": "930 477 114",
     "whatsapp": "351930477114",
-    "instagram": "https://www.instagram.com/_ammacreative"
+    "instagram": "https://www.instagram.com/_ammacreative",
+    "email": "toquepessoalonline@gmail.com"
   },
   "local": {
-    "morada": "Rua do Comércio, 23-47",
-    "codigo_postal": "4935-329",
-    "localidade": "Vila Nova de Anha",
-    "concelho": "Viana do Castelo",
-    "pais": "Portugal",
-    "latitude": 41.6704,
-    "longitude": -8.8072,
-    "mapa": "https://maps.google.com/?q=Rua+do+Com%C3%A9rcio+23-47+4935-329+Vila+Nova+de+Anha"
+    "morada": "Maia, Porto",
+    "codigo_postal": "4470",
+    "localidade": "Maia",
+    "concelho": "Maia",
+    "pais": "Portugal"
   },
   "textos": {
     "hero_titulo": "Feito para *uma pessoa* só",
     "hero_texto": "Artigos personalizados para bebés, mamãs e papás. Escolhe a frase, o nome, a cor — e nós fazemos o resto.",
     "reclamo": "Detalhes únicos, feitos para si",
     "sobre_titulo": "Somos uma loja de artigos personalizados",
-    "sobre_texto": "A AMMA Creative é uma casa pequena e jovem, em Vila Nova de Anha. Fazemos artigos personalizados para bebés, mamãs e papás — e para os padrinhos, os avós e os amigos que querem dar algo que não se compra feito.\n\nCada peça passa pelas nossas mãos. Escolhe-se a frase, o nome, o tipo de letra e a cor, e nós compomos, imprimimos ou gravamos. É por isso que não há duas iguais, e é por isso que gostamos disto.\n\nObrigada por nos escolher.",
+    "sobre_texto": "A AMMA Creative é uma pequena empresa familiar. Fazemos artigos personalizados para bebés, mamãs e papás — e para os padrinhos, os avós e os amigos que querem dar algo que não se compra feito.\n\nCada peça passa pelas nossas mãos. Escolhe-se a frase, o nome, o tipo de letra e a cor, e nós compomos, imprimimos ou gravamos. É por isso que não há duas iguais, e é por isso que gostamos disto.\n\nObrigada por nos escolher.",
     "portes": "Portes grátis acima de 60€",
     "prazo": "Os nossos artigos demoram entre 2 e 3 dias úteis a produzir."
   },
