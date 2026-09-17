@@ -6,17 +6,21 @@
     "dia-da-mae"
   ],
   "fotos": [
-    "assets/produtos/conjunto-aco/01.jpg"
+    "assets/produtos/colares-site-pronta.jpg",
+    "assets/produtos/colares-site-6.png",
+    "assets/produtos/colares-site-5-pronta-1.jpg",
+    "assets/produtos/colares-site-4-pronta-1.jpg",
+    "assets/produtos/colares-site-3-pronta-1.jpg",
+    "assets/produtos/colares-site-1-pronta-1.jpg"
   ],
-  "resumo": "Colar, pendentes e brincos a combinar, para dar de uma vez.",
-  "texto": "Quando não se sabe o que escolher, escolhe-se o conjunto. Montamos com os pendentes que quiser — inicial, coração, pegadinha, árvore da vida — e vai numa caixa pronta a dar.",
+  "resumo": "O teu colar, pensado por ti. ",
+  "texto": "Quando não se sabe o que escolher, escolhe-se o conjunto. Montamos com os pendentes que quiser. \nBasta escolheres, a letras e os 2 pendentes que a vão acompanhar. \nPodes selecionar mais, só tens de falar connosco, fazemos à tua medida. ",
   "personalizavel": [
     "Os pendentes",
-    "As gravações",
-    "A cor do metal",
-    "A caixa"
+    "O tamanho do colar"
   ],
   "ordem": 100,
   "publicado": true,
-  "destaque": false
+  "destaque": false,
+  "preco": 13.5
 }
