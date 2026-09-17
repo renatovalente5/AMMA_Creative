@@ -1,0 +1,27 @@
+{
+  "nome": "Colar \"ESSENZA\"",
+  "fotos": [
+    "assets/produtos/colares-site-8-pronta.jpg",
+    "assets/produtos/colares-site-6-1.png",
+    "assets/produtos/colares-site-5-pronta-2.jpg",
+    "assets/produtos/colares-site-4-pronta-2.jpg",
+    "assets/produtos/colares-site-2-pronta-1.jpg",
+    "assets/produtos/colares-site-1-pronta-2.jpg"
+  ],
+  "resumo": "O teu colar, pensado por ti. ",
+  "texto": "Dá um significado especial ao teu estilo com o nosso colar \"ESSENZA\".\n\nEscolhe a inicial de alguém especial, os nossos pendentes disponíveis e cria uma peça única, pensada para representar uma pessoa, uma relação ou simplesmente algo que tenha um significado especial para ti.\n\nCom um design delicado e versátil, é perfeito para usar no dia a dia e também uma excelente opção para oferecer a alguém especial.",
+  "personalizavel": [
+    "Os Pendentes",
+    "O Tamanho do colatr "
+  ],
+  "preco": 12.5,
+  "categoria": "aco",
+  "ocasioes": [
+    "dia-da-mae",
+    "presente",
+    "dia-do-pai"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 100
+}
