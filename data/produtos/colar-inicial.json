@@ -17,11 +17,10 @@
   "texto": "Discreto, para usar todos os dias. A tua inicial ou a de quem mais amas para andar todos os dias contigo. \n\nPodes personalizar como tu quiseres, adicionar mais pendentes, mais letras... Tu decides, nós fazemos. ",
   "personalizavel": [
     "A inicial",
-    "O pendente adicional ",
-    "Dourado ou prateado",
-    "O comprimento"
+    "O pendente adicional "
   ],
   "ordem": 80,
   "publicado": true,
-  "destaque": false
+  "destaque": false,
+  "preco": 12.5
 }
