@@ -7,17 +7,21 @@
     "presente"
   ],
   "fotos": [
-    "assets/produtos/colar-nome-gravado/01.jpg"
+    "assets/produtos/colar-nome-gravado/01.jpg",
+    "assets/produtos/71.jpg",
+    "assets/produtos/75-1.jpg",
+    "assets/produtos/73-1.jpg"
   ],
-  "resumo": "Aço inoxidável com o nome gravado. Um por filho, para usar todos juntos.",
-  "texto": "Gravamos o nome em letra corrida, na chapa de aço. Quem tem dois filhos leva dois; quem tem três leva três, e usa-os na mesma corrente.\n\nAço inoxidável: não escurece, não dá alergia e vai ao banho.",
+  "resumo": "Uma data, um nome, uma frase. Tu escolhes, nós gravamos.",
+  "texto": "Uma data, um nome, uma frase, tu escolhes a gravação, a corrente e o chapa, nós gravamos. \n\nPersonaliza totalmente ao teu gosto.\n",
   "personalizavel": [
     "O nome ou os nomes",
     "O tipo de letra",
     "O comprimento da corrente",
-    "Prateado ou dourado"
+    "A chapa "
   ],
   "ordem": 70,
   "publicado": true,
-  "destaque": false
+  "destaque": false,
+  "preco": 15
 }
