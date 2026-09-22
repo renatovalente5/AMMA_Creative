@@ -16,13 +16,15 @@
     "assets/produtos/body-hello-daddy/08.jpg"
   ],
   "resumo": "Para contar ao pai. Costuma ser o mais difícil de filmar sem estragar a surpresa.",
-  "texto": "Body de algodão no tamanho que quiser, segue junto com os sapatos, tudo dentro da caixa. Abre-se uma vez, e é nesse segundo que ele percebe.\n\nA frase é sua. Fazemos «hello daddy», «papá, prepara o colinho que eu estou a caminho», «dentro da mamã batem 2 corações apaixonados por ti» — e as de quem já é pai, como «parabéns, foste promovido a pai de 2» ou «papá, prepara-te, daqui a uns meses passamos a ser 4».\n\nHá quem queira a piada. «Vai papá, tu consegues!», com o braço, a cabeça e as pernas apontados a dizer o nome de cada um, é dessas.",
+  "texto": "Body de algodão no tamanho que quiser, segue junto com os sapatos, tudo dentro da caixa. Abre-se uma vez, e é nesse segundo que ele percebe.\n\nNeste momento tão especial, queremos que possas escolher cada detalhe, para além dos modelos que já temos disponíveis, pode nos dizer a frase que pretende e nós fazemos. Para além dos modelos «hello daddy», «papá, prepara o colinho que eu estou a caminho», «dentro da mamã batem 2 corações apaixonados por ti»  temos também opções para os papás de 2 ou mais «parabéns, foste promovido a pai de 2» ou «papá, prepara-te, daqui a uns meses passamos a ser 4».\n\nNós ajudamos a tornar este momento ainda mais especial.",
   "personalizavel": [
     "A frase",
     "O tipo de letra",
-    "O tamanho do body"
+    "O tamanho do body",
+    "A cor dos sapatos"
   ],
   "ordem": 20,
   "publicado": true,
-  "destaque": true
+  "destaque": true,
+  "preco": 18
 }
