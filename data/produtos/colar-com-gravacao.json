@@ -1,0 +1,26 @@
+{
+  "nome": "Colar com gravação",
+  "fotos": [
+    "assets/produtos/74.jpg",
+    "assets/produtos/76-1.jpg"
+  ],
+  "resumo": "Uma data, um nome, uma frase. Tu escolhes, nós gravamos.",
+  "texto": "Uma data, um nome, uma frase, tu escolhes a gravação, a corrente e o chapa, nós gravamos. \n\nPersonaliza totalmente ao teu gosto. Podes também adicionar mais alguns dos pendentes que temos disponíveis.",
+  "personalizavel": [
+    "O nome ou os nomes",
+    "O tipo de letra",
+    "O comprimento da corrente",
+    "A chapa "
+  ],
+  "preco": 15,
+  "categoria": "aco",
+  "ocasioes": [
+    "casamento",
+    "dia-da-mae",
+    "dia-do-pai",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 80
+}
