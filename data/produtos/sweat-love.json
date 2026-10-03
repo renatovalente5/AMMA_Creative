@@ -13,5 +13,9 @@
   "categoria": "lembrancas",
   "publicado": true,
   "destaque": false,
-  "ordem": 150
+  "ordem": 150,
+  "personalizavel": [
+    "A foto",
+    "A cor"
+  ]
 }
