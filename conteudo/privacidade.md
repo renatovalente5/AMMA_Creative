@@ -1,6 +1,6 @@
 ---
 titulo: Privacidade e cookies
-descricao: O que a AMMA Creative faz com os seus dados. Este site não tem analítica nem publicidade, e a única coisa que guarda no seu equipamento é a sua resposta ao aviso de cookies.
+descricao: O que a AMMA Creative faz com os seus dados. Este site não tem analítica nem publicidade, e não guarda nada no seu equipamento.
 ---
 
 ## O curto
@@ -8,9 +8,8 @@ descricao: O que a AMMA Creative faz com os seus dados. Este site não tem anal�
 Este site **não tem Google Analytics, não tem píxeis de publicidade e não tem
 botões de redes sociais que o sigam**. Não sabemos quem o visita.
 
-A única coisa que este site guarda no seu equipamento é a sua resposta ao aviso
-de cookies, e a sua autorização para carregar o mapa. Nada disso sai do seu
-browser.
+Este site não guarda nada no seu equipamento: não usa cookies nem armazenamento
+local, e por isso não tem aviso de cookies — não há nada para autorizar.
 
 O resto desta página explica isto em detalhe, porque o Regulamento Geral de
 Protecção de Dados obriga — e porque é justo que se possa confirmar.
@@ -88,36 +87,13 @@ Nacional de Protecção de Dados** — [cnpd.pt](https://www.cnpd.pt).
 
 ## Cookies
 
-Este site **não usa cookies de rastreio**. Não há analítica, não há publicidade,
-não há perfis.
+Este site **não usa cookies** nem guarda nada no seu browser. Não há analítica,
+não há publicidade, não há perfis — e por isso também não há aviso de cookies.
 
-O que existe é armazenamento local no seu próprio browser, com duas entradas:
-
-| Chave | Para quê | Quando é criada |
-|---|---|---|
-| `amma:cookies` | lembrar a sua resposta ao aviso, para não voltar a aparecer | quando responde ao aviso |
-| `amma:mapa` | lembrar que autorizou o mapa do Google | quando carrega o mapa |
-
-Nenhuma das duas identifica ninguém, nenhuma é enviada para nós, e as duas
-desaparecem se limpar os dados do site no browser.
-
-**Então porque existe o aviso?** Por causa do mapa, e só por causa dele.
-
-## O mapa do Google
-
-Na página de contactos há um mapa. Esse mapa vem dos servidores do Google, e
-carregá-lo faz o seu browser ligar-se à Google, que pode instalar cookies e
-registar o seu endereço IP.
-
-Por isso **o mapa não carrega sozinho**: fica um botão no lugar dele, e só carrega
-se o autorizar. É o que o artigo 5.º da Lei n.º 41/2004 exige — o consentimento
-tem de ser **prévio**, não posterior.
-
-Se preferir não autorizar, o botão «Abrir no Google Maps» leva-o ao mapa numa
-janela nova, e aí a decisão é sua e do Google, não nossa.
-
-Depois de autorizar, aplica-se a
-[política de privacidade da Google](https://policies.google.com/privacy).
+Até Outubro de 2026 a página de contactos tinha um mapa do Google, que só
+carregava com autorização, e o site lembrava essa resposta no seu browser
+(`amma:cookies` e `amma:mapa`). O mapa saiu, e essas entradas deixaram de ser
+usadas; se as tiver, desaparecem quando limpar os dados do site no browser.
 
 ## Fontes e imagens
 
@@ -126,8 +102,7 @@ Isto não é um detalhe técnico: um `<link>` para o Google Fonts levaria o seu
 endereço IP para os servidores da Google só por abrir a página, sem que ninguém
 lhe perguntasse. Com as fontes alojadas connosco, isso não acontece.
 
-**Fora o mapa — que só carrega se o autorizar — este site não faz um único pedido
-a servidores de terceiros.** É uma afirmação que se pode verificar: abra as
+**Este site não faz um único pedido a servidores de terceiros.** É uma afirmação que se pode verificar: abra as
 ferramentas de desenvolvimento do browser, separador «Rede», e recarregue.
 
 ## Alterações
@@ -136,4 +111,4 @@ Se isto mudar, muda aqui, com a data actualizada em baixo.
 
 ---
 
-*Última actualização: Agosto de 2026.*
+*Última actualização: Outubro de 2026.*

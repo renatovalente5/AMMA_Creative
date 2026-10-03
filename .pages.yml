@@ -375,43 +375,21 @@ content:
           - { name: instagram, label: 'Instagram (endereço completo)', type: string, required: true }
 
       - name: local
-        label: Onde estão
+        label: Morada da sede (só nas páginas legais)
         type: object
         description: >-
-          ESTES CAMPOS NÃO PODEM FICAR VAZIOS. A lei portuguesa obriga um site que
-          vende a identificar a morada (DL 7/2004, artigo 10), e por isso o backoffice
-          não deixa gravar sem eles. Se precisar de mudar a morada, ou de deixar de a
-          mostrar, fale connosco — há maneiras de o fazer sem o site ficar ilegal, mas
-          apagar o campo não é uma delas: a morada continuava publicada nas páginas
-          legais e o site deixava de se publicar.
-          A morada que aparece no fim de todas as páginas, na página de
-          contactos, no mapa e nos dados que o Google lê. A latitude e a
-          longitude são o alfinete do mapa: tiram-se do Google Maps, com o
-          botão direito sobre o local e «Copiar coordenadas». Se não tiver a
-          certeza, não mexa — um número trocado põe o alfinete no mar.
+          Não aparece como loja em sítio nenhum do site: não há «Onde estamos» nem
+          mapa. Serve para a identificação que a lei obriga a pôr nos Termos e na
+          Privacidade (DL 7/2004, artigo 10): a morada da sede, completa, com rua
+          e número. Por isso o backoffice não deixa gravar com estes campos
+          vazios. Se a sede mudar, fale connosco: a entidade de resolução de
+          litígios depende do concelho.
         fields:
-          - { name: morada, label: Rua, type: string, required: true }
+          - { name: morada, label: Rua e número, type: string, required: true }
           - { name: codigo_postal, label: Código postal, type: string, required: true }
           - { name: localidade, label: Localidade, type: string, required: true }
           - { name: concelho, label: Concelho, type: string, required: true }
           - { name: pais, label: País, type: string, required: true }
-          # `step` VAI DENTRO DE `options:` — ao nível do campo é descartado em
-          # silêncio (o Pages CMS lê `field.options.step` e mais nada), e sem ele
-          # o <input type="number"> assume 1 e recusa decimais. Estes dois têm
-          # valores decimais gravados, portanto o ecrã abria com dois campos em
-          # estado inválido antes de se tocar em nada.
-          - name: latitude
-            label: Latitude
-            type: number
-            description: 'Para o mapa e para o Google. Tira-se do Google Maps, com o botão direito sobre o local e «Copiar coordenadas».'
-            options:
-              step: 0.0000001
-          - name: longitude
-            label: Longitude
-            type: number
-            options:
-              step: 0.0000001
-          - { name: mapa, label: Link do Google Maps, type: string }
 
       - name: textos
         label: Textos do site
@@ -468,24 +446,33 @@ content:
             type: text
             description: Uma ou duas linhas. O que a pessoa tem de fazer nesta fase.
 
-      - name: opcoes
-        label: Mapa
+      - name: importa
+        label: «O que nos importa» (Sobre nós)
         type: object
+        description: >-
+          A faixa creme no fim do «Sobre nós», com os pontos numerados. Se deixar
+          a explicação de um ponto vazia, aparece só o título.
         fields:
-          - name: mostrar_mapa
-            label: Mostrar o mapa na página de contactos
-            type: boolean
+          - { name: linha, label: Linha pequena por cima, type: string }
+          - { name: titulo, label: Título, type: string }
+          - name: itens
+            label: Pontos
+            type: object
+            list: true
             description: >-
-              O mapa só carrega depois de o visitante o autorizar, porque vem do
-              Google e instala cookies. Desligue isto se preferir não o ter.
+              Numeram-se sozinhos pela ordem em que estiverem aqui — arraste para
+              trocar. Funciona bem com três.
+            fields:
+              - { name: titulo, label: Título do ponto, type: string, required: true }
+              - { name: texto, label: Explicação, type: text }
 
       - name: empresa
         label: Dados legais
         type: object
         description: >-
-          Aparecem no rodapé por imposição legal (Decreto-Lei 7/2004): quem tem
-          um site com actividade comercial tem de se identificar de forma
-          permanente. Altere só se algum destes dados mudar.
+          Aparecem nos Termos e na Privacidade por imposição legal (Decreto-Lei
+          7/2004): quem tem um site com actividade comercial tem de se
+          identificar de forma permanente. Altere só se algum destes dados mudar.
         fields:
           - { name: nome_comercial, label: Nome comercial, type: string, required: true }
           - { name: assinatura, label: Assinatura (Artigos personalizados), type: string }
@@ -501,5 +488,5 @@ content:
             required: true
             label: NIF
             type: string
-            description: Obrigatório no rodapé. Está com um valor de espera até ser indicado.
+            description: Obrigatório nas páginas legais. Está com um valor de espera até ser indicado.
           - { name: cae, label: CAE, type: string }

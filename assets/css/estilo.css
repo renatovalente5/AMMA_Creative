@@ -742,30 +742,6 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
    sempre acessíveis — é o que o DL 7/2004 pede. */
 .pe__id { font-size: .78rem; color: rgba(250, 241, 232, .58); margin-top: .9rem; line-height: 1.6; }
 
-/* ================================================================ MAPA ===== */
-/* Só carrega depois de consentimento: o embed do Google instala cookies antes de
-   qualquer interacção, e o consentimento tem de ser PRÉVIO (art. 5.º da Lei
-   41/2004). Sem isto, o site estaria a instalar cookies de terceiros a quem
-   apenas abriu a página de contactos. */
-.mapa { position: relative; min-height: 340px; border-radius: var(--raio-g); overflow: clip; background: var(--creme-fundo); border: 1px solid var(--linha); }
-.mapa iframe { width: 100%; height: 100%; min-height: 340px; border: 0; display: block; }
-.mapa__consent { position: absolute; inset: 0; display: grid; place-content: center; gap: .9rem; text-align: center; padding: 2rem 1.5rem; }
-.mapa__consent svg { width: 30px; height: 30px; color: var(--dourado); margin-inline: auto; }
-.mapa__consent p { font-size: .9rem; color: var(--tinta-2); max-width: 42ch; margin-inline: auto; }
-
-/* ====================================================== AVISO DE COOKIES === */
-.cc {
-  position: fixed; z-index: 120; inset: auto 1rem 1rem;
-  max-width: 560px; margin-inline: auto;
-  background: var(--papel); border: 1px solid var(--linha-forte);
-  border-radius: var(--raio-g); box-shadow: var(--sombra-alta);
-  padding: 1.15rem 1.3rem;
-  display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; align-items: center;
-}
-.cc p { margin: 0; font-size: .88rem; color: var(--tinta-2); flex: 1 1 15rem; }
-.cc__acoes { display: flex; gap: .5rem; }
-.cc .btn { padding: .6rem 1.1rem; min-height: 42px; font-size: .88rem; }
-
 /* ================================================== texto legal e artigos == */
 .texto { max-width: var(--larg-texto); }
 .texto h2 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); margin: 2.2rem 0 .8rem; }

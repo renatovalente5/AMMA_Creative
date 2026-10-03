@@ -18,12 +18,12 @@
      2. recuo do menu, para browsers sem Popover API
      3. filtros do catálogo
      4. galeria e lupa da ficha de produto
-     5. consentimento do mapa
-     6. aviso de cookies
+
+   O consentimento do mapa e o aviso de cookies saíram em Outubro de 2026, com o
+   mapa: sem nada de terceiros, não há nada para autorizar.
 
    Sem dependências. Tudo degrada: sem JavaScript o site lê-se e navega-se
-   inteiro — os filtros desaparecem, o menu é um link para o catálogo, e o mapa
-   fica um botão para o Google Maps.
+   inteiro — os filtros desaparecem e o menu é um link para o catálogo.
    ========================================================================== */
 (function () {
   'use strict';
@@ -281,74 +281,4 @@
     }
   })();
 
-  /* ------------------------------------- 5. o mapa só carrega com autorização */
-  /* O embed do Google instala cookies antes de qualquer interacção, e o
-     consentimento tem de ser PRÉVIO — art. 5.º da Lei 41/2004. Por isso o mapa
-     não está no HTML: é criado depois de alguém carregar no botão. */
-  (function () {
-    var mapa = $('#mapa');
-    if (!mapa) return;
-    var btn = $('#btn-mapa');
-    var consent = $('#mapa-consent');
-
-    function carregar() {
-      if ($('iframe', mapa)) return;
-      var f = document.createElement('iframe');
-      f.src = mapa.dataset.mapa;
-      f.title = 'Mapa com a localização da AMMA Creative';
-      f.loading = 'lazy';
-      f.referrerPolicy = 'no-referrer-when-downgrade';
-      f.setAttribute('allowfullscreen', '');
-      mapa.appendChild(f);
-      if (consent) consent.hidden = true;
-      try { localStorage.setItem('amma:mapa', '1'); } catch (e) { /* navegação privada */ }
-    }
-    if (btn) btn.addEventListener('click', carregar);
-
-    /* Quem já autorizou antes não tem de voltar a autorizar. Só se lê a escolha
-       explícita para o MAPA: aceitar o aviso de cookies não é autorizar o
-       Google, e misturar as duas coisas era o que fazia o mapa pedir outra vez
-       depois de a pessoa ter aceitado tudo. */
-    try {
-      if (localStorage.getItem('amma:mapa') === '1') carregar();
-    } catch (e) { /* nada */ }
-  })();
-
-  /* ------------------------------------------------- 6. aviso de cookies */
-  /* O site não tem analítica, nem carrinho, nem publicidade: fora do mapa, não
-     instala cookie nenhuma. O aviso existe SÓ por causa do mapa, e diz isso —
-     dois botões, sem painel de preferências para uma escolha que é uma. */
-  (function () {
-    var CHAVE = 'amma:cookies';
-    var barra = $('#cc');
-    if (!barra) return;
-
-    function guardado() {
-      try { return localStorage.getItem(CHAVE); } catch (e) { return null; }
-    }
-    function guardar(v) {
-      try { localStorage.setItem(CHAVE, v); } catch (e) { /* nada */ }
-    }
-
-    if (!guardado()) barra.hidden = false;
-
-    $$('[data-cc]', barra).forEach(function (b) {
-      b.addEventListener('click', function () {
-        guardar(b.dataset.cc);
-        barra.hidden = true;
-        /* Aceitar aqui autoriza também o mapa — é a única coisa de terceiros que
-           o site tem, e obrigar a autorizar duas vezes seria absurdo. Recusar
-           não apaga uma autorização de mapa dada antes de propósito. */
-        if (b.dataset.cc === 'sim') {
-          try { localStorage.setItem('amma:mapa', '1'); } catch (e) { /* nada */ }
-          var m = $('#btn-mapa'); if (m) m.click();
-        }
-      });
-    });
-
-    /* Reabrir o aviso a partir do rodapé, para se poder mudar de ideias. */
-    $$('[data-cc-abrir]').forEach(function (a) {
-      a.addEventListener('click', function (e) { e.preventDefault(); barra.hidden = false; });
-    });
-  })();
 })();

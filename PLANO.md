@@ -204,3 +204,11 @@ ferramentas.
   que é obrigatório no rodapé
 - Confirmar se **`+60€ portes grátis`** é sobre Portugal continental só
 - Preços: entram no site ou é tudo «sob consulta»?
+- **Morada da sede (Outubro de 2026).** Nos dados está «Porto, 4000 Porto» desde
+  que a cliente a mudou no backoffice; os Termos têm escrita à mão a de Vila Nova
+  de Anha, e a Resolução de litígios aponta o CIAB por a sede ser em Viana do
+  Castelo. Se a sede é mesmo no Porto, falta a morada completa (rua, número,
+  código postal) e a entidade de RAL passa a ser a do Porto; se não é, os dados
+  voltam à de Vila Nova de Anha. «Feito à mão em Viana do Castelo» nas fichas e
+  «Uma casa pequena em Vila Nova de Anha» na página inicial dependem da mesma
+  resposta.

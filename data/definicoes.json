@@ -42,8 +42,23 @@
       "texto": "Depois de aprovar, produzimos e seguimos com o envio."
     }
   ],
-  "opcoes": {
-    "mostrar_mapa": false
+  "importa": {
+    "linha": "O que nos importa",
+    "titulo": "Três coisas, e são sempre as mesmas",
+    "itens": [
+      {
+        "titulo": "Detalhes únicos",
+        "texto": "Cada peça é feita para uma pessoa só. A frase é sua, o nome é dele, e não há duas iguais."
+      },
+      {
+        "titulo": "Qualidade e bom gosto",
+        "texto": "Vinil que aguenta a máquina, aço que não escurece, madeira que não lasca. O barato sai caro."
+      },
+      {
+        "titulo": "Feito por nós",
+        "texto": "Somos uma casa pequena em Vila Nova de Anha. Quem responde à mensagem é quem faz a peça."
+      }
+    ]
   },
   "tecnico": {
     "site": "https://renatovalente5.github.io/AMMA_Creative"

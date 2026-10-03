@@ -121,13 +121,28 @@ function versao(rel) {
    já não exista em disco é IGNORADA com aviso, em vez de deixar uma imagem
    partida no site: já aconteceu numa loja onde a cliente apagou um ficheiro da
    biblioteca que ainda estava num artigo. */
+/* UMA CÓPIA GERADA VALE PELA FOTOGRAFIA DE QUE VEIO. O Pages CMS mostra a pasta
+   inteira, e as cópias de 480/960/1600 que vivem ao lado dos originais aparecem-
+   -lhe como fotografias: a 3 de Outubro de 2026 a cliente criou quatro artigos
+   com «07-480.webp» em vez de «07.jpg», e um com o og.jpg de outro artigo. O
+   cartão de partilha não se fazia, a guarda do CI parava, e nada do que gravou
+   depois foi ao ar. Uma cópia passa a valer pelo original; o og.jpg (um cartão,
+   não uma fotografia) fica de fora; e a mesma fotografia escolhida duas vezes
+   aparece uma. Ver também otimizar-imagens.py, que faz o mesmo para a capa. */
 function fotos(p) {
   const lista = Array.isArray(p.fotos) ? p.fotos : [];
+  const vistas = new Set();
   return lista.map((c) => {
     const limpo = String(c).replace(/^\/+/, '');
     const pasta = limpo.slice(0, limpo.lastIndexOf('/'));
     const nome = limpo.split('/').pop();
-    const base = nome.replace(/\.[a-z0-9]+$/i, '');
+    if (nome.toLowerCase() === 'og.jpg') {
+      console.warn(`  !! ${p.slug}: ${limpo} é um cartão de partilha, não uma fotografia — ignorada`);
+      return null;
+    }
+    const base = nome.replace(/-(?:480|960|1600)\.webp$/i, '').replace(/\.[a-z0-9]+$/i, '');
+    if (vistas.has(`${pasta}/${base}`)) return null;
+    vistas.add(`${pasta}/${base}`);
     const dir = join(RAIZ, pasta);
     const vizinhos = existsSync(dir) ? readdirSync(dir) : [];
     const larguras = [480, 960, 1600].filter((w) => vizinhos.includes(`${base}-${w}.webp`));
@@ -356,7 +371,7 @@ const REENCAMINHAR = [
 ];
 
 /* ============================================================== esqueleto === */
-function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '', naoIndexar = false, extras = '', semAviso = false }) {
+function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '', naoIndexar = false, extras = '' }) {
   const canonico = abs(pag);
   const imagem = og ?? abs('assets/img/og.jpg');
   const nav = [
@@ -471,7 +486,6 @@ ${corpo}
         <ul>
           <li class="pe__contacto">${ic.zap}<span><a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">WhatsApp</a></span></li>
           <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">@_ammacreative</a></span></li>
-          <li class="pe__contacto">${ic.pin}<span>${esc(def.local.morada)}<br>${esc(def.local.codigo_postal)} ${esc(def.local.localidade)}<br>${esc(def.local.concelho)}</span></li>
         </ul>
       </div>
     </div>
@@ -487,10 +501,6 @@ ${corpo}
         <!-- Entrada da cliente para o backoffice. Fica apagada de propósito: quem
              visita o site não tem nada que a notar, e quem precisa dela sabe que
              está aqui. Continua a ser um link a sério, e não um botão inerte. -->
-        <!-- Volta a abrir o aviso, para se poder mudar de ideias. Sem isto, uma
-             escolha feita uma vez ficava para sempre e não havia por onde a
-             rever — que é precisamente o que o RGPD não quer. -->
-        <a href="#" data-cc-abrir>Cookies</a>
         <a class="pe__gestao" href="https://app.pagescms.org/renatovalente5/AMMA_Creative/main"
            target="_blank" rel="noopener">Gestão</a>
       </nav>
@@ -503,25 +513,6 @@ ${corpo}
   </div>
 </footer>
 
-<!-- O aviso existe SÓ por causa do mapa: fora dele, o site não instala cookie
-     nenhuma. Dois botões, e não um painel de preferências — a escolha é uma.
-
-     Não aparece na ferramenta /reduzir-fotos/, e a razão não é comodidade: aquela
-     página não tem mapa nem nada de terceiros, portanto o aviso pediria
-     autorização para coisa nenhuma — e, por ser centrado no ecrã, ficava
-     exactamente em cima da zona onde se largam as fotografias. Numa página cujo
-     único objectivo é tirar atrito, é o pior sítio possível para uma janela. -->
-${semAviso ? '' : `
-<div class="cc" id="cc" role="region" aria-label="Aviso de cookies" hidden>
-  <p>Este site não tem analítica nem publicidade. Só precisamos da sua autorização
-  para o <strong>mapa do Google</strong> na página de contactos.
-  <a href="${u('privacidade/')}" style="color:var(--cacau)">Saber mais</a>.</p>
-  <div class="cc__acoes">
-    <button class="btn btn--cheio" type="button" data-cc="sim">Aceitar</button>
-    <button class="btn btn--linha" type="button" data-cc="nao">Recusar</button>
-  </div>
-</div>
-`}
 <script src="${versao('assets/js/site.js')}" defer></script>
 ${extras}
 </body>
@@ -531,10 +522,6 @@ ${extras}
 
 /* ------------------------------------------------------------------ JSON-LD */
 const negocioLD = {
-  /* O `telephone` é dado de identificação da loja, não um convite a ligar: é
-     daqui que o Google tira o número para o painel de conhecimento e para o
-     mapa. Não desenha botão nenhum na página. */
-  telephone: `+351${def.contactos.telefone}`,
   '@context': 'https://schema.org',
   '@type': 'Store',
   '@id': abs('#loja'),
@@ -543,15 +530,20 @@ const negocioLD = {
   url: abs(''),
   image: abs('assets/img/og.jpg'),
   logo: abs('assets/img/logo-marrom.png'),
+  /* Sem rua, código postal nem coordenadas: a loja não tem porta aberta ao
+     público (Outubro de 2026, a pedido da cliente), e uma Store com morada e
+     alfinete é o que o Google mostra como sítio a visitar. A localidade chega
+     para dizer de onde é. */
   address: {
     '@type': 'PostalAddress',
-    streetAddress: def.local.morada,
-    postalCode: def.local.codigo_postal,
     addressLocality: def.local.localidade,
     addressRegion: def.local.concelho,
     addressCountry: 'PT',
   },
-  geo: { '@type': 'GeoCoordinates', latitude: def.local.latitude, longitude: def.local.longitude },
+  /* O `telephone` é dado de identificação, não um convite a ligar: é daqui que o
+     Google tira o número para o painel de conhecimento. Só entra se existir —
+     sem número, isto publicava «+351undefined». */
+  ...(def.contactos.telefone ? { telephone: `+351${def.contactos.telefone}` } : {}),
   sameAs: [def.contactos.instagram],
   priceRange: produtos.some(temPreco) ? '€' : 'Sob consulta',
   areaServed: { '@type': 'Country', name: 'Portugal' },
@@ -618,22 +610,6 @@ function cartaoCategoria(c, prioridade = false) {
       <p class="cat__resumo">${esc(c.resumo)}</p>
     </div>
   </a>`;
-}
-
-function mapa() {
-  if (!def.local.mapa) return '';
-  const q = encodeURIComponent(`${def.local.morada}, ${def.local.codigo_postal} ${def.local.localidade}`);
-  return `<div class="mapa" id="mapa" data-mapa="https://www.google.com/maps?q=${q}&output=embed">
-    <div class="mapa__consent" id="mapa-consent">
-      ${ic.pin}
-      <p><strong>Mapa do Google.</strong> Fica por carregar até o autorizar, porque vem
-      dos servidores do Google e pode instalar cookies. Se recusou as cookies no aviso, é por isso.</p>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
-        <button class="btn btn--cheio" type="button" id="btn-mapa">Carregar o mapa</button>
-        <a class="btn btn--linha" href="${esc(def.local.mapa)}" target="_blank" rel="noopener">Abrir no Google Maps</a>
-      </div>
-    </div>
-  </div>`;
 }
 
 /* ================================================================ páginas === */
@@ -1106,13 +1082,36 @@ function paginaComoEncomendar() {
   });
 }
 
+/* A faixa «O que nos importa» do Sobre nós. Saiu do código para os dados em
+   Outubro de 2026, quando a cliente quis mudar os títulos e não os encontrava no
+   backoffice. Um ponto sem explicação mostra só o título; sem pontos, não há faixa. */
+function secaoImporta() {
+  const s = def.importa || {};
+  const itens = (s.itens || []).filter((i) => String(i?.titulo ?? '').trim());
+  if (!itens.length) return '';
+  return `
+<section class="secao secao--creme">
+  <div class="envolve">
+    <div style="text-align:center;max-width:60ch;margin:0 auto clamp(2rem,4vw,3rem)">
+      ${s.linha ? `<p class="sobre-linha sobre-linha--centro">${esc(s.linha)}</p>` : ''}
+      ${s.titulo ? `<h2 class="tit-g">${esc(s.titulo)}</h2>` : ''}
+    </div>
+    <div class="passos" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+      ${itens.map((i) => `<div class="passo"><h3>${esc(i.titulo)}</h3>${String(i.texto ?? '').trim() ? `<p>${esc(i.texto)}</p>` : ''}</div>`).join('\n      ')}
+    </div>
+  </div>
+</section>`;
+}
+
 function paginaSobre() {
   const corpo = `
 <section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
   <div class="envolve">
     ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Sobre nós' }])}
-    <div class="editorial">
-      <div class="editorial__texto">
+    <!-- Sem fotografia desde Outubro de 2026, a pedido da cliente: o texto fica
+         numa coluna só, à largura de leitura. -->
+    <div class="editorial" style="grid-template-columns:1fr">
+      <div class="editorial__texto" style="max-width:62ch">
         <p class="sobre-linha">${esc(def.empresa.assinatura)}</p>
         <h1 class="tit-g" style="margin-bottom:1.2rem">${esc(def.textos.sobre_titulo)}</h1>
         ${def.textos.sobre_texto.split('\n\n').map((t) => `<p class="chamada">${esc(t)}</p>`).join('\n        ')}
@@ -1121,45 +1120,21 @@ function paginaSobre() {
           <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Instagram</a>
         </div>
       </div>
-      <div>
-        <img src="${u('assets/img/equipa-960.webp')}"
-             srcset="${u('assets/img/equipa-480.webp')} 480w, ${u('assets/img/equipa-960.webp')} 960w, ${u('assets/img/equipa-1600.webp')} 1600w"
-             sizes="(max-width: 900px) 92vw, 640px"
-             alt="A equipa da AMMA Creative" width="1179" height="1434"
-             style="border-radius:var(--raio-g);width:100%" loading="lazy" decoding="async">
-      </div>
     </div>
   </div>
 </section>
-
-<section class="secao secao--creme">
-  <div class="envolve">
-    <div style="text-align:center;max-width:60ch;margin:0 auto clamp(2rem,4vw,3rem)">
-      <p class="sobre-linha sobre-linha--centro">O que nos importa</p>
-      <h2 class="tit-g">Três coisas, e são sempre as mesmas</h2>
-    </div>
-    <div class="passos" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-      <div class="passo"><h3>Detalhes únicos</h3><p>Cada peça é feita para uma
-      pessoa só. A frase é sua, o nome é dele, e não há duas iguais.</p></div>
-      <div class="passo"><h3>Qualidade e bom gosto</h3><p>Vinil que aguenta a
-      máquina, aço que não escurece, madeira que não lasca. O barato sai caro.</p></div>
-      <div class="passo"><h3>Feito por nós</h3><p>Somos uma casa pequena em
-      Vila Nova de Anha. Quem responde à mensagem é quem faz a peça.</p></div>
-    </div>
-  </div>
-</section>`;
+${secaoImporta()}`;
 
   return pagina({
     pag: 'sobre/',
     titulo: `Sobre nós | ${def.empresa.nome_comercial}`,
-    descricao: 'A AMMA Creative é uma casa pequena em Vila Nova de Anha, Viana do Castelo, que faz artigos personalizados para bebés, mamãs e papás. Cada peça passa pelas nossas mãos.',
+    descricao: 'A AMMA Creative é uma casa pequena que faz artigos personalizados para bebés, mamãs e papás. Cada peça passa pelas nossas mãos.',
     corpo,
     jsonld: [migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Sobre nós' }]), negocioLD],
   });
 }
 
 function paginaContactos() {
-  const l = def.local;
   const corpo = `
 <section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
   <div class="envolve">
@@ -1189,10 +1164,11 @@ function paginaContactos() {
             <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Ver o Instagram</a>
           </div>
         </div>
-        <!-- O ÚNICO sítio do site com o número. Em texto, sem ligação tel: e sem botão
-             de ligar: mostra-se a quem o procura, sem convidar a usá-lo. O aviso
-             do custo da chamada é obrigatório e acompanha-o. -->
-        <div class="painel" style="position:static">
+        <!-- O ÚNICO sítio do site com o número, e SÓ se houver número: em Outubro de
+             2026 a cliente tirou-o e o cartão ficou com o título e sem nada. Em
+             texto, sem ligação tel: e sem botão de ligar. O aviso do custo da
+             chamada é obrigatório e acompanha-o. -->
+        ${def.contactos.telefone_texto ? `<div class="painel" style="position:static">
           <span class="painel__cat">Telefone</span>
           <h2 class="tit-m" style="margin:.4rem 0 .8rem">Telefone</h2>
           <p class="painel__resumo">${telTexto()}<br>
@@ -1200,22 +1176,12 @@ function paginaContactos() {
           <p class="painel__resumo" style="margin-top:.7rem;font-size:.9rem;color:var(--tinta-2)">
             Preferimos mensagem: no WhatsApp ou no Instagram respondemos mais depressa
             e fica tudo escrito — a frase, o nome, o tamanho.</p>
-        </div>
+        </div>` : ''}
       </div>
     </div>
-
-    <div style="margin-top:clamp(2.5rem,5vw,4rem)">
-      <div class="secao__topo">
-        <div>
-          <p class="sobre-linha">Onde estamos</p>
-          <h2 class="tit-m">${esc(l.morada)}</h2>
-          <p style="color:var(--tinta-2);margin-top:.4rem">${esc(l.codigo_postal)} ${esc(l.localidade)} · ${esc(l.concelho)}</p>
-        </div>
-        <a class="btn btn--linha" href="https://www.google.com/maps/dir/?api=1&amp;destination=${l.latitude},${l.longitude}"
-           target="_blank" rel="noopener">${ic.pin} Como chegar</a>
-      </div>
-      ${def.opcoes.mostrar_mapa ? mapa() : ''}
-    </div>
+    <!-- Sem «Onde estamos» nem mapa desde Outubro de 2026: a loja não tem porta
+         aberta ao público. A morada da sede continua nas páginas legais, que é
+         onde a lei a pede (DL 7/2004, art. 10.º). -->
   </div>
 </section>`;
 
@@ -1227,7 +1193,7 @@ function paginaContactos() {
        convite a ligar — que é precisamente o que se quis tirar. Além disso
        obrigaria a levar o aviso do custo da chamada para dentro dos 155
        caracteres da descrição. O número continua na página. */
-    descricao: `Fale com a AMMA Creative por WhatsApp ou Instagram. Estamos em ${l.morada}, ${l.codigo_postal} ${l.localidade}, ${l.concelho}.`,
+    descricao: 'Fale com a AMMA Creative por WhatsApp ou Instagram: manda-nos a ideia, uma fotografia ou só uma pergunta.',
     corpo,
     jsonld: [migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Contactos' }]), negocioLD],
   });
@@ -1420,7 +1386,6 @@ function paginaReduzir() {
     titulo: `Preparar fotografias | ${def.empresa.nome_comercial}`,
     descricao: 'Ferramenta interna para reduzir fotografias antes de as carregar no backoffice.',
     naoIndexar: true,
-    semAviso: true,
     extras: `<script src="${versao('assets/js/reduzir.js')}" defer></script>`,
     corpo,
   });
@@ -1497,9 +1462,6 @@ function main() {
       'vazias em vez de as deixar vazias. Os valores anteriores estão no histórico do git.');
   }
 
-  /* O mapa é a única parte deste bloco que pode faltar sem ser ilegal: se não
-     houver coordenadas nem link, mostra-se a morada sem mapa em vez de um botão
-     que não leva a sítio nenhum. */
   rmSync(SAIDA, { recursive: true, force: true });
   mkdirSync(SAIDA, { recursive: true });
   cpSync(join(RAIZ, 'assets'), join(SAIDA, 'assets'), { recursive: true, filter: publicavel });

@@ -116,11 +116,19 @@ def varrer():
         artigo = json.loads(ficheiro.read_text(encoding='utf-8'))
         if artigo.get('publicado') is False:
             continue
-        capa = (artigo.get('fotos') or [None])[0]
+        # A capa é a primeira FOTOGRAFIA: um og.jpg de outro artigo não conta, e
+        # uma cópia gerada («07-480.webp») vale pelo original de que veio — o
+        # Pages CMS mostra as duas lado a lado e a cliente já escolheu cópias
+        # (3 de Outubro de 2026). O gerador faz o mesmo na galeria.
+        capa = next((f for f in artigo.get('fotos') or [] if Path(f).name.lower() != 'og.jpg'), None)
         if not capa:
             continue
         origem = RAIZ / capa
-        variante = origem.with_name(f'{origem.stem}-1600.webp')
+        stem = origem.stem
+        for sufixo in SUFIXOS:
+            if stem.endswith(sufixo) and origem.suffix.lower() == '.webp':
+                stem = stem[: -len(sufixo)]
+        variante = origem.with_name(f'{stem}-1600.webp')
         if not variante.exists():
             print(f'  !! {ficheiro.stem}: a capa {capa} não tem variantes')
             continue
