@@ -1,8 +1,12 @@
 {
   "nome": "Box de anúncio de gravidez",
+  "preco": 14,
   "categoria": "boxes",
   "ocasioes": [
-    "anuncio-gravidez"
+    "anuncio-gravidez",
+    "convite-padrinhos",
+    "dia-do-pai",
+    "presente"
   ],
   "fotos": [
     "assets/produtos/box-anuncio-gravidez/01.jpg",
@@ -11,13 +15,11 @@
     "assets/produtos/box-anuncio-gravidez/04.jpg",
     "assets/produtos/box-anuncio-gravidez/05.jpg"
   ],
-  "resumo": "Caixa de madeira com sapatinhos, carta e o anúncio lá dentro. Abre-se uma vez e não se esquece.",
-  "texto": "É a nossa forma preferida de dar a notícia. A caixa é de madeira, vai com os sapatinhos, e a carta é escrita por nós com o que nos contar — «agora somos 3», o nome se já souberem, a data prevista.\n\nQuem recebe abre e percebe. Não é preciso dizer nada.",
+  "resumo": "Abre-se uma vez e não se esquece.",
+  "texto": "É a nossa forma preferida de dar a notícia. A caixa é de madeira, vai com os sapatinhos, e o cartão é escrito com o que quiser. Temos as nossas opções ou personalizamos a seu gosto.\n\nPara anunciar gravidez ou convidar padrinhos.\n\nQuem recebe abre e percebe. Não é preciso dizer nada.",
   "personalizavel": [
     "O texto da carta",
-    "A cor dos sapatinhos",
-    "A gravação na tampa",
-    "O que vai dentro"
+    "A cor dos sapatinhos"
   ],
   "ordem": 110,
   "publicado": true,
