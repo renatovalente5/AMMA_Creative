@@ -1,9 +1,11 @@
 {
   "nome": "Body «o meu primeiro…»",
+  "preco": 11,
   "categoria": "bodies",
   "ocasioes": [
     "dia-da-mae",
-    "dia-do-pai"
+    "dia-do-pai",
+    "presente"
   ],
   "fotos": [
     "assets/produtos/body-primeira-pascoa/01.jpg",
@@ -12,7 +14,7 @@
     "assets/produtos/body-primeira-pascoa/04.jpg"
   ],
   "resumo": "A primeira Páscoa, o primeiro Natal, o primeiro aniversário. Com o desenho da ocasião e o nome do bebé.",
-  "texto": "As primeiras vezes são uma só, e ficam em fotografia. Este leva as orelhas desenhadas e o nome do bebé por baixo.\n\nFazemos o mesmo para o primeiro Natal e para o primeiro aniversário.",
+  "texto": "As primeiras vezes são uma só, e ficam em fotografia. Eles podem não se lembrar, mas para nós são as melhores memórias.\n\nFazemos o mesmo para o primeiro Natal, primeiro aniversário, primeiro dia da mãe, primeiro dia do pai, ou outra ocasião que seja especial para vocês.",
   "personalizavel": [
     "O nome do bebé",
     "A ocasião (Páscoa, Natal, aniversário)",
