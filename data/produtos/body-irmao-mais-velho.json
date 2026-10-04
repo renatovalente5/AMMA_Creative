@@ -1,5 +1,6 @@
 {
   "nome": "Box para o irmão com anúncio de gravidez",
+  "preco": 18,
   "categoria": "bodies",
   "ocasioes": [
     "anuncio-gravidez"
@@ -11,12 +12,13 @@
     "assets/produtos/body-irmao-mais-velho/04.jpg"
   ],
   "resumo": "Para o irmão mais velho dar a notícia.",
-  "texto": "«Big Brother 2026», com a barra a carregar. Fazemos também para irmã, e em português se preferir.\n\nVem no tamanho do mais velho, não do que está a caminho — é ele que o vai vestir no dia do anúncio, podemos também fazer em ",
+  "texto": "«Big Brother 2026», com a barra a carregar. Fazemos também para irmã, e em português se preferir.\n\nVem no tamanho do mais velho, não do que está a caminho — é ele que o vai vestir no dia do anúncio, podemos também fazer em t-shirt, sweat, como preferir.\n\nPara incluir, só t-shirt ou só sweat, envia-nos mensagem privada.",
   "personalizavel": [
     "«Brother» ou «Sister», ou em português",
     "O ano",
     "O tamanho",
-    "A cor"
+    "A cor",
+    "O modelo"
   ],
   "ordem": 40,
   "publicado": true,
