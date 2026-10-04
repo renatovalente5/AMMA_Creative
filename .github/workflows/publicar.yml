@@ -2,7 +2,8 @@
 # Publica o site da AMMA Creative no GitHub Pages.
 #
 # Corre sempre que algo muda em `main` — incluindo o que a cliente grava no
-# backoffice — e também à mão, pelo botão «Run workflow».
+# painel (backoffice.ammacreative.pt) — e também à mão, pelo botão «Run
+# workflow» ou pelo «Publicar outra vez» do painel.
 #
 # Nota: em Settings → Pages, a origem tem de estar em «GitHub Actions». Se ficar
 # na opção antiga, o GitHub tenta processar o repositório com Jekyll e publica o
@@ -21,9 +22,10 @@ on:
   workflow_dispatch:
     inputs:
       payload:
-        # O Pages CMS envia sempre este input ao disparar do backoffice. Se não
-        # estiver declarado, o GitHub recusa o dispatch com «unexpected input».
-        description: 'Contexto do Pages CMS — deixar vazio se disparar à mão'
+        # Era o Pages CMS (o backoffice até 4 out 2026) que o enviava ao
+        # disparar; sem ele declarado, o GitHub recusava o dispatch com
+        # «unexpected input». Fica, opcional: o painel não o manda.
+        description: 'Contexto do antigo backoffice — deixar vazio'
         required: false
         default: ''
 
@@ -74,10 +76,11 @@ jobs:
       - name: Conferir o conteúdo
         run: node .github/guardas.mjs --neutralizar . --relatorio-em "$RUNNER_TEMP/relatorio.json"
 
-      # O Pages CMS grava a fotografia exactamente como saiu do telemóvel — 3000
-      # px e vários MB. Aqui geram-se as versões de 480/960/1600 px em WebP que o
-      # site serve, e o cartão de partilha de cada artigo. Os originais nunca
-      # chegam ao visitante.
+      # As fotografias que estão na biblioteca são os originais: as do painel
+      # chegam reduzidas a 2048 px, as antigas do Pages CMS como saíram do
+      # telemóvel (3000 px e vários MB). Aqui geram-se as versões de
+      # 480/960/1600 px em WebP que o site serve, e o cartão de partilha de cada
+      # artigo. Os originais nunca chegam ao visitante.
       - name: Preparar as fotografias
         run: python3 scripts/otimizar-imagens.py
 

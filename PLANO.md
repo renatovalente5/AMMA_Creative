@@ -181,6 +181,12 @@ ferramentas.
 
 ## PLANO F — Backoffice
 
+> **4 de Outubro de 2026: o Pages CMS saiu.** O backoffice é um painel próprio em
+> backoffice.ammacreative.pt (repositório privado `amma-painel`, no molde do da
+> LR Motors), com as regras dos dados em `.github/regras.mjs`, partilhadas com a
+> guarda do CI. O que vem abaixo é o histórico do `.pages.yml`; os textos de
+> ajuda passaram para o painel.
+
 - **F1** `.pages.yml` simples: **Artigos** e **Dados da loja**. *A entrada
   **Categorias** saiu em Agosto de 2026, a pedido; as categorias passaram a ser
   tratadas por nós em `data/categorias.json`.*

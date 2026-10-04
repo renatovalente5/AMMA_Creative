@@ -79,11 +79,14 @@ const personalizavelDe = (p) => (Array.isArray(p.personalizavel) ? p.personaliza
    TUDO o que o HTML pede dá 404 e o site aparece sem estilos — já aconteceu
    noutro projecto e não é evidente, porque o github.io reencaminha. */
 const BASE = (process.env.BASE ?? '').replace(/\/$/, '');
-/* `def.tecnico` não está declarado no .pages.yml. Com `settings.content.merge`
-     o Pages CMS preserva-o, mas isto é o cinto por cima dos suspensórios: uma
-     gravação que o apagasse deixaria o gerador a rebentar numa construção local. */
+/* `def.tecnico` é o que o painel nunca muda (o Worker recusa uma gravação que
+     lhe mexa — mudancasBloqueadas() em .github/regras.mjs); ler com `?.` é o
+     cinto por cima dos suspensórios para uma gravação à mão que o apague. */
   const SITE = (process.env.SITE ?? def.tecnico?.site
     ?? 'https://ammacreative.pt').replace(/\/$/, '');
+/* O painel da loja (o backoffice, desde 4 de Outubro de 2026): a entrada
+   «Gestão» do rodapé e o destino do antigo /preparar-fotos/. */
+const PAINEL = 'https://backoffice.ammacreative.pt/';
 
 /* CADA PEDAÇO DO CAMINHO VAI CODIFICADO. Em Agosto de 2026 a cliente carregou uma
    fotografia chamada «1 - 9-pronta.jpg» pelo backoffice — com espaços, que é o que
@@ -368,11 +371,7 @@ const REENCAMINHAR = [
   ['catalogo/boxes/body-irmao-mais-velho/', 'catalogo/bodies/body-irmao-mais-velho/'],
   ['catalogo/textil/body-anuncio-gravidez/', 'catalogo/bodies/body-anuncio-gravidez/'],
   ['catalogo/textil/body-primeira-pascoa/', 'catalogo/bodies/body-primeira-pascoa/'],
-  // A ferramenta chamava-se /reduzir-fotos/ e passou a /preparar-fotos/ no mesmo
-  // dia: o nome dizia à cliente que as fotografias eram reduzidas, e ela não
-  // precisa de saber isso. O endereço antigo esteve algumas horas no ar e foi
-  // escrito no texto de ajuda do backoffice, portanto reencaminha.
-  ['reduzir-fotos/', 'preparar-fotos/'],
+  // (O /reduzir-fotos/ e o /preparar-fotos/ levam ao painel: ver PARA_O_PAINEL.)
 ];
 
 /* ============================================================== esqueleto === */
@@ -503,11 +502,11 @@ ${corpo}
       <nav class="pe__legais" aria-label="Informação legal">
         ${LEGAIS.map(([p, n]) => `<a href="${u(p)}">${n}</a>`).join('\n        ')}
         <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener">Livro de Reclamações</a>
-        <!-- Entrada da cliente para o backoffice. Fica apagada de propósito: quem
-             visita o site não tem nada que a notar, e quem precisa dela sabe que
-             está aqui. Continua a ser um link a sério, e não um botão inerte. -->
-        <a class="pe__gestao" href="https://app.pagescms.org/renatovalente5/AMMA_Creative/main"
-           target="_blank" rel="noopener">Gestão</a>
+        <!-- Entrada da cliente para o painel (backoffice.ammacreative.pt, desde 4
+             de Outubro de 2026; antes, o Pages CMS). Fica apagada de propósito:
+             quem visita o site não tem nada que a notar, e quem precisa dela sabe
+             que está aqui. Continua a ser um link a sério, e não um botão inerte. -->
+        <a class="pe__gestao" href="${PAINEL}" target="_blank" rel="noopener">Gestão</a>
       </nav>
     </div>
     <!-- A identificação que o DL 7/2004 obriga a prestar — nome, sede, NIF —
@@ -1323,78 +1322,33 @@ function publicavel(origem) {
   return !tem;
 }
 
-/* A PÁGINA QUE O BACKOFFICE NÃO TEM. O Pages CMS recusa fotografias acima de
-   ~3,37 MB com «Failed to upload file: 413» — um número nu, sem explicação. O
-   413 vem da Vercel, que o aloja, e que corta pedidos acima de 4,5 MB antes de
-   o código da aplicação correr; como a fotografia vai em base64 dentro de um
-   JSON, engorda um terço, e o tecto por ficheiro cai para os tais 3,37 MB.
-
-   Não há como melhorar aquela mensagem: não é código nosso, não existe opção de
-   tamanho na configuração (o pedido está aberto na issue #346), e o gancho de
-   validação no navegador que o Pages CMS tem só olha para o tipo do ficheiro,
-   nunca para o tamanho. O autor fechou a issue com «This is a known limit of
-   Vercel».
-
-   Isto é a resposta possível: uma página que diz o que a mensagem não diz —
-   quanto pesa cada fotografia, se passa, e devolve-a reduzida se não passar.
-   Corre toda no navegador; nenhuma fotografia sai do computador de quem a usa.
-
-   Não está no menu nem no sitemap, e leva `noindex`: é uma ferramenta de
-   trabalho, não uma página da loja. O endereço é /preparar-fotos/.
-
-   CHAMA-SE «PREPARAR» E NÃO «REDUZIR», e nada aqui diz à cliente que houve
-   redução — nem o título, nem o nome do ficheiro que sai, nem a linha de cada
-   fotografia, que diz «Pronta.» e mais nada, igual para a que foi reduzida e para
-   a que já cabia. Foi pedido, e a razão é boa: ela não decide nada com essa
-   informação, e uma pessoa a quem se diz que a fotografia foi mexida fica a
-   pensar se perdeu qualidade. Perde 0,01 dB — medido —, mas isso é uma conversa
-   que não tem de existir. */
-function paginaReduzir() {
-  const corpo = `
-<section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
-  <div class="envolve envolve--estreito">
-    <p class="sobre-linha">Ferramenta</p>
-    <h1 class="tit-g" style="margin-bottom:1rem">Preparar fotografias</h1>
-    <p class="chamada">Deixe aqui as fotografias e eu devolvo-as prontas a carregar
-    no backoffice.</p>
-
-    <div class="red__zona" id="zona">
-      <input type="file" id="ficheiros" accept="image/jpeg,image/png,image/webp" multiple hidden>
-      <p><strong>Arraste as fotografias para aqui</strong></p>
-      <p style="color:var(--tinta-2);font-size:.95rem;margin:.3rem 0 1rem">ou</p>
-      <label class="btn btn--cheio" for="ficheiros" style="cursor:pointer">Escolher fotografias</label>
-    </div>
-
-    <div class="red__resumo" id="resumo" hidden>
-      <p class="red__quantas"></p>
-      <button class="btn btn--linha" type="button" id="guardar-todas">Guardar todas</button>
-    </div>
-
-    <ul class="red__lista" id="lista"></ul>
-
-    <div class="red__ajuda">
-      <h2 class="tit-m">Depois de guardar</h2>
-      <p>Ficam na pasta das transferências, com <code>-pronta</code> no fim do nome.
-      São essas que deve carregar no backoffice.</p>
-      <h2 class="tit-m">Se disser que é HEIC</h2>
-      <p>É o formato do iPhone, e o backoffice não o aceita. No telemóvel:
-      <strong>Definições, Câmara, Formatos</strong>, escolha «Mais compatível» — as
-      fotografias que tirar a partir daí saem em JPG. As que já tirou, abra esta página
-      no Safari do iPhone, que sabe ler HEIC.</p>
-      <h2 class="tit-m">Se nada disto funcionar</h2>
-      <p>Mande a fotografia por WhatsApp que nós carregamos. Não perde tempo com isso.</p>
-    </div>
-  </div>
-</section>`;
-
-  return pagina({
-    pag: 'preparar-fotos/',
-    titulo: `Preparar fotografias | ${def.empresa.nome_comercial}`,
-    descricao: 'Ferramenta interna para reduzir fotografias antes de as carregar no backoffice.',
-    naoIndexar: true,
-    extras: `<script src="${versao('assets/js/reduzir.js')}" defer></script>`,
-    corpo,
-  });
+/* AS FOTOGRAFIAS PREPARAM-SE NO PAINEL desde 4 de Outubro de 2026. Havia aqui
+   uma página, /preparar-fotos/, porque o Pages CMS recusava fotografias acima
+   de ~3,37 MB com um «413» da Vercel sem explicação; o painel
+   (backoffice.ammacreative.pt) reduz cada fotografia no navegador antes de a
+   enviar, e a página deixou de ter uso. O endereço estava escrito no texto de
+   ajuda do backoffice antigo, por isso não morre: leva ao painel. O
+   /reduzir-fotos/ (o nome de umas horas, em Agosto) também. */
+const PARA_O_PAINEL = ['preparar-fotos/', 'reduzir-fotos/'];
+function paginaParaOPainel() {
+  return `<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>As fotografias preparam-se no painel</title>
+<meta http-equiv="refresh" content="0; url=${PAINEL}">
+<style>body{font-family:system-ui,sans-serif;background:#FAF1E8;color:#2B1810;
+display:grid;place-items:center;min-height:100svh;margin:0;padding:1.5rem;text-align:center}
+a{color:#602601}</style>
+</head>
+<body>
+<p>As fotografias preparam-se agora no painel, sozinhas.<br><a href="${PAINEL}">Abrir o painel</a></p>
+<script>location.replace(${JSON.stringify(PAINEL)});</script>
+</body>
+</html>
+`;
 }
 
 function main() {
@@ -1480,7 +1434,7 @@ function main() {
   escrever('sobre/index.html', paginaSobre());
   escrever('contactos/index.html', paginaContactos());
   for (const p of produtos) escrever(`catalogo/${p.categoria}/${p.slug}/index.html`, paginaProduto(p));
-  escrever('preparar-fotos/index.html', paginaReduzir());
+  for (const de of PARA_O_PAINEL) escrever(`${de}index.html`, paginaParaOPainel());
 
   /* páginas legais, em markdown */
   for (const [ficheiro, destino] of Object.entries({
