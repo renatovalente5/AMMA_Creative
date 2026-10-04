@@ -11,12 +11,13 @@
 name: Publicar site
 
 on:
+  # EM TODOS OS PUSHES, sem `paths-ignore` (saiu a 4 out 2026). O painel lê a
+  # corrida do commit de cada gravação para dizer «Publicado ✓», e um commit
+  # sem corrida (um README) ficava a ser o «publicável» sem nunca correr: o
+  # «Publicar outra vez» desaparecia. Uma corrida a mais num README custa dois
+  # minutos; uma Publicação que mente custa mais.
   push:
     branches: [main]
-    paths-ignore:
-      - 'README.md'
-      - 'PLANO.md'
-      - '_fonte/**'
   workflow_dispatch:
     inputs:
       payload:

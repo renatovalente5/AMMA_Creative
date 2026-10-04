@@ -463,6 +463,7 @@ secao('o publicar.yml');
   certo(/node \.github\/guardas\.mjs --neutralizar \. /.test(passoDoYaml('Conferir o conteúdo')), 'e é a guarda a preparar a cópia (--neutralizar .)');
   certo(!/\bgit\s+(commit|push|add)\b/.test(YAML), 'nenhum passo grava no repositório: a cópia neutralizada nunca lá chega');
   certo(/^permissions:\n {2}contents: read$/m.test(YAML), 'o job só lê o repositório (contents: read)');
+  certo(/^on:\n(?:\s*#.*\n)*\s+push:\n\s+branches: \[main\]\n\s+workflow_dispatch:/m.test(YAML) && !/^\s+(?:paths-ignore|paths):/m.test(YAML), 'corre em todos os pushes para o main, sem paths-ignore (o painel conta com uma corrida por commit)');
   certo(!nomes.includes('Confirmar o backoffice contra os dados'), 'o passo que lia o .pages.yml saiu (as categorias e as ocasiões são das regras)');
   certo(!/node\s+\.github\/test-guardas/.test(YAML), 'esta bateria não corre no CI (afirma coisas sobre os dados de hoje)');
 }
@@ -578,7 +579,17 @@ async function pontaAPonta() {
   const ficha = (cat, slug) => `_site/catalogo/${cat}/${slug}/index.html`;
   const CAT_S = HOJE.artigos[S].categoria;
   const CASOS = [
-    ['os dados de hoje', () => {}, 'publica', (w) => existsSync(join(w, ficha(CAT_S, S))) && existsSync(join(w, 'assets', 'produtos', S, 'og.jpg'))],
+    ['os dados de hoje (e a lista dos endereços antigos bate certo: nenhum «~» do gerador)', () => {}, 'publica', (w, g) => existsSync(join(w, ficha(CAT_S, S))) && existsSync(join(w, 'assets', 'produtos', S, 'og.jpg')) && !/^\s*~ /m.test(g)],
+    /* OS ENDEREÇOS ANTIGOS (a lista REENCAMINHAR do gerador) contra o que a dona
+       faz no painel: mudar a categoria de um destino, criar um artigo num
+       endereço antigo, mudar um artigo para um endereço antigo. Até 4 out 2026
+       os três paravam a construção. */
+    ['mudar de categoria um artigo que é destino de endereços antigos', artW('sweat-mae', (a) => { a.categoria = 'bodies'; }), 'publica',
+      (w) => existsSync(join(w, ficha('bodies', 'sweat-mae'))) && readFileSync(join(w, '_site', 'catalogo', 'textil', 'sweat-casal', 'index.html'), 'utf8').includes('/catalogo/bodies/sweat-mae/')],
+    ['um artigo novo num endereço antigo', (w) => writeFileSync(join(w, 'data', 'produtos', 'box-noivo.json'), JSON.stringify({ ...HOJE.artigos[S], nome: 'Box noivo', categoria: 'boxes' }, null, 2)), 'publica',
+      (w) => !readFileSync(join(w, ficha('boxes', 'box-noivo')), 'utf8').includes('http-equiv="refresh"')],
+    ['mudar um artigo para um endereço antigo', artW('body-convite-madrinha', (a) => { a.categoria = 'boxes'; }), 'publica',
+      (w) => !readFileSync(join(w, ficha('boxes', 'body-convite-madrinha')), 'utf8').includes('http-equiv="refresh"') && readFileSync(join(w, '_site', 'catalogo', 'bodies-convites', 'body-convite-madrinha', 'index.html'), 'utf8').includes('/catalogo/boxes/body-convite-madrinha/')],
     ...['nome', 'fotos', 'resumo', 'texto', 'personalizavel', 'preco', 'categoria', 'ocasioes', 'publicado', 'destaque', 'ordem'].map((k) => [`sem «${k}» num artigo`, artW(S, (a) => { delete a[k]; }), 'publica']),
     ['sem nome, num artigo com a mesma posição de outros (o gerador ordena-os pelo nome)', artW('sweat-icon', (a) => { delete a.nome; }), 'publica'],
     ['sem nome, num artigo despublicado', artW(S, (a) => { delete a.nome; a.publicado = false; }), 'publica'],
@@ -634,7 +645,7 @@ async function pontaAPonta() {
       if (quer === 'publica') {
         if (falhou) maus.push(`${descr}: parou em «${falhou.nome}»${falhou.nome === 'Conferir o conteúdo' ? ` (${pararam.join(', ')})` : ' SEM A GUARDA DIZER PORQUÊ'}: ${(falhou.err || falhou.out).trim().split('\n').slice(-3).join(' ⏎ ').slice(0, 300)}`);
         else if (caiu.length) maus.push(`${descr}: o gerador deixou cair o que a guarda deu por bom: ${caiu.join(' | ').slice(0, 300)}`);
-        else if (conferir && !conferir(w)) maus.push(`${descr}: publicou, mas o site não ficou como devia`);
+        else if (conferir && !conferir(w, gerador ? `${gerador.out}\n${gerador.err}` : '')) maus.push(`${descr}: publicou, mas o site não ficou como devia`);
         else ok++;
       } else if (!falhou || falhou.nome !== 'Conferir o conteúdo' || !pararam.includes(quer)) {
         maus.push(`${descr}: devia parar na guarda com ${quer}; ${falhou ? `parou em «${falhou.nome}» (${pararam.join(', ') || 'sem bloqueios'})` : 'publicou'}`);

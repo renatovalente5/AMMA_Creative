@@ -1576,44 +1576,56 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
      estas páginas não são indexadas de qualquer maneira; e estão fora do
      sitemap.
 
-     TRÊS ASSERÇÕES ANTES DE ESCREVER. Este laço corre DEPOIS de todas as
-     páginas do site, e `escrever()` sobrescreve sem avisar. Sem estas
-     verificações, uma entrada mal escrita nesta lista tapava uma página
-     verdadeira em silêncio — e o site ia para o ar com um artigo transformado
-     em página de espera. */
-  const escritos = new Set(REENCAMINHAR.map(([de]) => de));
-
-  /* DESPUBLICAR UM ARTIGO NÃO PODE MATAR A PUBLICAÇÃO INTEIRA. Nove dos onze
-     destinos desta lista são fichas de artigo, e uma ficha só se escreve para
-     artigos publicados. Com a versão anterior desta verificação, a cliente
-     desligar o interruptor «Publicado no site» num desses nove — que é
-     precisamente o que o texto do campo lhe recomenda fazer enquanto não tem
-     fotografias boas — rebentava a construção, e o site parava de publicar
-     TUDO sem ela saber porquê.
-
-     Agora distingue-se: se o destino é um artigo que existe mas está
-     despublicado, o reencaminhamento vai para o catálogo, que é o destino que
-     nunca desaparece. Se o destino não corresponde a artigo nenhum, é erro de
-     escrita nosso e continua a rebentar — que é para isso que serve. */
-  const slugsConhecidos = new Set(todos.map((p) => `catalogo/${p.categoria}/${p.slug}/`));
+     OS ENDEREÇOS ANTIGOS NUNCA PARAM A PUBLICAÇÃO (4 out 2026). Esta lista é
+     histórico, e a dona mexe no que ela aponta sem saber que ela existe: muda
+     a categoria de um artigo (e o endereço dele com ela), cria um artigo num
+     endereço que já foi de outro, despublica um destino. Até aqui os dois
+     primeiros rebentavam a construção — «para uma página que não existe»,
+     «taparia uma página verdadeira» — e NADA do que ela gravasse a seguir ia
+     ao ar, com um passo falhado e sem explicação (a revisão do servidor do
+     painel apanhou-o: o painel gravava, a guarda do CI deixava passar, e o
+     gerador parava). Agora:
+       · uma página verdadeira ganha sempre a um endereço antigo, que salta;
+       · o destino é a página, se existe; se é a ficha de um artigo, o endereço
+         de HOJE desse artigo (pelo slug, que nunca muda — a categoria pode ter
+         mudado), ou o catálogo se ele estiver despublicado; se é outro
+         endereço da lista, o destino final dele; senão, o catálogo.
+     Tudo se decide ANTES de escrever a primeira (a lista lê as páginas que
+     existem, e uma página de reencaminhamento escrita a meio enganava as
+     contas). O que não bate certo diz-se na consola, com «~», e a bateria
+     .github/test-guardas.mjs exige que com os dados do repositório não haja
+     nenhum: uma gralha na lista apanha-se lá, e não com o site parado. */
+  const porSlug = new Map(todos.map((p) => [p.slug, p]));
+  const fontes = new Map(REENCAMINHAR);
+  const existe = (pag) => existsSync(join(SAIDA, pag, 'index.html'));
   const desviados = [];
-
-  for (const [de, paraOriginal] of REENCAMINHAR) {
-    let para = paraOriginal;
-    if (escritos.has(para)) {
-      throw new Error(`reencaminhamento em cadeia: ${de} -> ${para}, e ${para} também reencaminha. Aponte para o destino final.`);
-    }
-    if (!existsSync(join(SAIDA, para, 'index.html'))) {
-      if (slugsConhecidos.has(para)) {
-        desviados.push(`${de} -> ${para} (despublicado)`);
-        para = 'catalogo/';
-      } else {
-        throw new Error(`reencaminhamento para uma página que não existe: ${de} -> ${para}`);
+  const resolver = (de, para0) => {
+    let para = para0;
+    for (let passos = 0; passos < REENCAMINHAR.length + 1; passos++) {
+      if (existe(para)) return para;
+      const m = /^catalogo\/[^/]+\/([^/]+)\/$/.exec(para);
+      const p = m ? porSlug.get(m[1]) : undefined;
+      if (p) {
+        const hoje = `catalogo/${p.categoria}/${p.slug}/`;
+        if (p.publicado !== false && existe(hoje)) {
+          if (hoje !== para0) desviados.push(`${de} -> ${para0}: o artigo está agora em ${hoje}`);
+          return hoje;
+        }
+        desviados.push(`${de} -> ${para0}: o artigo está despublicado — vai para o catálogo`);
+        return 'catalogo/';
       }
+      if (fontes.has(para) && fontes.get(para) !== para) { para = fontes.get(para); continue; }
+      break;
     }
-    if (existsSync(join(SAIDA, de, 'index.html'))) {
-      throw new Error(`o reencaminhamento ${de} taparia uma página verdadeira. Tire-o da lista.`);
-    }
+    desviados.push(`${de} -> ${para0}: o destino não existe — vai para o catálogo`);
+    return 'catalogo/';
+  };
+  const aEscrever = [];
+  for (const [de, paraOriginal] of REENCAMINHAR) {
+    if (existe(de)) { desviados.push(`${de}: há uma página verdadeira neste endereço — fica a página`); continue; }
+    aEscrever.push([de, resolver(de, paraOriginal)]);
+  }
+  for (const [de, para] of aEscrever) {
     const destino = u(para);
     escrever(`${de}index.html`, `<!doctype html>
 <html lang="pt-PT">
@@ -1642,8 +1654,8 @@ a{color:#602601}</style>
   console.log(`  ${urls.length} páginas no sitemap`);
   if (REENCAMINHAR.length) console.log(`  ${REENCAMINHAR.length} endereço(s) antigo(s) a reencaminhar`);
   if (desviados.length) {
-    console.log(`  ${desviados.length} desviado(s) para o catálogo por o artigo estar despublicado:`);
-    desviados.forEach((d) => console.log(`    ${d}`));
+    console.log(`  ${desviados.length} endereço(s) antigo(s) que não seguem a lista à letra:`);
+    desviados.forEach((d) => console.log(`  ~ ${d}`));
   }
   console.log(`  base: ${BASE || '/'}   site: ${SITE}`);
   if (naoPublicados.length) {
