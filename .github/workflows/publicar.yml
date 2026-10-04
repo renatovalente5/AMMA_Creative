@@ -51,8 +51,27 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Instalar o Pillow e o PyYAML
-        run: pip install --quiet Pillow PyYAML
+      - name: Instalar o Pillow
+        run: pip install --quiet Pillow
+
+      # A GUARDA DO CONTEÚDO (.github/guardas.mjs, com as regras de
+      # .github/regras.mjs — as mesmas do painel em backoffice.ammacreative.pt).
+      # Pára só no que não se publica sem partir o site ou a lei (a estrutura
+      # dos ficheiros, a morada da sede, o WhatsApp). Um artigo com problemas
+      # sai do site SÓ na cópia que o gerador lê (sem nome, sem texto, numa
+      # categoria que não existe…), e as fotografias que não são da biblioteca
+      # ou que já não existem saem da lista dele: um artigo nunca pára a
+      # publicação dos outros. Escreve nos ficheiros de data/ desta corrida,
+      # que não faz commit de volta. O resumo fica na página da corrida, e a
+      # prova de tudo isto é o .github/test-guardas.mjs (corre em local).
+      #
+      # CORRE ANTES DE TUDO O QUE LÊ OS DADOS: as fotografias (o cartão de
+      # partilha sai da capa de cada artigo) e o gerador lêem a cópia já
+      # neutralizada. Substitui o passo que conferia o .pages.yml contra os
+      # dados: as categorias vêm do data/categorias.json e as ocasiões das
+      # regras, e o painel só oferece essas.
+      - name: Conferir o conteúdo
+        run: node .github/guardas.mjs --neutralizar . --relatorio-em "$RUNNER_TEMP/relatorio.json"
 
       # O Pages CMS grava a fotografia exactamente como saiu do telemóvel — 3000
       # px e vários MB. Aqui geram-se as versões de 480/960/1600 px em WebP que o
@@ -60,64 +79,6 @@ jobs:
       # chegam ao visitante.
       - name: Preparar as fotografias
         run: python3 scripts/otimizar-imagens.py
-
-      # O backoffice pode partir sem o SITE dar sinal. As opções de «categoria» e
-      # «ocasiões» vivem no .pages.yml, e os valores gravados vivem nos JSON dos
-      # artigos: se as duas listas se desencontrarem, o site gera-se
-      # perfeitamente e é a cliente que descobre, ao abrir um artigo e encontrar
-      # um campo OBRIGATÓRIO em branco, sem saber o que lá estava.
-      #
-      # Aconteceu: uma linha de remoção apanhou a lista errada — «Lembranças»
-      # existe como categoria E como ocasião, com texto idêntico — e tirou a
-      # categoria a dois artigos que a usavam. Nenhuma verificação de então
-      # apanhava isto, porque nenhuma olhava para o backoffice.
-      - name: Confirmar o backoffice contra os dados
-        run: |
-          python3 - <<'PY'
-          import yaml, json, glob, sys
-          y = yaml.safe_load(open('.pages.yml', encoding='utf-8'))
-          art = [c for c in y['content'] if c['name'] == 'artigos'][0]
-          opc = {f['name']: {o['name'] for o in f['options']['values']}
-                 for f in art['fields'] if f['name'] in ('categoria', 'ocasioes')}
-          erros = []
-          avisos = []
-          usadas = {'categoria': set(), 'ocasioes': set()}
-          for f in sorted(glob.glob('data/produtos/*.json')):
-              d = json.load(open(f, encoding='utf-8'))
-              usadas['categoria'].add(d['categoria'])
-              usadas['ocasioes'] |= set(d.get('ocasioes') or [])
-              if d['categoria'] not in opc['categoria']:
-                  erros.append(f"{d['slug']}: categoria \"{d['categoria']}\" nao esta nas opcoes do .pages.yml")
-              for o in d.get('ocasioes') or []:
-                  if o not in opc['ocasioes']:
-                      erros.append(f"{d['slug']}: ocasiao \"{o}\" nao esta nas opcoes do .pages.yml")
-          # As categorias tambem tem de existir em categorias.json, senao
-          # `catDe` devolve undefined e o gerador estoura nas migalhas de pao da
-          # ficha. (A razao antiga — «escreve um endereco sem pagina de
-          # categoria» — deixou de valer: essas paginas foram removidas. A
-          # guarda continua a ser precisa, por este outro motivo.)
-          cats = {c['slug'] for c in json.load(open('data/categorias.json', encoding='utf-8'))}
-          for c in opc['categoria'] - cats:
-              erros.append(f"categoria \"{c}\" esta no .pages.yml mas nao em categorias.json")
-          # ESTE CASO NÃO É FATAL, e a razão é a pessoa que o vai causar. A dona da
-          # loja pode criar uma categoria em «Textos das categorias» antes de a
-          # ligar aos artigos — e se isto parasse a publicação, o dia em que ela
-          # experimentasse era o dia em que as fotografias que gravou na mesma
-          # sessão não iam ao ar. O gerador já esconde do visitante as categorias
-          # sem artigos, portanto o site sai correcto. Fica um aviso, para eu ver.
-          for c in cats - opc['categoria']:
-              avisos.append(f"a categoria \"{c}\" foi criada em Textos das categorias mas ainda nao esta na lista dos artigos: o site publica-se e ela fica invisivel ate ter o primeiro artigo")
-          if erros:
-              print('backoffice desencontrado dos dados:')
-              [print(' ', e) for e in erros]
-              sys.exit(1)
-          orfas = (opc['categoria'] - usadas['categoria']) | (opc['ocasioes'] - usadas['ocasioes'])
-          if orfas:
-              avisos.append('opcoes sem nenhum artigo: ' + ', '.join(sorted(orfas)))
-          for a in avisos:
-              print('aviso:', a)
-          print('backoffice e dados coerentes')
-          PY
 
       - name: Gerar o site
         run: node scripts/gerar.mjs

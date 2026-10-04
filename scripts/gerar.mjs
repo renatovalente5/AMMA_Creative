@@ -17,6 +17,9 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync
 import { createHash } from 'node:crypto';
 import { join, dirname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+/* As ocasiões vêm das regras do conteúdo, que o painel e a guarda do CI também
+   usam: uma lista só (ver .github/regras.mjs). */
+import { OCASIOES } from '../.github/regras.mjs';
 
 const RAIZ = dirname(dirname(fileURLToPath(import.meta.url)));
 const SAIDA = join(RAIZ, '_site');
@@ -53,9 +56,22 @@ const todos = readdirSync(join(RAIZ, 'data/produtos'))
     ...JSON.parse(readFileSync(join(RAIZ, 'data/produtos', f), 'utf8')),
     slug: f.slice(0, -5),
   }))
-  .sort((a, b) => (a.ordem ?? 999) - (b.ordem ?? 999) || a.nome.localeCompare(b.nome, 'pt'));
+  /* Pelo nome em texto: um artigo gravado sem nome (o Pages CMS apaga a chave
+     de um campo vazio) rebentava aqui, com o site inteiro, e só quando havia
+     outro artigo na mesma posição. Assim fica sem nome — e escondido, porque a
+     guarda (.github/regras.mjs) o neutraliza. */
+  .sort((a, b) => (a.ordem ?? 999) - (b.ordem ?? 999) || String(a.nome ?? '').localeCompare(String(b.nome ?? ''), 'pt'));
 
 const produtos = todos.filter((p) => p.publicado !== false);
+
+/* AS LISTAS DE UM ARTIGO, como o site as lê: só uma lista conta, e dela só o
+   que o site sabe mostrar. Um campo gravado à mão com outra forma — um texto
+   em vez de uma lista — deixava o gerador a meio (`"presente".join`) e parava
+   a publicação do site inteiro; uma ocasião chamada «constructor» passava o
+   `OCASIOES[o]`, que lê o protótipo. Assim o artigo sai sem essa secção, e o
+   painel e a guarda (.github/regras.mjs) avisam. */
+const ocasioesDe = (p) => (Array.isArray(p.ocasioes) ? p.ocasioes.filter((o) => typeof o === 'string' && Object.hasOwn(OCASIOES, o)) : []);
+const personalizavelDe = (p) => (Array.isArray(p.personalizavel) ? p.personalizavel.filter((x) => typeof x === 'string' && x.trim()) : []);
 
 /* O endereço base. Com domínio próprio (ammacreative.pt, desde 4 de Outubro de
    2026) o site serve na RAIZ e o BASE é vazio; no github.io servia dentro de
@@ -183,18 +199,6 @@ const contaCat = (slug) => produtos.filter((p) => p.categoria === slug).length;
    de categoria já não se geram: /catalogo/<categoria>/ foi removido em Agosto
    de 2026 e reencaminha para o catálogo. */
 const catsVisiveis = categorias.filter((c) => contaCat(c.slug) > 0);
-
-const OCASIOES = {
-  'anuncio-gravidez': 'Anúncio de gravidez',
-  'convite-padrinhos': 'Convite a padrinhos',
-  'baptizado': 'Batizado',
-  'casamento': 'Casamento',
-  'dia-da-mae': 'Dia da Mãe',
-  'dia-do-pai': 'Dia do Pai',
-  'pascoa': 'Páscoa',
-  'presente': 'Presente',
-  'lembrancas': 'Lembranças',
-};
 
 /* ------------------------------------------------------------------- ícones */
 const ic = {
@@ -578,7 +582,7 @@ function cartaoProduto(p, { prioridade = false } = {}) {
     : '<div style="aspect-ratio:1;display:grid;place-items:center;color:var(--tinta-3)">Sem fotografia</div>';
 
   return `<a class="prod" href="${u('catalogo/' + p.categoria + '/' + p.slug + '/')}"
-    data-categoria="${esc(p.categoria)}" data-ocasioes="${esc((p.ocasioes || []).join(' '))}"
+    data-categoria="${esc(p.categoria)}" data-ocasioes="${esc(ocasioesDe(p).join(' '))}"
     data-procura="${esc([p.nome, p.resumo, nomeCat(p.categoria)].join(' ').toLowerCase())}">
     <div class="prod__figura" style="aspect-ratio:1">
       ${img}
@@ -617,7 +621,8 @@ function cartaoCategoria(c, prioridade = false) {
 function paginaInicial() {
   const destaques = produtos.filter((p) => p.destaque).slice(0, 6);
   const lista = destaques.length ? destaques : produtos.slice(0, 6);
-  const heroFoto = fotos(produtos.find((p) => p.slug === 'box-anuncio-gravidez') || produtos[0])[0];
+  const heroArtigo = produtos.find((p) => p.slug === 'box-anuncio-gravidez') || produtos[0];
+  const heroFoto = heroArtigo ? fotos(heroArtigo)[0] : undefined;   // sem artigos no site, sem fotografia
 
   const corpo = `
 <section class="hero">
@@ -723,15 +728,15 @@ function paginaInicial() {
 function passosEncomenda() {
   const passos = Array.isArray(def.passos) ? def.passos.filter((x) => x && x.titulo) : [];
   if (!passos.length) return '';
-  const prazo = (def.textos.prazo || '').trim();
+  const prazo = typeof def.textos.prazo === 'string' ? def.textos.prazo.trim() : '';
   return `<div class="passos">
     ${passos.map((x) => `<div class="passo"><h3>${esc(x.titulo)}</h3><p>${esc(x.texto || '')}</p></div>`).join('\n    ')}
   </div>${prazo ? `\n  <p class="passos__prazo">${esc(prazo)}</p>` : ''}`;
 }
 
 function paginaCatalogo() {
-  const ocasioesUsadas = [...new Set(produtos.flatMap((p) => p.ocasioes || []))]
-    .filter((o) => OCASIOES[o]).sort((a, b) => OCASIOES[a].localeCompare(OCASIOES[b], 'pt'));
+  const ocasioesUsadas = [...new Set(produtos.flatMap(ocasioesDe))]
+    .sort((a, b) => OCASIOES[a].localeCompare(OCASIOES[b], 'pt'));
 
   const corpo = `
 <section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
@@ -869,17 +874,17 @@ function paginaProduto(p) {
           ${p.texto.split('\n\n').map((t) => `<p>${esc(t)}</p>`).join('\n          ')}
         </div>
 
-        ${(p.personalizavel || []).length ? `<div class="bloco">
+        ${personalizavelDe(p).length ? `<div class="bloco">
           <h2>O que se personaliza</h2>
           <ul class="person">
-            ${p.personalizavel.map((x) => `<li>${ic.check}<span>${esc(x)}</span></li>`).join('\n            ')}
+            ${personalizavelDe(p).map((x) => `<li>${ic.check}<span>${esc(x)}</span></li>`).join('\n            ')}
           </ul>
         </div>` : ''}
 
-        ${(p.ocasioes || []).length ? `<div class="bloco">
+        ${ocasioesDe(p).length ? `<div class="bloco">
           <h2>Costuma dar-se em</h2>
           <div class="filtros__fila">
-            ${p.ocasioes.filter((o) => OCASIOES[o]).map((o) => `<span class="ficha" style="cursor:default">${esc(OCASIOES[o])}</span>`).join('\n            ')}
+            ${ocasioesDe(p).map((o) => `<span class="ficha" style="cursor:default">${esc(OCASIOES[o])}</span>`).join('\n            ')}
           </div>
         </div>` : ''}
       </div>
@@ -1087,8 +1092,8 @@ function paginaComoEncomendar() {
    Outubro de 2026, quando a cliente quis mudar os títulos e não os encontrava no
    backoffice. Um ponto sem explicação mostra só o título; sem pontos, não há faixa. */
 function secaoImporta() {
-  const s = def.importa || {};
-  const itens = (s.itens || []).filter((i) => String(i?.titulo ?? '').trim());
+  const s = def.importa && typeof def.importa === 'object' ? def.importa : {};
+  const itens = (Array.isArray(s.itens) ? s.itens : []).filter((i) => String(i?.titulo ?? '').trim());
   if (!itens.length) return '';
   return `
 <section class="secao secao--creme">

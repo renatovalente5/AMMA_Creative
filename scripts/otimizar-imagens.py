@@ -16,6 +16,8 @@ As fotografias grandes nunca chegam ao visitante: o gerador serve só as variant
 Correr:  python3 scripts/otimizar-imagens.py
          python3 scripts/otimizar-imagens.py --varrer   (o que a Action usa)
 """
+import os
+import re
 import sys
 from pathlib import Path
 
@@ -68,6 +70,37 @@ def cartao_partilha(im: Image.Image, pasta: Path):
     c.save(saida, 'JPEG', quality=82, optimize=True)
 
 
+def capa_de(artigo: dict):
+    """A capa de um artigo como o scripts/gerar.mjs a escolhe (fotos() de lá): a
+    primeira fotografia da lista que tem cópias. Sem a barra à frente; um og.jpg
+    (o cartão de outro artigo) não conta; uma cópia escolhida («07-480.webp»)
+    vale pelo original de que veio — o Pages CMS mostra as duas lado a lado e a
+    cliente já escolheu cópias (3 de Outubro de 2026). Uma fotografia que não
+    tem cópias (não existe, ou não se abriu) passa à seguinte, como no gerador:
+    com a primeira da lista em falta, o cartão tem de ser o da segunda, que é a
+    capa que a ficha mostra. Devolve a cópia MAIOR que houver, ou None.
+    As contas são as do gerador, uma a uma: as barras à frente saem, a pasta
+    vai até à última barra, e o nome compara-se com o que a pasta lista."""
+    fotos = artigo.get('fotos')
+    for c in fotos if isinstance(fotos, list) else []:
+        if not isinstance(c, str):
+            continue
+        limpo = c.lstrip('/')
+        pasta = limpo[: limpo.rfind('/')]
+        nome = limpo.split('/')[-1]
+        if nome.lower() == 'og.jpg':
+            continue
+        base = re.sub(r'\.[a-z0-9]+$', '', re.sub(r'-(?:480|960|1600)\.webp$', '', nome, flags=re.I), flags=re.I)
+        try:
+            vizinhos = set(os.listdir(RAIZ / pasta))
+        except OSError:
+            continue
+        for w in reversed(LARGURAS):
+            if f'{base}-{w}.webp' in vizinhos:
+                return RAIZ / pasta / f'{base}-{w}.webp'
+    return None
+
+
 def varrer():
     novas = existentes = cartoes = 0
     for pasta in [PRODUTOS, IMG]:
@@ -110,27 +143,21 @@ def varrer():
     #      artigos criados por ela ficavam sem imagem de partilha no WhatsApp, que
     #      para esta loja é o canal principal.
     #
-    # A capa só a ficha do artigo a conhece. Por isso lê-se dos dados.
+    # A capa só a ficha do artigo a conhece. Por isso lê-se dos dados, e
+    # escolhe-se COMO O GERADOR A ESCOLHE (capa_de(), acima): se as duas contas
+    # divergirem, a ficha aponta o og:image para um og.jpg que nunca foi feito e
+    # a publicação pára na verificação das ligações.
     import json
     for ficheiro in sorted((RAIZ / 'data' / 'produtos').glob('*.json')):
-        artigo = json.loads(ficheiro.read_text(encoding='utf-8'))
-        if artigo.get('publicado') is False:
+        try:
+            artigo = json.loads(ficheiro.read_text(encoding='utf-8'))
+        except ValueError as e:
+            print(f'  !! {ficheiro.name}: não se lê ({e})')
             continue
-        # A capa é a primeira FOTOGRAFIA: um og.jpg de outro artigo não conta, e
-        # uma cópia gerada («07-480.webp») vale pelo original de que veio — o
-        # Pages CMS mostra as duas lado a lado e a cliente já escolheu cópias
-        # (3 de Outubro de 2026). O gerador faz o mesmo na galeria.
-        capa = next((f for f in artigo.get('fotos') or [] if Path(f).name.lower() != 'og.jpg'), None)
-        if not capa:
+        if not isinstance(artigo, dict) or artigo.get('publicado') is False:
             continue
-        origem = RAIZ / capa
-        stem = origem.stem
-        for sufixo in SUFIXOS:
-            if stem.endswith(sufixo) and origem.suffix.lower() == '.webp':
-                stem = stem[: -len(sufixo)]
-        variante = origem.with_name(f'{stem}-1600.webp')
-        if not variante.exists():
-            print(f'  !! {ficheiro.stem}: a capa {capa} não tem variantes')
+        variante = capa_de(artigo)
+        if variante is None:
             continue
         destino = PRODUTOS / ficheiro.stem
         destino.mkdir(parents=True, exist_ok=True)
