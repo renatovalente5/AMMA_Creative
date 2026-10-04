@@ -1,0 +1,26 @@
+{
+  "nome": "Box Madrinha",
+  "fotos": [
+    "assets/produtos/box-madrinha/box-madrinha-2bd31604.jpg",
+    "assets/produtos/box-madrinha/box-madrinha-5ec8543c.jpg",
+    "assets/produtos/box-madrinha/box-madrinha-31263a0a.jpg",
+    "assets/produtos/box-madrinha/box-madrinha-f5819c4f.jpg"
+  ],
+  "resumo": "Personalizada com carinho e preparada especialmente para a melhor madrinha.",
+  "texto": "Uma box personalizada pensada para a melhor madrinha do mundo.\n\nUm mimo cheio de carinho, preparado para surpreender.\n\nTens 3 opções:\nOpção 1: vela, porta chaves e íman personalizado.\nOpção 2: T-shirt, Iman personalizado, porta chaves personalizado.\nOpção 3: Bloco de notas, vela, Iman personalizado. \n\nSe tiveres outra ideia, fala connosco, nós compomos.",
+  "personalizavel": [
+    "A foto",
+    "O conteúdo da caixa",
+    "A mensagem"
+  ],
+  "preco": 18,
+  "categoria": "boxes",
+  "ocasioes": [
+    "convite-padrinhos",
+    "baptizado",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 130
+}
