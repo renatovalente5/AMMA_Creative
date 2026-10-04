@@ -122,11 +122,12 @@ jobs:
       - name: Gerar o site
         run: node scripts/gerar.mjs
         env:
-          # Sem domínio próprio, o site serve dentro de /AMMA_Creative. Quando o
-          # domínio existir, BASE passa a vazio e SITE ao endereço novo — e o
-          # CNAME entra no repositório.
-          BASE: /AMMA_Creative
-          SITE: https://renatovalente5.github.io/AMMA_Creative
+          # Desde 4 de Outubro de 2026 o site serve na RAIZ de ammacreative.pt (o
+          # domínio está nas definições do Pages e no CNAME): BASE vazio. Antes
+          # servia dentro de renatovalente5.github.io/AMMA_Creative, que agora
+          # reencaminha para o domínio.
+          BASE: ''
+          SITE: https://ammacreative.pt
 
       # Rede de segurança para o erro que parte um site destes em silêncio: se o
       # BASE estiver errado, TUDO o que o HTML pede dá 404 e o site aparece sem
@@ -135,7 +136,7 @@ jobs:
         run: |
           test -f _site/index.html || { echo "falta o index.html"; exit 1; }
           test -f _site/sitemap.xml || { echo "falta o sitemap"; exit 1; }
-          grep -q '"/AMMA_Creative/assets/css/estilo.css' _site/index.html \
+          grep -q '"/assets/css/estilo.css' _site/index.html \
             || { echo "o HTML nao aponta para o CSS no caminho certo"; exit 1; }
           # CONTAR NAO SERVE AQUI, e por duas vezes ja enganou: contar pastas
           # apanhava as pastas dos enderecos antigos que reencaminham, que estao
@@ -205,7 +206,7 @@ jobs:
           import re, sys, pathlib, json, collections
           from urllib.parse import unquote
           raiz = pathlib.Path('_site')
-          BASE = '/AMMA_Creative/'
+          BASE = '/'
 
           def existe(u):
               """Um endereco interno resolve para um ficheiro no que vai para o ar?"""

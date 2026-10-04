@@ -57,16 +57,17 @@ const todos = readdirSync(join(RAIZ, 'data/produtos'))
 
 const produtos = todos.filter((p) => p.publicado !== false);
 
-/* O endereço base. Com domínio próprio o site serve na RAIZ e o BASE é vazio;
-   no github.io serve dentro de /AMMA_Creative. Enquanto isto estiver errado,
+/* O endereço base. Com domínio próprio (ammacreative.pt, desde 4 de Outubro de
+   2026) o site serve na RAIZ e o BASE é vazio; no github.io servia dentro de
+   /AMMA_Creative. Enquanto isto estiver errado,
    TUDO o que o HTML pede dá 404 e o site aparece sem estilos — já aconteceu
    noutro projecto e não é evidente, porque o github.io reencaminha. */
-const BASE = (process.env.BASE ?? '/AMMA_Creative').replace(/\/$/, '');
+const BASE = (process.env.BASE ?? '').replace(/\/$/, '');
 /* `def.tecnico` não está declarado no .pages.yml. Com `settings.content.merge`
      o Pages CMS preserva-o, mas isto é o cinto por cima dos suspensórios: uma
      gravação que o apagasse deixaria o gerador a rebentar numa construção local. */
   const SITE = (process.env.SITE ?? def.tecnico?.site
-    ?? 'https://renatovalente5.github.io/AMMA_Creative').replace(/\/$/, '');
+    ?? 'https://ammacreative.pt').replace(/\/$/, '');
 
 /* CADA PEDAÇO DO CAMINHO VAI CODIFICADO. Em Agosto de 2026 a cliente carregou uma
    fotografia chamada «1 - 9-pronta.jpg» pelo backoffice — com espaços, que é o que

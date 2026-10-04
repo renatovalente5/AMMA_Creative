@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         AMMA Creative — reduzir fotografias no Pages CMS
-// @namespace    https://renatovalente5.github.io/AMMA_Creative/
+// @namespace    https://ammacreative.pt/
 // @version      1.0.0
 // @description  Reduz as fotografias grandes no momento do envio, para o backoffice deixar de recusar com «Failed to upload file: 413». Não pede nada a quem carrega e não mostra nada: só acontece.
 // @author       renatovalente5/AMMA_Creative
 // @match        https://app.pagescms.org/*
 // @run-at       document-start
 // @grant        none
-// @downloadURL  https://renatovalente5.github.io/AMMA_Creative/assets/js/pagescms-reduzir.user.js
-// @updateURL    https://renatovalente5.github.io/AMMA_Creative/assets/js/pagescms-reduzir.user.js
+// @downloadURL  https://ammacreative.pt/assets/js/pagescms-reduzir.user.js
+// @updateURL    https://ammacreative.pt/assets/js/pagescms-reduzir.user.js
 // ==/UserScript==
 
 /* ============================================================================
