@@ -228,6 +228,7 @@ secao('cada regra, com a classe certa');
     ['fotografia .gif', art(S, (a) => { a.fotos.push('assets/produtos/a.gif'); }), 'neutraliza', `artigo:${S}:foto-invalida:assets/produtos/a.gif`, 'sem_fotografia'],
     ['fotografia que não é texto', art(S, (a) => { a.fotos.push(null); }), 'neutraliza', `artigo:${S}:foto-invalida:null`, 'sem_fotografia'],
     ['um original que a preparação salta («-480.jpg»)', art(S, (a) => { a.fotos.push('assets/produtos/foto-480.jpg'); }), 'neutraliza', `artigo:${S}:foto-em-falta:assets/produtos/foto-480`, 'sem_fotografia'],
+    ['um «logo….png» que está na biblioteca (a preparação salta-o)', art(S, (a) => { a.fotos.push('assets/produtos/logo-caixa.png'); }), 'neutraliza', `artigo:${S}:foto-em-falta:assets/produtos/logo-caixa`, 'sem_fotografia'],
     ['a mesma fotografia duas vezes', art(S, (a) => { a.fotos.push(a.fotos[0]); }), 'avisa', `artigo:${S}:foto-repetida:${semExt(PRIMEIRA)}`],
     ['o original e uma cópia dele', art(S, (a) => { a.fotos.push(a.fotos[0].replace(/\.[a-z]+$/i, '-960.webp')); }), 'avisa', `artigo:${S}:foto-repetida:${semExt(PRIMEIRA)}`],
     ['17 fotografias', art(S, (a) => { a.fotos = fotosDeHoje.slice(0, 17); }), 'avisa', `artigo:${S}:fotos-a-mais`],
@@ -610,6 +611,7 @@ async function pontaAPonta() {
        JPEG que abriu), por isso isto só vem de fora dele. */
     ['uma fotografia que não abre, à frente', e(fotoNova('estragada.jpg', 'isto não é uma imagem'), artW(S, (a) => { a.fotos.unshift('assets/produtos/estragada.jpg'); })), 'publica', (w) => existsSync(join(w, 'assets', 'produtos', S, 'og.jpg')), /estragada\.jpg não tem variantes/],
     ['uma fotografia chamada «-480.jpg»', e(fotoNova('foto-480.jpg'), artW(S, (a) => { a.fotos = ['assets/produtos/foto-480.jpg', ...a.fotos]; })), 'publica'],
+    ['uma fotografia chamada «logo….png» (a preparação dá-a por logótipo)', e(fotoNova('logo-caixa.png'), artW(S, (a) => { a.fotos = ['assets/produtos/logo-caixa.png', ...a.fotos]; })), 'publica', (w) => existsSync(join(w, 'assets', 'produtos', S, 'og.jpg'))],
     ['uma fotografia .JPG com acentos e espaços', e(fotoNova('Ação Nova.JPG'), artW(S, (a) => { a.fotos = ['assets/produtos/Ação Nova.JPG']; })), 'publica', (w) => existsSync(join(w, 'assets', 'produtos', S, 'og.jpg'))],
     ['o artigo da página inicial sem fotografias', artW(B, (a) => { a.fotos = []; }), 'publica'],
     ['o artigo da página inicial despublicado', artW(B, (a) => { a.publicado = false; }), 'publica'],

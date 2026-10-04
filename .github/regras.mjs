@@ -112,6 +112,13 @@ export const OCASIOES = Object.freeze({
   presente: 'Presente',
   lembrancas: 'Lembranças',
 });
+/* AS OCASIÕES RETIRADAS, em Agosto de 2026 e por medição (ver o histórico do
+   .pages.yml): «Páscoa» tinha UM artigo, que passou a chamar-se «o meu
+   primeiro…» e cobre também o Natal e o aniversário; «Lembranças» devolvia os
+   MESMOS dois artigos da categoria com o mesmo nome. O site continua a saber
+   mostrá-las (um artigo antigo que as tenha não perde nada), mas o painel não
+   as oferece para escolher. */
+export const OCASIOES_RETIRADAS = Object.freeze(['pascoa', 'lembrancas']);
 /* As que o scripts/otimizar-imagens.py prepara. */
 export const EXTENSOES_FOTO = ['jpg', 'jpeg', 'png', 'webp'];
 
@@ -224,7 +231,8 @@ export function gerarSlug(nome, existentes = []) {
    que veio, como no gerador desde 4 out 2026. Um og.jpg não é fotografia.
    O original conta só se o otimizar-imagens.py lhe fizer as cópias: um nome
    acabado em -480/-960/-1600 (com qualquer extensão) ou chamado «og» ele dá
-   por cópia ou cartão e salta — e o site nunca o mostra.
+   por cópia ou cartão e salta, e um «logo….png» dá-o por logótipo (que serve
+   tal e qual) e salta também — e o site nunca o mostra.
    listarPasta(pasta) → os nomes do que está nessa pasta, ou [] se não existir. */
 export function fotografiaExiste(caminho, listarPasta) {
   const limpo = String(caminho).trim().replace(/^\/+/, '');
@@ -237,7 +245,10 @@ export function fotografiaExiste(caminho, listarPasta) {
   const lista = Array.isArray(l) ? l : [];
   if (LARGURAS.some((w) => lista.includes(`${base}-${w}.webp`))) return true;
   if (/-(?:480|960|1600)$/.test(base) || base === 'og') return false;
-  return lista.some((f) => !eGerada(f) && f.replace(/\.[a-z0-9]+$/i, '') === base && EXTENSOES_FOTO.includes(f.split('.').pop().toLowerCase()));
+  return lista.some((f) => {
+    const ext = f.split('.').pop().toLowerCase();
+    return !eGerada(f) && f.replace(/\.[a-z0-9]+$/i, '') === base && EXTENSOES_FOTO.includes(ext) && !(ext === 'png' && base.startsWith('logo'));
+  });
 }
 
 /* Caracteres de controlo, por escape e nunca literais no código. */
