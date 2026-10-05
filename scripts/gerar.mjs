@@ -1579,6 +1579,28 @@ ${urls.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${hoje}</lastmod></url>`)
     if (existe(de)) { desviados.push(`${de}: há uma página verdadeira neste endereço — fica a página`); continue; }
     aEscrever.push([de, resolver(de, paraOriginal)]);
   }
+  /* UM ARTIGO RESPONDE EM TODAS AS CATEGORIAS (5 out 2026). A categoria faz
+     parte do endereço, e a dona muda-a no painel: a 4 out o Sweat «LOVE»
+     passou de Lembranças para Têxtil, e /catalogo/lembrancas/sweat-love/ — o
+     endereço que andava partilhado no WhatsApp — passou a dar 404. O slug
+     nunca muda e é único, por isso «este slug noutra categoria» só pode ser o
+     mesmo artigo: cada um ganha uma página de reencaminhamento em cada uma das
+     outras categorias, para a ficha dele (ou para o catálogo, se estiver
+     despublicado — e então também no endereço dele, que deixou de ter
+     página). Sem lista para manter e sem ninguém ter de se lembrar; a lista
+     REENCAMINHAR e as páginas verdadeiras ganham sempre. Fora do sitemap,
+     como as outras. */
+  const tratados = new Set(aEscrever.map(([de]) => de));
+  for (const p of todos) {
+    const ficha = `catalogo/${p.categoria}/${p.slug}/`;
+    const para = p.publicado !== false && existe(ficha) ? ficha : 'catalogo/';
+    for (const c of categorias) {
+      const de = `catalogo/${c.slug}/${p.slug}/`;
+      if (de === para || existe(de) || fontes.has(de) || tratados.has(de)) continue;
+      tratados.add(de);
+      aEscrever.push([de, para]);
+    }
+  }
   for (const [de, para] of aEscrever) {
     const destino = u(para);
     escrever(`${de}index.html`, `<!doctype html>
@@ -1606,7 +1628,7 @@ a{color:#602601}</style>
   console.log('gerado em _site/');
   console.log(`  ${produtos.length} produtos em ${categorias.length} categorias`);
   console.log(`  ${urls.length} páginas no sitemap`);
-  if (REENCAMINHAR.length) console.log(`  ${REENCAMINHAR.length} endereço(s) antigo(s) a reencaminhar`);
+  if (REENCAMINHAR.length) console.log(`  ${REENCAMINHAR.length} endereço(s) antigo(s) a reencaminhar, e ${tratados.size - aEscrever.filter(([de]) => fontes.has(de)).length} de artigos noutras categorias`);
   if (desviados.length) {
     console.log(`  ${desviados.length} endereço(s) antigo(s) que não seguem a lista à letra:`);
     desviados.forEach((d) => console.log(`  ~ ${d}`));

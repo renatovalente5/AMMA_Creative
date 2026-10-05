@@ -589,6 +589,15 @@ async function pontaAPonta() {
       (w) => existsSync(join(w, ficha('bodies', 'sweat-mae'))) && readFileSync(join(w, '_site', 'catalogo', 'textil', 'sweat-casal', 'index.html'), 'utf8').includes('/catalogo/bodies/sweat-mae/')],
     ['um artigo novo num endereço antigo', (w) => writeFileSync(join(w, 'data', 'produtos', 'box-noivo.json'), JSON.stringify({ ...HOJE.artigos[S], nome: 'Box noivo', categoria: 'boxes' }, null, 2)), 'publica',
       (w) => !readFileSync(join(w, ficha('boxes', 'box-noivo')), 'utf8').includes('http-equiv="refresh"')],
+    /* E qualquer mudança de categoria, sem lista nenhuma (5 out 2026: o Sweat
+       «LOVE» passou de Lembranças para Têxtil e o endereço partilhado deu
+       404): o endereço do artigo em qualquer categoria leva à ficha; a de um
+       artigo despublicado leva ao catálogo. */
+    ['mudar a categoria: o endereço antigo leva à ficha nova', artW('colar-essenza', (a) => { a.categoria = 'lembrancas'; }), 'publica',
+      (w) => existsSync(join(w, ficha('lembrancas', 'colar-essenza'))) && readFileSync(join(w, '_site', 'catalogo', 'aco', 'colar-essenza', 'index.html'), 'utf8').includes('url=/catalogo/lembrancas/colar-essenza/')
+        && readFileSync(join(w, '_site', 'catalogo', 'boxes', 'colar-essenza', 'index.html'), 'utf8').includes('url=/catalogo/lembrancas/colar-essenza/')],
+    ['despublicado: o endereço do artigo leva ao catálogo', artW('colar-essenza', (a) => { a.publicado = false; }), 'publica',
+      (w) => readFileSync(join(w, '_site', 'catalogo', 'aco', 'colar-essenza', 'index.html'), 'utf8').includes('url=/catalogo/"')],
     ['mudar um artigo para um endereço antigo', artW('body-convite-madrinha', (a) => { a.categoria = 'boxes'; }), 'publica',
       (w) => !readFileSync(join(w, ficha('boxes', 'body-convite-madrinha')), 'utf8').includes('http-equiv="refresh"') && readFileSync(join(w, '_site', 'catalogo', 'bodies-convites', 'body-convite-madrinha', 'index.html'), 'utf8').includes('/catalogo/boxes/body-convite-madrinha/')],
     ...['nome', 'fotos', 'resumo', 'texto', 'personalizavel', 'preco', 'categoria', 'ocasioes', 'publicado', 'destaque', 'ordem'].map((k) => [`sem «${k}» num artigo`, artW(S, (a) => { delete a[k]; }), 'publica']),
@@ -615,7 +624,7 @@ async function pontaAPonta() {
     ['uma fotografia .JPG com acentos e espaços', e(fotoNova('Ação Nova.JPG'), artW(S, (a) => { a.fotos = ['assets/produtos/Ação Nova.JPG']; })), 'publica', (w) => existsSync(join(w, 'assets', 'produtos', S, 'og.jpg'))],
     ['o artigo da página inicial sem fotografias', artW(B, (a) => { a.fotos = []; }), 'publica'],
     ['o artigo da página inicial despublicado', artW(B, (a) => { a.publicado = false; }), 'publica'],
-    ['uma categoria com um espaço', artW(S, (a) => { a.categoria = ` ${a.categoria}`; }), 'publica', (w) => !existsSync(join(w, ficha(CAT_S, S)))],
+    ['uma categoria com um espaço (o artigo esconde-se: o endereço dele leva ao catálogo)', artW(S, (a) => { a.categoria = ` ${a.categoria}`; }), 'publica', (w) => !existsSync(join(w, ficha(CAT_S, S))) || readFileSync(join(w, ficha(CAT_S, S)), 'utf8').includes('url=/catalogo/"')],
     ['um artigo novo que não se lê', (w) => writeFileSync(join(w, 'data', 'produtos', 'teste-novo.json'), '{ "nome": '), 'artigo:teste-novo:ilegivel'],
     ['um artigo novo vazio ({})', (w) => writeFileSync(join(w, 'data', 'produtos', 'teste-novo.json'), '{}'), 'publica', (w) => !existsSync(join(w, '_site', 'catalogo', 'undefined'))],
     ['uma categoria do site sem nome', (w) => { const t = ler(w, R.FICHEIROS.categorias); const c = JSON.parse(t); delete c[0].nome; escrever(w, R.FICHEIROS.categorias, c, R.terminacaoDe(t)); }, 'categorias:forma'],
