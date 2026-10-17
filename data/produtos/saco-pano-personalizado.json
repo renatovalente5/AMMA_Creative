@@ -1,7 +1,11 @@
 {
   "nome": "Saco de pano personalizado",
+  "preco": 8,
   "categoria": "lembrancas",
   "ocasioes": [
+    "baptizado",
+    "dia-da-mae",
+    "dia-do-pai",
     "presente"
   ],
   "fotos": [
@@ -9,13 +13,12 @@
     "assets/produtos/saco-pano-personalizado/03.jpg",
     "assets/produtos/saco-pano-personalizado/04.jpg"
   ],
-  "resumo": "Para lembranças de festa, para a escola, para as educadoras no fim do ano, ou para levar o presente lá dentro.",
-  "texto": "Fazemos um ou fazemos quarenta. Para lembrança de festa, com o nome de cada convidado; para a creche, com o nome do bebé; ou para embrulhar o que nos comprar.\n\nÉ também o que mais nos pedem no fim do ano letivo, para as educadoras, as auxiliares e os professores — com o nome de cada uma, os desenhos das crianças ou as mãozinhas da turma toda.\n\nEm lona crua, com o desenho e o nome que escolher.",
+  "resumo": "Para lembranças de festa, para a escola, para as educadoras no fim do ano, ou para levar o presentes lá dentro.",
+  "texto": "Fazemos um ou fazemos em quantidae. Para lembrança de festa, com o nome de cada convidado; para a creche, com o nome do bebé; ou para embrulhar o que nos comprar.\n\nÉ também o que mais nos pedem no fim do ano letivo, para as educadoras, as auxiliares e os professores — com o nome de cada uma, os desenhos das crianças ou as mãozinhas da turma toda.\n\nEm lona crua, com o desenho e o nome que escolher.\n\nPodemos personalizar também a teu gosto.",
   "personalizavel": [
     "O nome ou nomes",
     "O desenho",
-    "A quantidade",
-    "O tamanho do saco"
+    "A quantidade"
   ],
   "ordem": 170,
   "publicado": true,
