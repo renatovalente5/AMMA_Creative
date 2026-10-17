@@ -1,0 +1,19 @@
+{
+  "nome": "Team Padrinho",
+  "resumo": "O melhor padrinho merece o melhor presente.",
+  "texto": "Celebra um vínculo muito especial com t-shirts personalizadas para padrinhos! \n\nIdeais para oferecer uma prenda cheia de significado. \n\nUm detalhe único para criar memórias inesquecíveis com quem vai fazer parte da vida do teu pequeno tesouro. \n\nPodemos personalizar com outro design a tua escolha.\n\nPersonalizadas com amor, pensadas para momentos especiais!",
+  "personalizavel": [
+    "A cor da t-shirt",
+    "O texto"
+  ],
+  "preco": 14,
+  "categoria": "textil",
+  "ocasioes": [
+    "convite-padrinhos",
+    "baptizado",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 160
+}
