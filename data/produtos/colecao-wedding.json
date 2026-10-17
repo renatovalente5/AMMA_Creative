@@ -1,0 +1,22 @@
+{
+  "nome": "Coleção \"Wedding\"",
+  "fotos": [
+    "assets/produtos/tshirt-pai/16.jpg",
+    "assets/produtos/tshirt-pai/07.jpg"
+  ],
+  "resumo": "A festa mais animada.",
+  "texto": "Celebra em grande estilo!\n\nDescobre as nossas T-shirts para despedida de solteiro, ideais para grupos de amigos que procuram diversão e originalidade. \n\nPersonalizáveis e perfeitas para criar memórias inesquecíveis. \n\nEscolhe o teu design e torna este dia ainda mais especial!",
+  "personalizavel": [
+    "A cor da t-shirt",
+    "O texto"
+  ],
+  "preco": 14,
+  "categoria": "textil",
+  "ocasioes": [
+    "casamento",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 160
+}
