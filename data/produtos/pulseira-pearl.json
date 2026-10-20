@@ -1,0 +1,29 @@
+{
+  "nome": "Pulseira \"Pearl\"",
+  "fotos": [
+    "assets/produtos/pulseira-pearl/pulseira-pearl-0f4097bc.jpg",
+    "assets/produtos/pulseira-pearl/pulseira-pearl-fdb3c3a8.jpg",
+    "assets/produtos/pulseira-pearl/pulseira-pearl-ad48bb70.jpg",
+    "assets/produtos/pulseira-pearl/pulseira-pearl-3510f03a.jpg",
+    "assets/produtos/pulseira-pearl/pulseira-pearl-d60ff136.jpg",
+    "assets/produtos/pulseira-pearl/pulseira-pearl-8124d187.jpg"
+  ],
+  "resumo": "Uma peça única, com um significado só seu.",
+  "texto": "Torne cada momento ainda mais especial com uma pulseira personalizada, criada para refletir a sua essência e guardar aquilo que mais importa. \n\nCom um design elegante e intemporal, esta pulseira em aço inoxidável é o acessório perfeito para dar um toque único ao seu estilo. Personalize-a ao seu gosto e transforme uma peça especial numa recordação cheia de significado.\n\nIdeal para oferecer a alguém especial ou para usar diariamente, levando consigo uma mensagem, um nome ou uma memória inesquecível.",
+  "personalizavel": [
+    "Os pendentes"
+  ],
+  "preco": 10,
+  "categoria": "aco",
+  "ocasioes": [
+    "convite-padrinhos",
+    "baptizado",
+    "casamento",
+    "dia-da-mae",
+    "dia-do-pai",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 190
+}
