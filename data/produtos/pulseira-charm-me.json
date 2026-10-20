@@ -1,0 +1,29 @@
+{
+  "nome": "Pulseira \"Charm Me\"",
+  "fotos": [
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-43d531f0.jpg",
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-0028c84d.jpg",
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-fd149d25.jpg",
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-f64ba0f5.jpg",
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-0353f922.jpg",
+    "assets/produtos/pulseira-charm-me/pulseira-charm-me-611849c4.jpg"
+  ],
+  "resumo": "Cria a tua, ao teu estilo.",
+  "texto": "Uma coleção criada para tornar cada pulseira tão única quanto tu. \n\nPulseiras em aço personalizáveis, onde podes escolher os teus pendentes favoritos e criar combinações que refletem a tua personalidade, os teus gostos e as memórias que guardas contigo.\n\nCada detalhe tem o seu encanto, cada pendente conta uma história e cada combinação torna-se especial.\n\nPorque são os pequenos detalhes que fazem toda a diferença.",
+  "personalizavel": [
+    "Os pendentes"
+  ],
+  "preco": 10,
+  "categoria": "aco",
+  "ocasioes": [
+    "convite-padrinhos",
+    "baptizado",
+    "casamento",
+    "dia-da-mae",
+    "dia-do-pai",
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 100
+}
