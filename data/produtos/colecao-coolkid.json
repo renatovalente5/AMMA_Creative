@@ -1,0 +1,23 @@
+{
+  "nome": "Coleção \"CoolKid\"",
+  "fotos": [
+    "assets/produtos/colecao-coolkid/colecao-coolkid-d773410a.jpg",
+    "assets/produtos/colecao-coolkid/colecao-coolkid-747e13fe.jpg",
+    "assets/produtos/colecao-coolkid/colecao-coolkid-3747334f.jpg"
+  ],
+  "resumo": "Dá mais cor e alegria aos looks dos mais pequenos.",
+  "texto": "Sweat com estampado divertido das personagens favoritas, ideal para as crianças que adoram um toque de magia e diversão no seu dia a dia.\n\nPerfeita para a escola, passeios ou momentos de brincadeira, combina facilmente com jeans, leggings ou outras peças do dia a dia.\n\nUm toque de cor e diversão para qualquer guarda-roupa infantil!\n\nNota: Consulta os tamanhos disponíveis antes de finalizar a tua encomenda, podemos personalizar com qualquer personagem, podem adicionar o nome da criança por exemplo.",
+  "personalizavel": [
+    "A cor",
+    "O desenho",
+    "Com ou sem carapuço"
+  ],
+  "preco": 14,
+  "categoria": "textil",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 10
+}
