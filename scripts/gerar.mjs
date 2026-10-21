@@ -271,6 +271,21 @@ const telTexto = () => esc(def.contactos.telefone_texto);
 const temPreco = (p) => typeof p.preco === 'number' && p.preco > 0;
 const precoTexto = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(2).replace('.', ',')) + '\u00A0€';
 const precoOuConsulta = (p) => (temPreco(p) ? precoTexto(p.preco) : 'Sob consulta');
+/* «QUANTO CUSTA?» SEGUE OS ARTIGOS. Dizia «não pomos preços no site» desde o
+   princípio, e a 21 out 2026 os 34 artigos publicados tinham todos preço (o
+   painel passou a pô-lo): a resposta desmentia a página ao lado. Com algum
+   preço, diz onde está, com o que a ficha diz por baixo dele; sem nenhum, a
+   resposta de sempre. → [o parágrafo da página, a resposta do FAQPage]. */
+function respostaDoPreco() {
+  if (!produtos.some(temPreco)) {
+    return ['Depende do que escolher personalizar, e por isso não pomos preços no site: um número aqui seria um número errado. Diga-nos o que quer e respondemos no mesmo dia, com o valor final e o prazo.',
+      'O preço depende do que escolher personalizar. Diga-nos o que quer e respondemos no mesmo dia, com o valor final e o prazo.'];
+  }
+  const consulta = produtos.some((p) => !temPreco(p))
+    ? ' Nos que dizem «Sob consulta», depende do que escolher personalizar: diga-nos o que quer e respondemos no mesmo dia, com o valor final.' : '';
+  const r = `Está na página de cada artigo: é o preço final, com os impostos incluídos, e o envio é à parte.${consulta} Se quiser algo além do que lá está descrito, diga-nos e confirmamos o valor antes de avançar.`;
+  return [r, r];
+}
 
 /* ---------------------------------------------------------- páginas legais --- */
 const LEGAIS = [
@@ -1019,9 +1034,7 @@ function paginaComoEncomendar() {
     <h2 class="tit-m" style="margin-bottom:1.6rem">O que nos perguntam mais</h2>
     <div class="texto">
       <h3>Quanto custa?</h3>
-      <p>Depende do que escolher personalizar, e por isso não pomos preços no site:
-      um número aqui seria um número errado. Diga-nos o que quer e respondemos no
-      mesmo dia, com o valor final e o prazo.</p>
+      <p>${esc(respostaDoPreco()[0])}</p>
 
       <h3>Quanto tempo demora?</h3>
       <p>Depende da peça e de estarmos com muitos pedidos — em época de batizados e
@@ -1076,7 +1089,7 @@ function paginaComoEncomendar() {
       {
         '@context': 'https://schema.org', '@type': 'FAQPage',
         mainEntity: [
-          ['Quanto custa?', 'O preço depende do que escolher personalizar. Diga-nos o que quer e respondemos no mesmo dia, com o valor final e o prazo.'],
+          ['Quanto custa?', respostaDoPreco()[1]],
           ['Quanto tempo demora?', 'Depende da peça e da época. Dizemos o prazo antes de começar.'],
           ['Posso ver antes de produzirem?', 'Sim. Enviamos uma pré-visualização e só avançamos com a sua aprovação.'],
           ['E os portes?', `${def.textos.portes}. Abaixo disso indicamos o valor ao combinar o pedido.`],
