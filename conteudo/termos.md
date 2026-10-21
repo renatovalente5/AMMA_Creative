@@ -1,12 +1,12 @@
 ---
 titulo: Termos e condições
-descricao: Termos e condições da AMMA Creative — identificação, como funcionam as encomendas, preços sob consulta, garantia legal e o que a lei diz sobre artigos personalizados.
+descricao: Termos e condições da AMMA Creative — identificação, como funcionam as encomendas, preços, garantia legal e o que a lei diz sobre artigos personalizados.
 ---
 
 ## Quem somos
 
-Este site é da **AMMA Creative**, empresária em nome individual, com sede em Rua
-do Comércio, 23-47, 4935-329 Vila Nova de Anha, Viana do Castelo, Portugal.
+Este site é da **AMMA Creative**, empresária em nome individual, com sede em
+{{morada_completa}}, Portugal.
 
 - **NIF:** *(a indicar)*
 - **WhatsApp:** [falar connosco no WhatsApp](https://wa.me/{{whatsapp}})
@@ -28,18 +28,18 @@ como se paga.
 
 ## Preços
 
-A maior parte dos artigos está **sob consulta**, porque o preço de uma peça
-personalizada depende do que leva: o número de nomes a gravar, o tamanho, a
-quantidade, o material.
+O preço de cada artigo está indicado na página dele. Esse valor é **final e com
+todos os impostos incluídos**, e é esse que paga pela peça tal como está
+descrita.
 
-Alguns artigos têm o preço indicado no site. Quando isso acontece, o valor que lá
-está é **final e com todos os impostos incluídos**, e é esse que paga pela peça
-tal como está descrita. Se pedir algo além do que está descrito, confirmamos o
-valor consigo antes de avançar.
+O preço de uma peça personalizada depende do que leva: o número de nomes a
+gravar, o tamanho, a quantidade, o material. Por isso, se pedir algo além do que
+está descrito, ou se o artigo disser «Sob consulta», confirmamos o valor consigo
+antes de avançar.
 
 Quando lhe indicarmos um preço, ele é **final e com todos os impostos incluídos**,
-como a lei exige (Decreto-Lei n.º 138/90). Se houver custos de envio, dizemos
-antes de a encomenda ser confirmada. **Portes grátis acima de 60€.**
+como a lei exige (Decreto-Lei n.º 138/90). Os portes são à parte, e dizemos-lhe
+quanto são antes de a encomenda ser confirmada. **{{portes}}.**
 
 ## Como se faz uma encomenda
 
@@ -94,8 +94,9 @@ Tem à disposição o **Livro de Reclamações electrónico**, em
 [livroreclamacoes.pt](https://www.livroreclamacoes.pt/inicio).
 
 Em caso de litígio de consumo, pode recorrer a uma entidade de resolução
-alternativa de litígios. A competente para a nossa área é o **CIAB — Tribunal
-Arbitral de Consumo**: ver [resolução de litígios](resolucao-de-litigios/).
+alternativa de litígios. Como enviamos para todo o país, o centro competente é,
+em regra, o da zona onde mora: a lista está em
+[resolução de litígios](resolucao-de-litigios/).
 
 ## Conteúdo do site
 
@@ -110,4 +111,4 @@ prejuízo do direito de recorrer à resolução alternativa de litígios.
 
 ---
 
-*Última actualização: Agosto de 2026.*
+*Última actualização: Outubro de 2026.*

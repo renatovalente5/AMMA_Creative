@@ -1,6 +1,6 @@
 ---
 titulo: Resolução de litígios
-descricao: Em caso de conflito de consumo com a AMMA Creative, a entidade competente é o CIAB — Tribunal Arbitral de Consumo, com delegação em Viana do Castelo. Contactos e Livro de Reclamações.
+descricao: Como reclamar de uma compra à AMMA Creative: o Livro de Reclamações e os centros de arbitragem de conflitos de consumo a que pode recorrer.
 ---
 
 ## Primeiro, fale connosco
@@ -21,28 +21,37 @@ directamente.
 
 ## Entidade de resolução alternativa de litígios
 
-Nos termos do artigo 18.º da **Lei n.º 144/2015**, informamos qual é a entidade de
-resolução alternativa de litígios de consumo competente para a nossa área.
+Nos termos do artigo 18.º da **Lei n.º 144/2015**, informamos as entidades de
+resolução alternativa de litígios de consumo a que pode recorrer. Como enviamos
+para todo o país, o centro competente é, em regra, o da zona onde mora:
 
-Sendo a nossa sede em **Vila Nova de Anha, concelho de Viana do Castelo**, a
-entidade competente é:
+- **CICAP**, Centro de Informação de Consumo e Arbitragem do Porto (Área
+  Metropolitana do Porto): [cicap.pt](https://cicap.pt/)
+- **CACCL**, Centro de Arbitragem de Conflitos de Consumo de Lisboa:
+  [centroarbitragemlisboa.pt](https://www.centroarbitragemlisboa.pt/)
+- **CIAB**, Centro de Informação, Mediação e Arbitragem de Consumo (Tribunal
+  Arbitral de Consumo), para os distritos de Braga, Viana do Castelo e Vila
+  Real: [ciab.pt](https://ciab.pt/)
+- **TRIAVE**, Centro de Arbitragem de Conflitos de Consumo do Ave, Tâmega e
+  Sousa: [triave.pt](https://www.triave.pt/)
+- **CACRC**, Centro de Arbitragem de Conflitos de Consumo da Região de Coimbra:
+  [cacrc.pt](https://cacrc.pt/)
+- **CIMAAL**, Centro de Informação, Mediação e Arbitragem do Algarve:
+  [consumoalgarve.pt](https://www.consumoalgarve.pt/)
+- **CACC RAM**, Centro de Arbitragem de Conflitos de Consumo da Região Autónoma
+  da Madeira: [madeira.gov.pt/cacc](https://www.madeira.gov.pt/cacc)
+- **CIMARA**, Centro de Informação, Mediação e Arbitragem de Consumo da Região
+  Açores: [ocimara.pt](https://ocimara.pt/)
+- **CAUAL**, Centro de Arbitragem da Universidade Autónoma de Lisboa:
+  [arbitragem.autonoma.pt](https://arbitragem.autonoma.pt/)
+- **CNIACC**, Centro Nacional de Informação e Arbitragem de Conflitos de
+  Consumo, onde não houver centro com competência:
+  [cniacc.pt](https://www.cniacc.pt/pt/)
 
-### CIAB — Tribunal Arbitral de Consumo
+A lista actualizada está no [Portal do Consumidor](https://www.consumidor.gov.pt).
 
-Centro de Informação, Mediação e Arbitragem de Consumo, competente para os
-distritos de Braga, Viana do Castelo e Vila Real.
-
-**Delegação de Viana do Castelo**
-Av. Rocha Paris, n.º 103
-4900-394 Viana do Castelo
-Telefone: 258 809 335
-Email: ciab.viana@cm-viana-castelo.pt
-[ciab.pt](https://ciab.pt)
-
-Horário: 9h00–13h00 e 14h00–17h00.
-
-O CIAB faz **informação, mediação, conciliação e arbitragem** de conflitos de
-consumo. O recurso a estes meios é gratuito ou de custo reduzido para o
+Estes centros fazem **informação, mediação, conciliação e arbitragem** de
+conflitos de consumo. O recurso a eles é gratuito ou de custo reduzido para o
 consumidor, e é bastante mais rápido do que um tribunal.
 
 ## O que isto não é
@@ -71,4 +80,4 @@ Segurança Alimentar e Económica** ([asae.gov.pt](https://www.asae.gov.pt)).
 
 ---
 
-*Última actualização: Agosto de 2026.*
+*Última actualização: Outubro de 2026.*

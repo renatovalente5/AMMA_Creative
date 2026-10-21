@@ -723,7 +723,7 @@ function paginaInicial() {
   return pagina({
     pag: '',
     titulo: `${def.empresa.nome_comercial} — Artigos personalizados para bebés, mamãs e papás`,
-    descricao: `Artigos personalizados feitos à mão em Viana do Castelo: bodies de convite a padrinhos, anúncios de gravidez, colares em aço gravados, t-shirts e lembranças. ${def.textos.portes}.`,
+    descricao: `Artigos personalizados feitos à mão: bodies de convite a padrinhos, anúncios de gravidez, colares em aço gravados, t-shirts e lembranças. ${def.textos.portes}.`,
     corpo,
     jsonld: [negocioLD, {
       '@context': 'https://schema.org', '@type': 'WebSite',
@@ -967,7 +967,7 @@ ${relacionados.length ? `<section class="secao secao--creme">
        categoria. Um título com um erro de português vale menos do que a palavra
        que o erro trazia. */
     titulo: `${p.nome} | ${def.empresa.nome_comercial}`,
-    descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. ${textoOpcional('ficha_feito') ? `${textoOpcional('ficha_feito').replace(/[.!]+$/, '')}. ` : ''}${def.textos.portes}.`,
+    descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. ${def.textos.portes}.`,
     og: fs.length ? abs(`assets/produtos/${p.slug}/og.jpg`) : undefined,
     corpo,
     jsonld: [
@@ -1486,6 +1486,9 @@ function main() {
       morada: def.local.morada,
       morada_completa: [def.local.morada, `${def.local.codigo_postal} ${def.local.localidade}`,
                         def.local.concelho].filter(Boolean).join(', '),
+      /* E a frase dos portes dos Termos, que a dona muda em «Textos do site»
+         (21 out 2026: estava escrita à mão, e ficava a antiga). */
+      portes: typeof def.textos.portes === 'string' ? def.textos.portes.trim().replace(/[.!]+$/, '') : '',
     };
     const md = cru.replace(/\{\{(\w+)\}\}/g, (_, chave) => {
       const v = CONTACTOS[chave];

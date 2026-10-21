@@ -643,6 +643,12 @@ async function pontaAPonta() {
       const f = readFileSync(join(w, ficha(CAT_S, S)), 'utf8'); const i = readFileSync(join(w, '_site', 'index.html'), 'utf8');
       return !f.includes('Pré-visualização antes') && !f.includes('Feito à mão em') && f.includes('<ul class="person"') && !i.includes('Uma casa pequena') && i.includes('Conhecer-nos');
     }],
+    /* Os Termos lêem a morada da sede e a frase dos portes dos dados (21 out
+       2026: estavam escritas à mão, e mudar no painel não as mudava). */
+    ['a morada da sede e a frase dos portes mudadas no painel chegam aos Termos', defW((d) => { d.local.morada = 'Rua de Teste, 7'; d.local.codigo_postal = '4000-123'; d.textos.portes = 'Portes grátis acima de 75€'; }), 'publica', (w) => {
+      const t = readFileSync(join(w, '_site', 'termos', 'index.html'), 'utf8');
+      return t.includes('Rua de Teste, 7, 4000-123') && t.includes('Portes grátis acima de 75€.') && !t.includes('Vila Nova de Anha') && !/\{\{/.test(t);
+    }],
     ['os dados da loja que não se lêem', (w) => writeFileSync(join(w, R.FICHEIROS.definicoes), '{'), 'definicoes:ilegivel'],
     ['as categorias que não se lêem', (w) => writeFileSync(join(w, R.FICHEIROS.categorias), '['), 'categorias:ilegivel'],
     ['todos os artigos despublicados', (w) => { for (const f of readdirSync(join(w, 'data', 'produtos'))) artW(f.slice(0, -5), (a) => { a.publicado = false; })(w); }, 'publica'],

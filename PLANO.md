@@ -218,3 +218,8 @@ ferramentas.
   voltam à de Vila Nova de Anha. «Feito à mão em Viana do Castelo» nas fichas e
   «Uma casa pequena em Vila Nova de Anha» na página inicial dependem da mesma
   resposta.
+  **21 out 2026:** os Termos passaram a ler a morada dos dados (`{{morada_completa}}`,
+  como a Privacidade) e a Resolução de litígios lista os dez centros (a competência
+  segue o consumidor); as descrições para o Google deixaram de dizer o sítio. As
+  duas frases de cima são textos da dona no painel. Falta a Ana escrever a morada
+  completa da sede no painel.
