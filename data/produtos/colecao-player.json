@@ -1,0 +1,22 @@
+{
+  "nome": "Coleção \"Player\"",
+  "fotos": [
+    "assets/produtos/colecao-player/colecao-player-4c1395bc.jpg"
+  ],
+  "resumo": "Mostra o teu estilo dentro e fora do campo.",
+  "texto": "Dá um toque único ao teu estilo com o nosso conjunto personalizado! \n\nPersonaliza o teu conjunto com o nome e o número à tua escolha.\n\nCria um conjunto exclusivo que combina a tua identidade com a tua paixão pelo desporto, para ti ou para oferecer.",
+  "personalizavel": [
+    "A cor",
+    "A imagem",
+    "O nome",
+    "O número"
+  ],
+  "preco": 18,
+  "categoria": "textil",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 150
+}
