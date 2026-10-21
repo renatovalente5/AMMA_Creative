@@ -161,7 +161,7 @@ export const TAMANHOS = {
   telefoneTexto: 20, email: 160, url: 500,
   morada: 160, localidade: 60, concelho: 60, pais: 40, codigoPostal: 20,
   nomeComercial: 80, assinatura: 80, denominacao: 160, formaJuridica: 80, cae: 40, nif: 20,
-  heroTitulo: 80, heroTexto: 300, reclamo: 100, sobreTitulo: 120, sobreTexto: 3000, portes: 120, prazo: 200,
+  heroTitulo: 80, heroTexto: 300, reclamo: 100, sobreTitulo: 120, sobreChamada: 300, sobreTexto: 3000, portes: 120, prazo: 200, fichaLinha: 80,
   passoTitulo: 60, passoTexto: 300, passos: 6,
   importaLinha: 60, importaTitulo: 120, importaItemTitulo: 60, importaItemTexto: 300, importaItens: 6,
 };
@@ -579,6 +579,10 @@ export function problemasDasDefinicoes(d) {
     textoSimples(t.hero_texto, 'textos.hero_texto', 'textos', 'textos.hero_texto', 'Texto da página inicial', TAMANHOS.heroTexto, { vazio: 'avisa', linha: false });
     textoSimples(t.reclamo, 'textos.reclamo', 'textos', 'textos.reclamo', 'Frase da marca (rodapé)', TAMANHOS.reclamo);
     textoSimples(t.sobre_titulo, 'textos.sobre_titulo', 'textos', 'textos.sobre_titulo', 'Título do «Sobre nós»', TAMANHOS.sobreTitulo, { vazio: 'avisa' });
+    /* Opcionais: vazios, a frase (ou a linha) não aparece. */
+    textoSimples(t.sobre_chamada, 'textos.sobre_chamada', 'textos', 'textos.sobre_chamada', 'Frase do «Quem somos» (página inicial)', TAMANHOS.sobreChamada, { linha: false });
+    textoSimples(t.ficha_previa, 'textos.ficha_previa', 'textos', 'textos.ficha_previa', '2.ª linha das fichas', TAMANHOS.fichaLinha);
+    textoSimples(t.ficha_feito, 'textos.ficha_feito', 'textos', 'textos.ficha_feito', '3.ª linha das fichas', TAMANHOS.fichaLinha);
     textoSimples(t.sobre_texto, 'textos.sobre_texto', 'textos', 'textos.sobre_texto', 'Texto do «Sobre nós»', TAMANHOS.sobreTexto, { vazio: 'bloqueia', porque: 'é o texto da página «Sobre nós»', linha: false });
     textoSimples(t.portes, 'textos.portes', 'textos', 'textos.portes', 'Frase dos portes', TAMANHOS.portes, { vazio: 'bloqueia', porque: 'aparece em todas as fichas de artigo' });
     textoSimples(t.prazo, 'textos.prazo', 'textos', 'textos.prazo', 'Prazo de produção', TAMANHOS.prazo, { vazio: 'avisa', porque: 'numa venda à distância o prazo é informação obrigatória.' });

@@ -276,6 +276,8 @@ secao('cada regra, com a classe certa');
     ['sem a frase dos portes', def((x) => { x.textos.portes = '  '; }), 'bloqueia', 'definicoes:textos.portes'],
     ['frase dos portes que é um número', def((x) => { x.textos.portes = 7; }), 'bloqueia', 'definicoes:textos.portes'],
     ['sem o prazo de produção', def((x) => { delete x.textos.prazo; }), 'avisa', 'definicoes:textos.prazo'],
+    ['a frase do «Quem somos» que é um número', def((x) => { x.textos.sobre_chamada = 7; }), 'avisa', 'definicoes:textos.sobre_chamada'],
+    ['uma linha das fichas que é uma lista', def((x) => { x.textos.ficha_feito = ['x']; }), 'avisa', 'definicoes:textos.ficha_feito'],
     ['«</script>» num texto da loja', def((x) => { x.textos.reclamo = 'a </script> b'; }), 'bloqueia', 'definicoes:partia-a-pagina'],
     ['os passos num texto', def((x) => { x.passos = 'um passo'; }), 'avisa', 'definicoes:passos:forma'],
     ['7 passos', def((x) => { x.passos = Array.from({ length: 7 }, (_, i) => ({ titulo: `P${i}`, texto: 't' })); }), 'avisa', 'definicoes:passos:quantos'],
@@ -342,7 +344,8 @@ secao('o varrimento: cada chave apagada');
     for (const k of Object.keys(HOJE.artigos[nome])) {
       n++;
       const lista = novos(problemasCom(art(nome, (a) => { delete a[k]; })));
-      const quer = esperadoArtigo[k];
+      /* Um artigo escondido sem fotografias não lembra nada: o lembrete é dos publicados. */
+      const quer = k === 'fotos' && HOJE.artigos[nome].publicado === false ? undefined : esperadoArtigo[k];
       const viu = lista.length ? (lista.every((p) => p.lembrete) ? 'lembrete' : lista[0].classe) : null;
       if ((quer || null) !== viu) maus.push(`${nome}.${k}: queria ${quer || 'nada'}, veio ${viu || 'nada'}`);
       for (const p of lista) if (!p.ecra?.startsWith('Artigos › ') || /data\/|\.json|\b[a-z_]+\.[a-z_]+\b/.test(p.mensagem)) maus.push(`${nome}.${k}: ecrã «${p.ecra}», mensagem «${p.mensagem}»`);
@@ -580,7 +583,7 @@ async function pontaAPonta() {
   const ficha = (cat, slug) => `_site/catalogo/${cat}/${slug}/index.html`;
   const CAT_S = HOJE.artigos[S].categoria;
   const CASOS = [
-    ['os dados de hoje (e a lista dos endereços antigos bate certo: nenhum «~» do gerador)', () => {}, 'publica', (w, g) => existsSync(join(w, ficha(CAT_S, S))) && existsSync(join(w, 'assets', 'produtos', S, 'og.jpg')) && !/^\s*~ /m.test(g)],
+    ['os dados de hoje (e a lista dos endereços antigos bate certo: nenhum «~» do gerador, além dos de artigos escondidos)', () => {}, 'publica', (w, g) => existsSync(join(w, ficha(CAT_S, S))) && existsSync(join(w, 'assets', 'produtos', S, 'og.jpg')) && !/^\s*~ (?!.*o artigo está despublicado)/m.test(g)],
     /* OS ENDEREÇOS ANTIGOS (a lista REENCAMINHAR do gerador) contra o que a dona
        faz no painel: mudar a categoria de um destino, criar um artigo num
        endereço antigo, mudar um artigo para um endereço antigo. Até 4 out 2026
@@ -632,8 +635,14 @@ async function pontaAPonta() {
     ['um ficheiro com BOM', (w) => writeFileSync(join(w, R.ficheiroDoArtigo(S)), `${String.fromCharCode(0xfeff)}${ler(w, R.ficheiroDoArtigo(S))}`), `artigo:${S}:ilegivel`],
     ...['empresa', 'contactos', 'local', 'textos', 'empresa.nome_comercial', 'empresa.nif', 'contactos.whatsapp', 'local.morada', 'local.codigo_postal', 'local.localidade', 'local.concelho', 'local.pais', 'textos.sobre_texto', 'textos.portes']
       .map((c) => [`sem «${c}» nos dados da loja`, defW((d) => { const [a, b] = c.split('.'); if (b) delete d[a][b]; else delete d[a]; }), c.includes('.') ? `definicoes:${c}` : `definicoes:${c}:forma`]),
-    ...[['textos.prazo', 7], ['textos.prazo', ['x']], ['textos.hero_titulo', 7], ['textos.hero_titulo', null], ['textos.reclamo', {}], ['textos.sobre_titulo', ['x']], ['passos', 'x'], ['passos', [5, null, { titulo: 7 }]], ['importa', 'x'], ['importa', { itens: 'x' }], ['importa', { itens: [5, null] }], ['contactos.email', 7], ['contactos.telefone', 930477114], ['contactos.instagram', 7], ['empresa.assinatura', {}], ['empresa.denominacao_social', 7], ['tecnico', 'x']]
+    ...[['textos.prazo', 7], ['textos.prazo', ['x']], ['textos.hero_titulo', 7], ['textos.hero_titulo', null], ['textos.reclamo', {}], ['textos.sobre_titulo', ['x']], ['passos', 'x'], ['passos', [5, null, { titulo: 7 }]], ['importa', 'x'], ['importa', { itens: 'x' }], ['importa', { itens: [5, null] }], ['contactos.email', 7], ['contactos.telefone', 930477114], ['contactos.instagram', 7], ['empresa.assinatura', {}], ['empresa.denominacao_social', 7], ['tecnico', 'x'], ['textos.sobre_chamada', 7], ['textos.ficha_previa', {}], ['textos.ficha_feito', ['x']]]
       .map(([c, v]) => [`«${c}» = ${JSON.stringify(v)} nos dados da loja`, defW((d) => { const [a, b] = c.split('.'); if (b) d[a][b] = v; else d[a] = v; }), 'publica']),
+    /* Os três textos opcionais (21 out 2026): vazios, a frase e as duas linhas
+       das fichas não aparecem, e o resto da página fica. */
+    ['a frase do «Quem somos» e as linhas das fichas vazias', defW((d) => { d.textos.sobre_chamada = ''; d.textos.ficha_previa = ' '; delete d.textos.ficha_feito; }), 'publica', (w) => {
+      const f = readFileSync(join(w, ficha(CAT_S, S)), 'utf8'); const i = readFileSync(join(w, '_site', 'index.html'), 'utf8');
+      return !f.includes('Pré-visualização antes') && !f.includes('Feito à mão em') && f.includes('<ul class="person"') && !i.includes('Uma casa pequena') && i.includes('Conhecer-nos');
+    }],
     ['os dados da loja que não se lêem', (w) => writeFileSync(join(w, R.FICHEIROS.definicoes), '{'), 'definicoes:ilegivel'],
     ['as categorias que não se lêem', (w) => writeFileSync(join(w, R.FICHEIROS.categorias), '['), 'categorias:ilegivel'],
     ['todos os artigos despublicados', (w) => { for (const f of readdirSync(join(w, 'data', 'produtos'))) artW(f.slice(0, -5), (a) => { a.publicado = false; })(w); }, 'publica'],

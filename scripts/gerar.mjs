@@ -116,6 +116,10 @@ const abs = (p) => `${SITE}/${String(p).replace(/^\/+/, '')}`;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+/* Um texto opcional dos «Textos do site» (o painel deixa-o vazio, ou nem
+   está no ficheiro): '' quando não há, e a linha ou a frase não aparece. */
+const textoOpcional = (k) => (typeof def.textos?.[k] === 'string' ? def.textos[k].trim() : '');
+
 /* Título com uma parte realçada: `Feito para *uma pessoa* só` sai com «uma
    pessoa» em itálico e na cor de destaque. É a mesma convenção dos asteriscos
    que o markdown das páginas legais já usa.
@@ -680,8 +684,7 @@ function paginaInicial() {
       <div class="editorial__texto">
         <p class="sobre-linha">Quem somos</p>
         <h2 class="tit-g" style="margin-bottom:1rem">${esc(def.textos.sobre_titulo)}</h2>
-        <p class="chamada">Uma casa pequena em Vila Nova de Anha. Cada peça passa
-        pelas nossas mãos — e é por isso que não há duas iguais.</p>
+        ${textoOpcional('sobre_chamada') ? `<p class="chamada">${esc(textoOpcional('sobre_chamada'))}</p>` : ''}
         <div class="hero__acoes">
           <a class="btn btn--linha" href="${u('sobre/')}">Conhecer-nos ${ic.seta}</a>
         </div>
@@ -911,8 +914,8 @@ function paginaProduto(p) {
         </div>
         <ul class="person" style="margin-top:1.4rem">
           <li>${ic.caixa}<span>${esc(def.textos.portes)}</span></li>
-          <li>${ic.relogio}<span>Pré-visualização antes de produzir</span></li>
-          <li>${ic.agulha}<span>Feito à mão em Viana do Castelo</span></li>
+          ${textoOpcional('ficha_previa') ? `<li>${ic.relogio}<span>${esc(textoOpcional('ficha_previa'))}</span></li>` : ''}
+          ${textoOpcional('ficha_feito') ? `<li>${ic.agulha}<span>${esc(textoOpcional('ficha_feito'))}</span></li>` : ''}
         </ul>
       </aside>
     </div>
@@ -949,7 +952,7 @@ ${relacionados.length ? `<section class="secao secao--creme">
        categoria. Um título com um erro de português vale menos do que a palavra
        que o erro trazia. */
     titulo: `${p.nome} | ${def.empresa.nome_comercial}`,
-    descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. Feito à mão em Viana do Castelo. ${def.textos.portes}.`,
+    descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. ${textoOpcional('ficha_feito') ? `${textoOpcional('ficha_feito').replace(/[.!]+$/, '')}. ` : ''}${def.textos.portes}.`,
     og: fs.length ? abs(`assets/produtos/${p.slug}/og.jpg`) : undefined,
     corpo,
     jsonld: [
