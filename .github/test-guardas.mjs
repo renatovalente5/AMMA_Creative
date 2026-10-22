@@ -534,7 +534,9 @@ async function pontaAPonta() {
   if (!certo(py.status === 0, `o ${PY} tem o Pillow`, py.err)) return;
   const base = join(TMP, 'base'); mkdirSync(base);
   try {
-    for (const p of ['data', 'conteudo', 'scripts', '.github', 'assets', 'CNAME']) execFileSync('cp', ['-c', '-R', join(RAIZ, p), join(base, p)]);
+    /* `legal-comum` desde 22 out 2026: o gerador importa dela (o botão do
+       Livro, a Privacidade, as guardas legais). */
+    for (const p of ['data', 'conteudo', 'scripts', '.github', 'assets', 'legal-comum', 'CNAME']) execFileSync('cp', ['-c', '-R', join(RAIZ, p), join(base, p)]);
   } catch (e) { certo(false, 'o clone do repositório (cp -c, APFS)', String(e.message)); return; }
   const bin = join(TMP, 'bin'); mkdirSync(bin);
   writeFileSync(join(bin, 'python3'), `#!/bin/sh\nexec ${PY} "$@"\n`, { mode: 0o755 });

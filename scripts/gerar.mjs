@@ -20,6 +20,15 @@ import { fileURLToPath } from 'node:url';
 /* As ocasiões vêm das regras do conteúdo, que o painel e a guarda do CI também
    usam: uma lista só (ver .github/regras.mjs). */
 import { OCASIOES } from '../.github/regras.mjs';
+/* AS PEÇAS LEGAIS COMUNS aos sites dos clientes (legal-comum, instalada em
+   legal-comum/ por `node _ferramentas/legal-comum/instalar.mjs <repo>`; a
+   versão está em .legal-comum.json). O Livro de Reclamações (discreto), os
+   destinatários e os direitos da Privacidade, as guardas da identificação e
+   das fichas de produto. Não se edita aqui: actualiza-se com o instalar.mjs. */
+import {
+  VERSAO as LEGAL_VERSAO, livroReclamacoes, livroCss, validarNif, verificarIdentificacao, verificarProduto,
+  destinatariosHtml, direitosHtml, DIREITOS, CNPD_URL, prazos, FRASE_REPOSITORIO_PUBLICO, FRASE_FOTOGRAFIAS, FRASE_PAGINA_META,
+} from '../legal-comum/index.mjs';
 
 const RAIZ = dirname(dirname(fileURLToPath(import.meta.url)));
 const SAIDA = join(RAIZ, '_site');
@@ -257,6 +266,44 @@ const ic = {
 const CUSTO_CHAMADA = '(Chamada para a rede móvel nacional)';
 const telTexto = () => esc(def.contactos.telefone_texto);
 
+/* A IDENTIFICAÇÃO LEGAL (DL 7/2004, art. 10.º), lida das definições UMA vez e
+   só quando é a verdadeira. Até 22 out 2026 o gerador não substituía o NIF
+   nem o nome da titular nos textos legais — estavam escritos à mão como
+   «(a indicar)» — e o email, que já estava nos dados, não aparecia em lado
+   nenhum (auditoria legal de 21 out 2026, A1). Agora:
+     · o NIF só sai se for um NIF válido (o «000000000» de espera não é);
+     · o nome da titular só sai se não disser «a confirmar» / «a indicar»;
+     · o email só sai se tiver a forma de um email.
+   O que não existe fica «(a indicar)» nos Termos e na Privacidade — que é o
+   que lá estava, mas agora muda sozinho no dia em que a dona o escrever no
+   painel — e a construção AVISA (verificarIdentificacao, em baixo, em modo
+   avisar: num site já no ar não se tranca a publicação por isto; decisão do
+   grupo 4 do plano de correcções). */
+const VALOR_DE_ESPERA = /^\s*$|por indicar|a indicar|a confirmar|^\s*[—–-]+\s*$/i;
+const textoDe = (v) => (typeof v === 'string' ? v.trim() : '');
+const NIF_REAL = validarNif(textoDe(def.empresa.nif)) ? textoDe(def.empresa.nif) : '';
+const TITULAR_REAL = VALOR_DE_ESPERA.test(textoDe(def.empresa.denominacao_social)) ? '' : textoDe(def.empresa.denominacao_social);
+const EMAIL_REAL = /^[^\s@:]+@[^\s@]+\.[^\s@]{2,}$/.test(textoDe(def.contactos.email)) ? textoDe(def.contactos.email) : '';
+const MORADA_COMPLETA = [def.local.morada, `${def.local.codigo_postal} ${def.local.localidade}`, def.local.concelho].filter(Boolean).join(', ');
+
+/* O LIVRO DE RECLAMAÇÕES (legal-comum, variante DISCRETA). A lei (DL
+   156/2005, art. 5.º-B) pede o acesso à plataforma «em local visível e de
+   forma destacada» na página de entrada; até 22 out 2026 era só uma ligação
+   de texto igual às outras do rodapé (auditoria, A3). Passa a ter o ícone do
+   livro à frente, que é o que o destaca — com a mesma letra, o mesmo tamanho
+   e a mesma cor das ligações vizinhas (nunca mais pequeno nem mais esbatido),
+   SEM caixa nem fundo: o Renato não quer um botão (22 out 2026). No rodapé de
+   todas as páginas e na página de contactos. Entre marcadores, para a
+   sincronização da biblioteca os encontrar. */
+const livroMarcado = (opcoes) => `<!-- legal-comum:livro v${LEGAL_VERSAO} -->${livroReclamacoes(opcoes)}<!-- /legal-comum:livro -->`;
+/* O CSS vai dentro da página: é pouco, e assim não há um ficheiro a mais a
+   carregar nem a ficar em cache velha. Do que a biblioteca dá usa-se o
+   `.lr-discreto` (o ícone ao tamanho da letra, sem caixa) e o `.lr-sr` (o
+   «abre numa nova janela» só para leitores de ecrã); a cor e a letra são as
+   das ligações à volta (`.pe__legais a`, no rodapé). As cores passadas são
+   as da marca só porque a função mede o contraste delas (10,6:1). */
+const CSS_LEGAL = livroCss('lr-botao', { cor: '#FAF1E8', fundo: '#602601' });
+
 /* PREÇOS. O site nasceu todo «sob consulta» e continua a ser essa a regra: um
    artigo só mostra número se tiver o campo `preco` preenchido no backoffice.
    Sem ele, escreve-se «Sob consulta».
@@ -437,6 +484,7 @@ ${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta n
 <link rel="preload" href="${u('assets/fontes/fraunces-var.woff2')}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u('assets/fontes/inter-var.woff2')}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${versao('assets/css/estilo.css')}">
+<style>${CSS_LEGAL}</style>
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</script>`).join('\n')}
 </head>
 <body${classe ? ` class="${classe}"` : ''}>
@@ -509,6 +557,10 @@ ${corpo}
         <ul>
           <li class="pe__contacto">${ic.zap}<span><a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">WhatsApp</a></span></li>
           <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">@_ammacreative</a></span></li>
+          ${/* O EMAIL, EM TEXTO, em todas as páginas: o art. 10.º do DL 7/2004
+                nomeia-o entre os elementos de identificação. Estava nos dados e
+                não aparecia em lado nenhum (auditoria de 21 out 2026). Só quando
+                existe e tem a forma de um email. */''}${EMAIL_REAL ? `<li class="pe__contacto">${ic.mail}<span><a href="mailto:${esc(EMAIL_REAL)}">${esc(EMAIL_REAL)}</a></span></li>` : ''}
         </ul>
       </div>
     </div>
@@ -517,10 +569,12 @@ ${corpo}
       <span>© ${new Date().getFullYear()} ${esc(def.empresa.nome_comercial)}</span>
       <!-- O Livro de Reclamações fica AQUI, junto aos outros links legais, e não
            num bloco à parte: é o que o cliente pediu e é onde as pessoas o
-           procuram. -->
+           procuram. Desde 22 out 2026 leva o ícone do livro (legal-comum,
+           discreto: a letra e a cor das vizinhas, sem caixa); a lei pede-o
+           «visível e destacado». -->
       <nav class="pe__legais" aria-label="Informação legal">
         ${LEGAIS.map(([p, n]) => `<a href="${u(p)}">${n}</a>`).join('\n        ')}
-        <a href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener">Livro de Reclamações</a>
+        ${livroMarcado()}
         <!-- Entrada da cliente para o painel (backoffice.ammacreative.pt, desde 4
              de Outubro de 2026; antes, o Pages CMS). Fica apagada de propósito:
              quem visita o site não tem nada que a notar, e quem precisa dela sabe
@@ -546,9 +600,17 @@ ${extras}
 /* ------------------------------------------------------------------ JSON-LD */
 const negocioLD = {
   '@context': 'https://schema.org',
-  '@type': 'Store',
+  /* OnlineStore, não Store: a loja não tem porta aberta ao público (a pedido
+     da cliente, Outubro de 2026), e uma Store é um sítio a visitar. Corrigido a
+     22 out 2026 com a auditoria legal (A1), que pediu para acertar o JSON-LD
+     com a identificação das páginas legais: o email, o NIF e o nome da
+     titular entram quando existem — nunca os valores de espera. */
+  '@type': 'OnlineStore',
   '@id': abs('#loja'),
   name: def.empresa.nome_comercial,
+  ...(TITULAR_REAL ? { legalName: TITULAR_REAL } : {}),
+  ...(NIF_REAL ? { vatID: `PT${NIF_REAL}`, taxID: NIF_REAL } : {}),
+  ...(EMAIL_REAL ? { email: EMAIL_REAL } : {}),
   description: def.textos.sobre_titulo,
   url: abs(''),
   image: abs('assets/img/og.jpg'),
@@ -840,6 +902,36 @@ function paginaCatalogo() {
    páginas voltarem, o texto ainda está escrito. `nome`, `curto`, `slug` e
    `resumo` continuam a ser usados nos cartões da inicial e nos filtros. */
 
+/* A INFORMAÇÃO DO PRODUTO que a lei pede numa venda à distância, quando a dona
+   a preencher no painel (22 out 2026, grupo 1 da auditoria legal, D2 e D4):
+   a composição dos têxteis em percentagens (Regulamento (UE) 1007/2011), o
+   fabricante com morada e email, a referência e os avisos de segurança
+   (Regulamento (UE) 2023/988 — GPSR, art. 19.º) e os tipos de perigo de uma
+   mistura como a vela (Regulamento (CE) 1272/2008 — CLP). Cada linha só sai
+   se estiver preenchida; sem nenhuma, o bloco não aparece. O que falta
+   avisa-se na construção (verificarProduto, em main()), e NUNCA esconde o
+   artigo. Lê-se à defesa: um valor com outra forma (gravado à mão) é
+   ignorado, e a guarda (.github/regras.mjs) já o diz à dona. */
+function infoProduto(p) {
+  const lista = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && x.trim()).map((x) => x.trim()) : []);
+  const f = p.fabricante && typeof p.fabricante === 'object' && !Array.isArray(p.fabricante) ? p.fabricante : {};
+  const linhas = [];
+  if (textoDe(p.composicao)) linhas.push(['Composição', esc(textoDe(p.composicao))]);
+  const fab = [textoDe(f.nome) ? esc(textoDe(f.nome)) : '', textoDe(f.morada) ? esc(textoDe(f.morada)) : '',
+    textoDe(f.email) ? `<a href="mailto:${esc(textoDe(f.email))}">${esc(textoDe(f.email))}</a>` : ''].filter(Boolean);
+  if (fab.length) linhas.push(['Fabricante', fab.join(' · ')]);
+  if (textoDe(p.referencia)) linhas.push(['Referência', esc(textoDe(p.referencia))]);
+  if (lista(p.avisos).length) linhas.push(['Avisos de segurança', `<ul>${lista(p.avisos).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`]);
+  if (lista(p.perigos).length) linhas.push(['Tipos de perigo', `<ul>${lista(p.perigos).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`]);
+  if (!linhas.length) return '';
+  return `<div class="bloco info-produto">
+          <h2>Informação do produto</h2>
+          <dl class="info-produto__lista">
+            ${linhas.map(([t, v]) => `<div><dt>${t}</dt><dd>${v}</dd></div>`).join('\n            ')}
+          </dl>
+        </div>`;
+}
+
 function paginaProduto(p) {
   const fs = fotos(p);
   const c = catDe(p.categoria);
@@ -897,6 +989,8 @@ function paginaProduto(p) {
             ${personalizavelDe(p).map((x) => `<li>${ic.check}<span>${esc(x)}</span></li>`).join('\n            ')}
           </ul>
         </div>` : ''}
+
+        ${infoProduto(p)}
 
         ${ocasioesDe(p).length ? `<div class="bloco">
           <h2>Costuma dar-se em</h2>
@@ -977,6 +1071,10 @@ ${relacionados.length ? `<section class="secao secao--creme">
         '@context': 'https://schema.org', '@type': 'Product',
         name: p.nome, description: p.resumo,
         category: c.nome,
+        /* A referência e a composição, quando a dona as preencher no painel
+           (as mesmas do bloco «Informação do produto»). */
+        ...(textoDe(p.referencia) ? { sku: textoDe(p.referencia) } : {}),
+        ...(textoDe(p.composicao) ? { material: textoDe(p.composicao) } : {}),
         image: fs.length ? [abs(`assets/produtos/${p.slug}/og.jpg`)] : [],
         brand: { '@type': 'Brand', name: def.empresa.nome_comercial },
         /* Sem preço porque não há preço público. `offers` com um preço inventado
@@ -1198,11 +1296,36 @@ function paginaContactos() {
             Preferimos mensagem: no WhatsApp ou no Instagram respondemos mais depressa
             e fica tudo escrito — a frase, o nome, o tamanho.</p>
         </div>` : ''}
+        <!-- O EMAIL, em texto (DL 7/2004, art. 10.º), desde 22 out 2026: estava
+             nos dados e não aparecia em lado nenhum. Só quando existe. -->
+        ${EMAIL_REAL ? `<div class="painel" style="position:static">
+          <span class="painel__cat">Email</span>
+          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Email</h2>
+          <p class="painel__resumo"><a href="mailto:${esc(EMAIL_REAL)}">${esc(EMAIL_REAL)}</a></p>
+          <p class="painel__resumo" style="margin-top:.7rem;font-size:.9rem;color:var(--tinta-2)">
+            Para pedidos sobre os seus dados pessoais, a garantia ou uma reclamação,
+            o email deixa tudo escrito.</p>
+        </div>` : ''}
+        <!-- O LIVRO DE RECLAMAÇÕES também aqui, como o manual da DGC recomenda
+             (a página de apoio ao cliente), discreto como no rodapé. -->
+        <div class="painel" style="position:static">
+          <span class="painel__cat">Reclamações</span>
+          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Livro de Reclamações</h2>
+          <p class="painel__resumo">Se algo correu mal e não o resolvemos consigo, pode apresentar
+            reclamação no Livro de Reclamações electrónico. Antes disso, fale connosco: a
+            maior parte resolve-se numa mensagem. Ver também a
+            <a href="${u('resolucao-de-litigios/')}">resolução de litígios</a>.</p>
+          <p class="painel__resumo contactos__livro">${livroMarcado()}</p>
+        </div>
       </div>
     </div>
     <!-- Sem «Onde estamos» nem mapa desde Outubro de 2026: a loja não tem porta
          aberta ao público. A morada da sede continua nas páginas legais, que é
          onde a lei a pede (DL 7/2004, art. 10.º). -->
+    ${/* A IDENTIFICAÇÃO, numa linha, quando a titular e o NIF verdadeiros
+          existirem (hoje são valores de espera, e a linha não sai): a
+          auditoria pediu-a nos Contactos ou no rodapé; o rodapé ficou sem ela a
+          pedido da cliente, por isso é aqui. */''}${TITULAR_REAL || NIF_REAL ? `<p class="contactos__id">${esc(def.empresa.nome_comercial)}${TITULAR_REAL ? ` · ${esc(TITULAR_REAL)}, empresária em nome individual` : ''}${NIF_REAL ? ` · NIF ${esc(NIF_REAL)}` : ''} · <a href="${u('termos/')}">termos e condições</a></p>` : ''}
   </div>
 </section>`;
 
@@ -1221,7 +1344,11 @@ function paginaContactos() {
 }
 
 /* ------------------------------------------- markdown mínimo (páginas legais) */
-function marcarDown(md) {
+/* `blocos`: HTML já feito, que entra tal e qual numa linha que seja só
+   «{{{nome}}}» — a lista dos destinatários e o bloco dos direitos da política
+   de privacidade, gerados pela biblioteca legal-comum (22 out 2026). Um nome
+   que não exista pára a construção, em vez de publicar um buraco. */
+function marcarDown(md, blocos = {}) {
   const linhas = md.split('\n');
   let html = '', lista = null;
   /* O negrito é convertido ANTES do itálico, senão a regra do itálico come o
@@ -1289,7 +1416,11 @@ function marcarDown(md) {
     }
     if (tabela) escoarTabela();
 
-    if ((m = t.match(/^###\s+(.*)$/))) { cortar(); html += `<h3>${inline(m[1])}</h3>\n`; }
+    if ((m = t.match(/^\{\{\{(\w+)\}\}\}$/))) {
+      if (!Object.hasOwn(blocos, m[1])) throw new Error(`páginas legais: o bloco {{{${m[1]}}}} não existe. Blocos disponíveis: ${Object.keys(blocos).join(', ')}.`);
+      cortar(); html += `${blocos[m[1]]}\n`;
+    }
+    else if ((m = t.match(/^###\s+(.*)$/))) { cortar(); html += `<h3>${inline(m[1])}</h3>\n`; }
     else if ((m = t.match(/^##\s+(.*)$/))) { cortar(); html += `<h2>${inline(m[1])}</h2>\n`; }
     else if (/^(-{3,}|\*{3,}|_{3,})$/.test(t)) { cortar(); html += '<hr>\n'; }
     else if ((m = t.match(/^[-*]\s+(.*)$/))) {
@@ -1312,6 +1443,70 @@ function marcarDown(md) {
 }
 
 /* =================================================================== main === */
+/* OS AVISOS LEGAIS DA CONSTRUÇÃO (22 out 2026, grupo 1 da auditoria legal).
+   Em modo AVISAR, sempre: dizem o que falta e onde se corrige, e a publicação
+   segue — num site já no ar, trancar a publicação por um NIF de espera
+   deixava a dona sem conseguir publicar o resto (decisão do grupo 4 do plano;
+   nos sites novos é «bloquear»). Duas guardas da biblioteca legal-comum:
+     · verificarIdentificacao: nome da titular, NIF, morada, email (DL 7/2004,
+       art. 10.º). O «000000000» e o «(a confirmar)» aparecem aqui.
+     · verificarProduto, por artigo publicado: fabricante, referência, avisos
+       (GPSR, art. 19.º), a composição nos têxteis (bodies e têxtil), os tipos
+       de perigo quando há uma vela (perigos preenchidos). Um resumo por artigo,
+       para 34 artigos não darem 136 linhas.
+   No GitHub Actions saem também como anotações da corrida (::warning, poucas,
+   e ::notice com a conta), escapadas como a guarda do conteúdo as escapa; o
+   que a biblioteca escreve não leva dados do repositório, só nomes de ecrãs e
+   de artigos, que passam pelo umaLinha() de sempre.
+   O prefixo é «aviso legal:», NUNCA «!!»: o «!!» do registo quer dizer «o
+   gerador deixou cair alguma coisa», e o ensaio de ponta a ponta
+   (.github/test-guardas.mjs) conta-o como uma falha. */
+const ECRAS_IDENTIFICACAO = {
+  nome: 'Dados da loja › Dados legais › Nome completo da titular',
+  nif: 'Dados da loja › Dados legais › NIF',
+  formaJuridica: 'Dados da loja › Dados legais › Forma jurídica',
+  email: 'Dados da loja › Contactos › Email',
+  telefone: 'Dados da loja › Contactos › Telefone',
+  '*': 'Dados da loja › Morada da sede',
+};
+const umaLinha = (s) => String(s ?? '').replace(/[\p{Cc}\p{Zl}\p{Zp}]+/gu, ' ').replace(/##\[/g, '## [');
+const anotacao = (tipo, titulo, msg) => `::${tipo} title=${titulo}::${umaLinha(msg).replace(/%/g, '%25')}`;
+function avisosLegais() {
+  const emCI = process.env.GITHUB_ACTIONS === 'true';
+  const ident = verificarIdentificacao({
+    nome: TITULAR_REAL || def.empresa.denominacao_social,
+    formaJuridica: 'eni',
+    nif: def.empresa.nif,
+    morada: MORADA_COMPLETA,
+    email: def.contactos.email,
+    telefone: def.contactos.telefone,
+  }, { modo: 'avisar', ecra: ECRAS_IDENTIFICACAO });
+  if (ident.problemas.length) {
+    console.log(`  aviso legal: identificação incompleta (DL 7/2004, art. 10.º) — a publicação segue; os Termos e a Privacidade mostram «(a indicar)» no que falta:`);
+    for (const p of ident.problemas) {
+      console.log(umaLinha(`     · ${p.campo}: ${p.mensagem}`));
+      if (emCI) console.log(anotacao('warning', 'Identificação legal', `${p.campo}: ${p.mensagem}`));
+    }
+  }
+  const incompletos = [];
+  for (const p of produtos) {
+    const categoria = Array.isArray(p.perigos) && p.perigos.some((x) => typeof x === 'string' && x.trim()) ? 'mistura-clp'
+      : ['textil', 'bodies'].includes(p.categoria) ? 'textil' : 'geral';
+    /* `aVenda` só com preço: o site é uma montra, e «Sob consulta» é uma
+       escolha da loja (o preço combina-se na conversa), não uma falha da ficha. */
+    const r = verificarProduto({
+      nome: p.nome, preco: p.preco, aVenda: typeof p.preco === 'number', fabricante: p.fabricante, referencia: p.referencia,
+      avisos: p.avisos, composicao: p.composicao, perigos: p.perigos,
+    }, { categoria, modo: 'avisar' });
+    if (r.problemas.length) incompletos.push([p, r.problemas.map((x) => x.campo)]);
+  }
+  if (incompletos.length) {
+    console.log(`  aviso legal: ${incompletos.length} de ${produtos.length} artigos publicados sem a informação do produto completa (GPSR, art. 19.º; têxteis: Reg. 1007/2011) — preenche-se em «Artigos › <artigo> › Informação do produto»; a publicação segue:`);
+    for (const [p, campos] of incompletos) console.log(umaLinha(`     · ${p.slug}: falta ${campos.join(', ')}`));
+    if (emCI) console.log(anotacao('notice', 'Fichas de produto', `${incompletos.length} de ${produtos.length} artigos sem fabricante, referência, avisos ou composição: ver o registo do passo «Gerar o site»`));
+  }
+}
+
 function escrever(caminho, html) {
   const destino = join(SAIDA, caminho);
   mkdirSync(dirname(destino), { recursive: true });
@@ -1438,6 +1633,8 @@ function main() {
       'vazias em vez de as deixar vazias. Os valores anteriores estão no histórico do git.');
   }
 
+  avisosLegais();
+
   rmSync(SAIDA, { recursive: true, force: true });
   mkdirSync(SAIDA, { recursive: true });
   cpSync(join(RAIZ, 'assets'), join(SAIDA, 'assets'), { recursive: true, filter: publicavel });
@@ -1472,10 +1669,20 @@ function main() {
 
        Agora sai daqui. Se um marcador não tiver valor, a construção morre em
        vez de publicar um link vazio numa página legal. */
-    const CONTACTOS = {
+    const MARCADORES = {
       whatsapp: def.contactos.whatsapp,
       telefone: def.contactos.telefone_texto,
-      email: def.contactos.email,
+      /* O EMAIL, O NIF E O NOME DA TITULAR (22 out 2026): até aqui o NIF e a
+         titular estavam escritos à mão nos Termos como «(a indicar)», e o
+         email, que já estava nos dados, não aparecia em lado nenhum. Agora
+         saem dos dados — o NIF e a titular só quando são os verdadeiros (ver
+         NIF_REAL e TITULAR_REAL), senão fica «(a indicar)», que é o que lá
+         estava, e a construção avisa (avisosLegais). */
+      email: EMAIL_REAL,
+      nif: NIF_REAL || '(a indicar)',
+      titular: TITULAR_REAL || '(a indicar)',
+      nome_comercial: def.empresa.nome_comercial,
+      custo_chamada: CUSTO_CHAMADA,
       /* A MORADA TAMBÉM NÃO, e por uma razão que se descobriu da pior maneira:
          em Agosto de 2026 a morada foi apagada no backoffice e saiu do rodapé e
          da página de contactos — mas CONTINUOU publicada nas três páginas legais,
@@ -1484,21 +1691,54 @@ function main() {
 
          Seja para a mudar ou para a tirar, tem de haver um só sítio onde se mexe. */
       morada: def.local.morada,
-      morada_completa: [def.local.morada, `${def.local.codigo_postal} ${def.local.localidade}`,
-                        def.local.concelho].filter(Boolean).join(', '),
+      morada_completa: MORADA_COMPLETA,
       /* E a frase dos portes dos Termos, que a dona muda em «Textos do site»
          (21 out 2026: estava escrita à mão, e ficava a antiga). */
       portes: typeof def.textos.portes === 'string' ? def.textos.portes.trim().replace(/[.!]+$/, '') : '',
+      /* Os prazos e as frases da política de privacidade, da biblioteca
+         legal-comum (os mesmos em todos os sites): escritos uma vez, lá. */
+      prazo_contactos: prazos.pedidosDeContacto.texto,
+      prazo_encomendas: prazos.encomendas.texto,
+      prazo_registos: prazos.registosTecnicos.texto,
+      frase_repositorio: FRASE_REPOSITORIO_PUBLICO,
+      frase_fotografias: FRASE_FOTOGRAFIAS,
+      frase_meta: FRASE_PAGINA_META,
     };
-    const md = cru.replace(/\{\{(\w+)\}\}/g, (_, chave) => {
-      const v = CONTACTOS[chave];
-      if (!v) {
-        throw new Error(
-          `${caminho}: o marcador {{${chave}}} não tem valor em data/definicoes.json. ` +
-          `Marcadores disponíveis: ${Object.keys(CONTACTOS).join(', ')}.`);
-      }
-      return v;
-    });
+    /* Linha a linha. Um marcador com «?» ({{email?}}, {{telefone?}}) é
+       OPCIONAL: sem valor, a LINHA inteira sai (é uma linha de lista, «- **Email:**
+       …»), em vez de publicar «Email:» com nada à frente. Um marcador sem «?»
+       e sem valor pára a construção, como sempre. Uma linha que é só um bloco
+       {{{nome}}} passa intacta: é o marcarDown() que a resolve. */
+    const md = cru.split('\n').map((linha) => {
+      if (/^\s*\{\{\{\w+\}\}\}\s*$/.test(linha)) return linha;
+      const opcionais = [...linha.matchAll(/\{\{(\w+)\?\}\}/g)].map((m) => m[1]);
+      if (opcionais.some((chave) => !MARCADORES[chave])) return null;
+      return linha.replace(/\{\{(\w+)\??\}\}/g, (_, chave) => {
+        const v = MARCADORES[chave];
+        if (!v) {
+          throw new Error(
+            `${caminho}: o marcador {{${chave}}} não tem valor em data/definicoes.json. ` +
+            `Marcadores disponíveis: ${Object.keys(MARCADORES).join(', ')}.`);
+        }
+        return v;
+      });
+    }).filter((l) => l !== null).join('\n');
+    /* Os blocos de HTML da política de privacidade, da biblioteca: os
+       destinatários reais dos dados — o alojamento (GitHub Pages), o DNS
+       (Cloudflare), o email (Gmail) e o WhatsApp e o Instagram (Meta), com a
+       base de cada transferência para fora da UE — e os direitos, com o email
+       e o prazo de um mês. Sem email não há direitosHtml(): fica a lista dos
+       direitos da biblioteca com os contactos de sempre. */
+    const BLOCOS = {
+      destinatarios: destinatariosHtml({ alojamento: 'github-pages', dns: 'cloudflare', email: 'google', whatsapp: true, instagram: true }, { formato: 'lista' }),
+      direitos: EMAIL_REAL ? direitosHtml({ email: EMAIL_REAL }) : `<div class="direitos" lang="pt">
+<p>Pode exercer os seus direitos por mensagem, pelos contactos acima. Respondemos no prazo de um mês (RGPD, art. 12.º, n.º 3).</p>
+<ul>
+${DIREITOS.map((d) => `<li><strong>${esc(d.nome)}</strong>: ${esc(d.descricao)}</li>`).join('\n')}
+</ul>
+<p>Se achar que o tratamento não cumpre a lei, pode reclamar à Comissão Nacional de Protecção de Dados: <a href="${CNPD_URL}" target="_blank" rel="noopener">cnpd.pt</a>.</p>
+</div>`,
+    };
     const meta = Object.fromEntries(cab.split('\n').filter(Boolean)
       .map((l) => [l.slice(0, l.indexOf(':')).trim(), l.slice(l.indexOf(':') + 1).trim()]));
     escrever(destino, pagina({
@@ -1508,7 +1748,7 @@ function main() {
       corpo: `<section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)"><div class="envolve envolve--estreito">
         ${migalhas([{ nome: 'Início', href: '' }, { nome: meta.titulo }])}
         <h1 class="tit-g" style="margin-bottom:1.5rem">${esc(meta.titulo)}</h1>
-        <article class="texto">${marcarDown(md)}</article>
+        <article class="texto">${marcarDown(md, BLOCOS)}</article>
       </div></section>`,
     }));
   }

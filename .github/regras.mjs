@@ -123,8 +123,16 @@ export const OCASIOES_RETIRADAS = Object.freeze(['pascoa', 'lembrancas']);
 export const EXTENSOES_FOTO = ['jpg', 'jpeg', 'png', 'webp'];
 
 /* Os campos de um artigo, pela ordem do formulário. Uma chave nova entra por
-   esta ordem (ordenarComo()); as que já estão no ficheiro ficam onde estão. */
-export const CAMPOS_ARTIGO = ['nome', 'fotos', 'resumo', 'texto', 'personalizavel', 'preco', 'categoria', 'ocasioes', 'publicado', 'destaque', 'ordem'];
+   esta ordem (ordenarComo()); as que já estão no ficheiro ficam onde estão.
+   A INFORMAÇÃO DO PRODUTO (22 out 2026, grupo 1 da auditoria legal): a
+   composição têxtil (Regulamento (UE) 1007/2011), o fabricante com morada e
+   email, a referência e os avisos de segurança (Regulamento (UE) 2023/988 —
+   GPSR, art. 19.º) e os tipos de perigo das misturas, como a vela (CLP). São
+   OPCIONAIS: vazios, a ficha não mostra o bloco «Informação do produto»; o
+   gerador avisa no registo da publicação (nunca esconde o artigo). */
+export const CAMPOS_ARTIGO = ['nome', 'fotos', 'resumo', 'texto', 'personalizavel', 'preco', 'composicao', 'fabricante', 'referencia', 'avisos', 'perigos', 'categoria', 'ocasioes', 'publicado', 'destaque', 'ordem'];
+/* Os campos do fabricante (um objecto dentro do artigo). */
+export const CAMPOS_FABRICANTE = ['nome', 'morada', 'email'];
 /* Sempre escritos pelo painel, com o valor explícito. Ausentes valem o valor por
    omissão (é o que o gerador faz: publicado !== false, destaque só se true). */
 export const BOOLEANOS_ARTIGO = ['publicado', 'destaque'];
@@ -134,6 +142,8 @@ export const NOMES_CAMPOS = {
   nome: 'Nome do artigo', fotos: 'Fotografias', resumo: 'Frase curta do catálogo', texto: 'Texto da página do artigo',
   personalizavel: 'O que se personaliza', preco: 'Preço', categoria: 'Categoria', ocasioes: 'Ocasiões',
   publicado: 'Publicado no site', destaque: 'Mostrar na página inicial', ordem: 'Posição na lista',
+  composicao: 'Composição (têxtil)', fabricante: 'Fabricante', 'fabricante.nome': 'Fabricante › nome', 'fabricante.morada': 'Fabricante › morada', 'fabricante.email': 'Fabricante › email',
+  referencia: 'Referência do artigo', avisos: 'Avisos de segurança', perigos: 'Tipos de perigo',
 };
 
 /* As secções do data/definicoes.json, com o nome do ecrã. O gerador lê sem
@@ -158,6 +168,7 @@ export const LIMITES = { preco: [0, 100000], ordem: [0, 9999] };
    de hoje tem perto de 1000. */
 export const TAMANHOS = {
   nome: 120, resumo: 400, texto: 6000, personalizavel: 120, personalizavelItens: 30, fotos: 16, caminhoFoto: 300,
+  composicao: 200, referencia: 60, fabricanteNome: 120, fabricanteMorada: 200, aviso: 200, avisos: 10, perigo: 200, perigos: 10,
   telefoneTexto: 20, email: 160, url: 500,
   morada: 160, localidade: 60, concelho: 60, pais: 40, codigoPostal: 20,
   nomeComercial: 80, assinatura: 80, denominacao: 160, formaJuridica: 80, cae: 40, nif: 20,
@@ -474,6 +485,46 @@ export function problemasDoArtigo(a, ctx = {}) {
       if (pe.some((x) => typeof x === 'string' && x.length > TAMANHOS.personalizavel)) avisa('personalizavel:tamanho', 'personalizavel', `Há uma linha de «O que se personaliza» com mais de ${TAMANHOS.personalizavel} caracteres: escreva-a curta (ex.: O nome do bebé).`);
       if (pe.some((x) => typeof x === 'string' && RE_CONTROLO_LINHA.test(x))) avisa('personalizavel:controlo', 'personalizavel', 'Há uma linha de «O que se personaliza» com caracteres invisíveis. Escreva-a outra vez.');
     }
+  }
+
+  // --- a informação do produto (opcional; só a forma — o gerador avisa do que falta) ---
+  /* A composição com as percentagens, como a lei a pede («100 % algodão»):
+     sem um «%» o site mostrava uma composição que não cumpre. É um LEMBRETE
+     (não prende a gravação no painel nem esconde nada): as guardas legais
+     avisam, nunca bloqueiam. */
+  const comp = a.composicao;
+  if (!ausente(comp) && comp !== '') {
+    if (typeof comp !== 'string') avisa('composicao', 'composicao', '«Composição (têxtil)» tem de ser texto.');
+    else {
+      texto('composicao', TAMANHOS.composicao);
+      if (temTexto(comp) && !/\d\s*%/.test(comp)) lembra('composicao:percentagem', 'composicao', 'A composição escreve-se com as percentagens de cada fibra, como na etiqueta: «100 % algodão» ou «80 % algodão, 20 % poliéster» (Regulamento (UE) 1007/2011).');
+    }
+  }
+  texto('referencia', TAMANHOS.referencia);
+  if (!ausente(a.referencia) && typeof a.referencia !== 'string') avisa('referencia', 'referencia', '«Referência do artigo» tem de ser texto.');
+  const fab = a.fabricante;
+  if (!ausente(fab)) {
+    if (!eObjecto(fab)) avisa('fabricante', 'fabricante.nome', '«Fabricante» não está gravado como deve ser: escreva o nome, a morada e o email outra vez.');
+    else {
+      for (const [k, max] of [['nome', TAMANHOS.fabricanteNome], ['morada', TAMANHOS.fabricanteMorada], ['email', TAMANHOS.email]]) {
+        const x = fab[k];
+        if (ausente(x)) continue;
+        if (typeof x !== 'string') { avisa(`fabricante.${k}`, `fabricante.${k}`, `«${NOMES_CAMPOS[`fabricante.${k}`]}» tem de ser texto.`); continue; }
+        if (x.length > max) avisa(`fabricante.${k}:tamanho`, `fabricante.${k}`, `«${NOMES_CAMPOS[`fabricante.${k}`]}» tem mais de ${max} caracteres (tem ${x.length}).`);
+        if (RE_CONTROLO_LINHA.test(x)) avisa(`fabricante.${k}:controlo`, `fabricante.${k}`, `«${NOMES_CAMPOS[`fabricante.${k}`]}» tem caracteres invisíveis (ex.: uma mudança de linha). Escreva-o outra vez.`);
+      }
+      if (temTexto(fab.email) && !emailValido(fab.email.trim())) avisa('fabricante.email:formato', 'fabricante.email', 'O email do fabricante não parece estar certo (ex.: nome@gmail.com).');
+      for (const k of Object.keys(fab)) if (!CAMPOS_FABRICANTE.includes(k)) { avisa('fabricante:chaves', 'fabricante.nome', 'O fabricante só tem nome, morada e email: há outra coisa gravada lá dentro.'); break; }
+    }
+  }
+  for (const [campo, max, maxItens] of [['avisos', TAMANHOS.aviso, TAMANHOS.avisos], ['perigos', TAMANHOS.perigo, TAMANHOS.perigos]]) {
+    const l = a[campo];
+    if (ausente(l)) continue;
+    if (!Array.isArray(l)) { avisa(campo, campo, `«${NOMES_CAMPOS[campo]}» não está gravado como uma lista: escreva-os outra vez, um por linha.`); continue; }
+    if (l.length > maxItens) avisa(`${campo}:quantos`, campo, `«${NOMES_CAMPOS[campo]}» tem ${l.length} linhas; o máximo é ${maxItens}.`);
+    if (l.some((x) => !ausente(x) && typeof x !== 'string')) avisa(`${campo}:texto`, campo, `Cada linha de «${NOMES_CAMPOS[campo]}» tem de ser texto.`);
+    if (l.some((x) => typeof x === 'string' && x.length > max)) avisa(`${campo}:tamanho`, campo, `Há uma linha de «${NOMES_CAMPOS[campo]}» com mais de ${max} caracteres: escreva-a curta.`);
+    if (l.some((x) => typeof x === 'string' && RE_CONTROLO_LINHA.test(x))) avisa(`${campo}:controlo`, campo, `Há uma linha de «${NOMES_CAMPOS[campo]}» com caracteres invisíveis. Escreva-a outra vez.`);
   }
 
   // --- lembretes (só os publicados) ------------------------------------------

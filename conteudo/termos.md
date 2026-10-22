@@ -5,16 +5,21 @@ descricao: Termos e condições da AMMA Creative — identificação, como funci
 
 ## Quem somos
 
-Este site é da **AMMA Creative**, empresária em nome individual, com sede em
+Este site é da **{{nome_comercial}}**, empresária em nome individual, com sede em
 {{morada_completa}}, Portugal.
 
-- **NIF:** *(a indicar)*
+- **Titular:** {{titular}}
+- **NIF:** {{nif}}
+- **Email:** [{{email?}}](mailto:{{email?}})
+- **Telefone:** {{telefone?}} *{{custo_chamada}}*
 - **WhatsApp:** [falar connosco no WhatsApp](https://wa.me/{{whatsapp}})
 - **Instagram:** [@_ammacreative](https://www.instagram.com/_ammacreative)
 
 Estes elementos são prestados nos termos do artigo 10.º do Decreto-Lei n.º
 7/2004, que obriga quem tem um site com actividade comercial a identificar-se de
-forma permanente e de acesso fácil.
+forma permanente e de acesso fácil. Para exercer a garantia, pedir informação
+sobre os seus dados ou reclamar, pode usar qualquer um destes contactos; o email
+deixa tudo escrito.
 
 ## Este site é uma montra, não uma loja em linha
 
@@ -111,4 +116,4 @@ prejuízo do direito de recorrer à resolução alternativa de litígios.
 
 ---
 
-*Última actualização: Outubro de 2026.*
+*Última actualização: 22 de Outubro de 2026.*

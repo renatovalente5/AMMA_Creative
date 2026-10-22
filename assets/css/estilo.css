@@ -741,6 +741,31 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 /* Os dados de identificação que a lei obriga. Pequenos e ao fim, mas presentes e
    sempre acessíveis — é o que o DL 7/2004 pede. */
 .pe__id { font-size: .78rem; color: rgba(250, 241, 232, .58); margin-top: .9rem; line-height: 1.6; }
+/* O LIVRO DE RECLAMAÇÕES (22 out 2026): o `.lr-discreto` da biblioteca
+   legal-comum (CSS dentro de cada página, scripts/gerar.mjs, CSS_LEGAL) — o
+   ícone do livro e o texto, sem caixa. No rodapé fica com tudo o que as
+   ligações vizinhas têm (`.pe__legais a`: a cor, a letra, os 24 px de toque, o
+   branco ao passar), nunca menos. Na página de contactos, a cor das ligações
+   do texto. */
+.contactos__livro { margin-top: .9rem; }
+.contactos__livro .lr-discreto { color: var(--cacau); font-weight: 600; }
+/* A linha de identificação da página de contactos (só quando a titular e o NIF
+   verdadeiros existem): pequena, por baixo dos cartões. */
+.contactos__id { margin-top: clamp(1.5rem, 3vw, 2.2rem); font-size: .86rem; color: var(--tinta-2); }
+.contactos__id a { color: var(--cacau); }
+
+/* ============================================= INFORMAÇÃO DO PRODUTO ====== */
+/* O bloco da ficha com o que a lei pede numa venda à distância (a composição,
+   o fabricante, a referência, os avisos), quando a dona o preenche no painel.
+   Uma lista de definições em duas colunas, que cai para uma no telemóvel. */
+.info-produto__lista { margin: 0; display: grid; gap: .7rem; }
+.info-produto__lista > div { display: grid; gap: .15rem .9rem; }
+@media (min-width: 560px) { .info-produto__lista > div { grid-template-columns: 11rem 1fr; } }
+.info-produto__lista dt { font-weight: 600; color: var(--tinta); }
+.info-produto__lista dd { margin: 0; color: var(--tinta-2); overflow-wrap: anywhere; }
+.info-produto__lista dd ul { margin: 0; padding-left: 1.1rem; }
+.info-produto__lista dd li { margin-bottom: .25rem; }
+.info-produto__lista a { color: var(--cacau); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ================================================== texto legal e artigos == */
 .texto { max-width: var(--larg-texto); }

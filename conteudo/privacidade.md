@@ -6,7 +6,9 @@ descricao: O que a AMMA Creative faz com os seus dados. Este site não tem anal�
 ## O curto
 
 Este site **não tem Google Analytics, não tem píxeis de publicidade e não tem
-botões de redes sociais que o sigam**. Não sabemos quem o visita.
+botões de redes sociais que o sigam**. Não há analítica: não sabemos quem o
+visita. O alojamento do site (GitHub Pages) regista, como qualquer servidor, o
+endereço IP de quem pede as páginas — ver «A quem damos».
 
 Este site não guarda nada no seu equipamento: não usa cookies nem armazenamento
 local, e por isso não tem aviso de cookies — não há nada para autorizar.
@@ -16,11 +18,14 @@ Protecção de Dados obriga — e porque é justo que se possa confirmar.
 
 ## Quem é responsável
 
-A **AMMA Creative**, empresária em nome individual, com sede em
+A **{{nome_comercial}}**, empresária em nome individual, com sede em
 {{morada_completa}}.
 
-Contacto para assuntos de dados pessoais: mensagem por
-[WhatsApp](https://wa.me/{{whatsapp}}) ou pelo
+- **Titular (responsável pelo tratamento):** {{titular}}
+- **NIF:** {{nif}}
+- **Email para assuntos de dados pessoais:** [{{email?}}](mailto:{{email?}})
+
+Também pode falar connosco por [WhatsApp](https://wa.me/{{whatsapp}}) ou pelo
 [Instagram](https://www.instagram.com/_ammacreative).
 
 ## Que dados recolhemos
@@ -29,8 +34,8 @@ Contacto para assuntos de dados pessoais: mensagem por
 newsletter. Navegar aqui não deixa nome, endereço de email nem qualquer outro
 dado connosco.
 
-**Quando nos contacta**, por WhatsApp ou por Instagram, recebemos o que nos
-enviar:
+**Quando nos contacta**, por WhatsApp, por Instagram ou por email, recebemos o
+que nos enviar:
 
 | Dado | Para quê | Fundamento legal |
 |---|---|---|
@@ -47,43 +52,45 @@ ninguém para fins comerciais.
 
 Se nos enviar fotografias para uma peça, elas servem **só para fazer essa peça**.
 
-Não as publicamos sem lhe perguntar. Quando queremos mostrar um trabalho no
-Instagram, pedimos autorização primeiro — e um «não» é uma resposta completa, que
-não afecta a encomenda.
+{{frase_fotografias}} Um «não» é uma resposta completa, que não afecta a
+encomenda.
 
 Guardamo-las enquanto a encomenda estiver a decorrer, e apagamo-las depois, salvo
 se nos pedir para as manter para uma repetição.
 
 ## Quanto tempo guardamos
 
-- **Conversas e detalhes de encomendas:** o tempo necessário para a encomenda e
-  para a garantia (três anos, nos termos do Decreto-Lei n.º 84/2021)
-- **Facturação:** dez anos, por obrigação fiscal
-- **Fotografias que nos envia:** até a encomenda terminar
+- {{prazo_contactos}}
+- {{prazo_encomendas}} As conversas e os detalhes de uma encomenda ficam
+  enquanto durar a garantia (três anos, nos termos do Decreto-Lei n.º 84/2021).
+- **Fotografias que nos envia:** até a encomenda terminar.
+- {{prazo_registos}} São os registos do alojamento do site, que não lemos nem
+  cruzamos com mais nada.
 
 ## A quem damos
+
+Além de nós, só quem precisa deles para a encomenda andar:
 
 - **Contabilidade**, para a facturação
 - **Transportadora**, quando há envio — só o nome, a morada e o contacto
 - **Autoridade Tributária**, quando a lei o exige
 
-Nada mais. Não há transferências para fora da União Europeia.
+E as ferramentas com que o site e as conversas funcionam, que tratam dados por
+nossa conta. As que são de empresas dos Estados Unidos constam da lista do
+Quadro de Privacidade de Dados UE-EUA (*Data Privacy Framework*), a decisão de
+adequação da Comissão Europeia que serve de base a essas transferências:
+
+{{{destinatarios}}}
+
+{{frase_meta}}
+
+{{frase_repositorio}}
 
 ## Os seus direitos
 
-Pode pedir-nos, a qualquer momento:
+Os direitos que o RGPD lhe dá sobre os seus dados, e como os exercer:
 
-- **acesso** aos dados que temos sobre si
-- **correcção** do que estiver errado
-- **apagamento**, quando já não sejam necessários
-- **limitação** do tratamento
-- **portabilidade** dos dados
-- **oposição** ao tratamento
-
-Basta uma mensagem pelos contactos acima. Respondemos no prazo de um mês.
-
-Se achar que não tratámos o assunto como devíamos, pode reclamar à **Comissão
-Nacional de Protecção de Dados** — [cnpd.pt](https://www.cnpd.pt).
+{{{direitos}}}
 
 ## Cookies
 
@@ -103,7 +110,9 @@ endereço IP para os servidores da Google só por abrir a página, sem que ningu
 lhe perguntasse. Com as fontes alojadas connosco, isso não acontece.
 
 **Este site não faz um único pedido a servidores de terceiros.** É uma afirmação que se pode verificar: abra as
-ferramentas de desenvolvimento do browser, separador «Rede», e recarregue.
+ferramentas de desenvolvimento do browser, separador «Rede», e recarregue. As
+ligações para o WhatsApp, o Instagram e o Livro de Reclamações só saem daqui
+quando carregar nelas.
 
 ## Alterações
 
@@ -111,4 +120,4 @@ Se isto mudar, muda aqui, com a data actualizada em baixo.
 
 ---
 
-*Última actualização: Outubro de 2026.*
+*Última actualização: 22 de Outubro de 2026.*
