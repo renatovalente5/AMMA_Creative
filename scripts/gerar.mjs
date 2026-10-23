@@ -463,6 +463,9 @@ function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = 
 <link rel="canonical" href="${canonico}">
 ${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : (foraDoGoogle ? '<meta name="robots" content="noindex, follow">\n' : '')}<meta name="theme-color" content="#602601">
 <meta name="author" content="${esc(def.empresa.nome_comercial)}">
+<!-- A prova de que o site é nosso no Bing Webmaster Tools (conta do Renato,
+     23 out 2026). Tirá-la desvalida o site lá. -->
+<meta name="msvalidate.01" content="DE1BA388910A8DC62D873CAEEF7B2BB8">
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_PT">
