@@ -111,8 +111,8 @@ def varrer():
                 continue
             if f.stem.endswith(SUFIXOS) or f.stem == 'og':
                 continue                      # já é variante, ou é o cartão
-            if f.suffix.lower() == '.png' and f.stem.startswith('logo'):
-                continue                      # o logótipo é servido tal e qual
+            if f.suffix.lower() == '.png' and f.stem.startswith(('logo', 'favicon', 'apple-touch-icon')):
+                continue                      # o logótipo e os ícones são servidos tal e qual
             falta = [w for w in LARGURAS if not f.with_name(f'{f.stem}-{w}.webp').exists()]
             if not falta:
                 existentes += 1

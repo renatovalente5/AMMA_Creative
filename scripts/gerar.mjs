@@ -441,7 +441,7 @@ const REENCAMINHAR = [
 ];
 
 /* ============================================================== esqueleto === */
-function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '', naoIndexar = false, extras = '' }) {
+function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = '', naoIndexar = false, foraDoGoogle = false, extras = '' }) {
   const canonico = abs(pag);
   const imagem = og ?? abs('assets/img/og.jpg');
   const nav = [
@@ -461,7 +461,7 @@ function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = 
 <title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
 <link rel="canonical" href="${canonico}">
-${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="theme-color" content="#602601">
+${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : (foraDoGoogle ? '<meta name="robots" content="noindex, follow">\n' : '')}<meta name="theme-color" content="#602601">
 <meta name="author" content="${esc(def.empresa.nome_comercial)}">
 
 <meta property="og:type" content="website">
@@ -476,6 +476,13 @@ ${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta n
 <meta property="og:image:type" content="image/jpeg">
 <meta name="twitter:card" content="summary_large_image">
 
+<!-- O ÍCONE NO GOOGLE (o Renato, 23 out 2026: «inclusive a imagem que aparece
+     no Google»): o Google quer um quadrado com lado múltiplo de 48 px, e lê o
+     /favicon.ico; o SVG fica para os browsers que o preferem. Feitos do
+     favicon.svg (o quadrado cacau com o «A»). -->
+<link rel="icon" href="${u('favicon.ico')}" sizes="48x48">
+<link rel="icon" href="${u('assets/img/favicon-96.png')}" sizes="96x96" type="image/png">
+<link rel="icon" href="${u('assets/img/favicon-192.png')}" sizes="192x192" type="image/png">
 <link rel="icon" href="${u('assets/img/favicon.svg')}" type="image/svg+xml">
 <link rel="apple-touch-icon" href="${u('assets/img/apple-touch-icon.png')}">
 <!-- As fontes são pré-carregadas porque são o primeiro texto que se vê. Sem
@@ -784,12 +791,15 @@ function paginaInicial() {
 
   return pagina({
     pag: '',
-    titulo: `${def.empresa.nome_comercial} — Artigos personalizados para bebés, mamãs e papás`,
+    /* OS TÍTULOS COMEÇAM PELA MARCA, «AMMA Creative - …» (o Renato, 23 out 2026,
+       como no ithos): é o que se lê primeiro no Google. */
+    titulo: `${def.empresa.nome_comercial} - Artigos personalizados para bebés, mamãs e papás`,
     descricao: `Artigos personalizados feitos à mão: bodies de convite a padrinhos, anúncios de gravidez, colares em aço gravados, t-shirts e lembranças. ${def.textos.portes}.`,
     corpo,
     jsonld: [negocioLD, {
       '@context': 'https://schema.org', '@type': 'WebSite',
-      name: def.empresa.nome_comercial, url: abs(''), inLanguage: 'pt-PT',
+      /* O nome do site no Google (o que aparece por cima do resultado). */
+      name: def.empresa.nome_comercial, alternateName: ['AMMA', 'ammacreative', 'ammacreative.pt'], url: abs(''), inLanguage: 'pt-PT',
       publisher: { '@id': abs('#loja') },
     }],
   });
@@ -862,7 +872,7 @@ function paginaCatalogo() {
 
   return pagina({
     pag: 'catalogo/',
-    titulo: `Catálogo — ${produtos.length} artigos personalizados | ${def.empresa.nome_comercial}`,
+    titulo: `${def.empresa.nome_comercial} - Catálogo de ${produtos.length} artigos personalizados`,
     descricao: 'Todos os nossos artigos personalizados: bodies de convite a padrinhos e anúncio de gravidez, colares e pulseiras em aço gravados, t-shirts, boxes de presente e lembranças.',
     corpo,
     jsonld: [
@@ -1060,7 +1070,7 @@ ${relacionados.length ? `<section class="secao secao--creme">
        cor»), no nome de oito artigos que já a trazem, e nas páginas de
        categoria. Um título com um erro de português vale menos do que a palavra
        que o erro trazia. */
-    titulo: `${p.nome} | ${def.empresa.nome_comercial}`,
+    titulo: `${def.empresa.nome_comercial} - ${p.nome}`,
     descricao: `${p.resumo} Personalizamos a frase, o nome e a cor. ${def.textos.portes}.`,
     og: fs.length ? abs(`assets/produtos/${p.slug}/og.jpg`) : undefined,
     corpo,
@@ -1179,7 +1189,7 @@ function paginaComoEncomendar() {
 
   return pagina({
     pag: 'como-encomendar/',
-    titulo: `Como encomendar | ${def.empresa.nome_comercial}`,
+    titulo: `${def.empresa.nome_comercial} - Como encomendar`,
     descricao: 'Como se encomenda um artigo personalizado na AMMA Creative: escolher, dizer os detalhes, aprovar a pré-visualização e receber. Sem carrinho, por WhatsApp ou Instagram.',
     corpo,
     jsonld: [
@@ -1246,7 +1256,7 @@ ${secaoImporta()}`;
 
   return pagina({
     pag: 'sobre/',
-    titulo: `Sobre nós | ${def.empresa.nome_comercial}`,
+    titulo: `${def.empresa.nome_comercial} - Sobre nós`,
     descricao: 'A AMMA Creative é uma casa pequena que faz artigos personalizados para bebés, mamãs e papás. Cada peça passa pelas nossas mãos.',
     corpo,
     jsonld: [migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Sobre nós' }]), negocioLD],
@@ -1331,7 +1341,7 @@ function paginaContactos() {
 
   return pagina({
     pag: 'contactos/',
-    titulo: `Contactos | ${def.empresa.nome_comercial}`,
+    titulo: `${def.empresa.nome_comercial} - Contactos`,
     /* Sem o número aqui. Esta descrição é o que o Google mostra por baixo do
        título nos resultados, e um número à vista num resultado de pesquisa é um
        convite a ligar — que é precisamente o que se quis tirar. Além disso
@@ -1640,6 +1650,11 @@ function main() {
   cpSync(join(RAIZ, 'assets'), join(SAIDA, 'assets'), { recursive: true, filter: publicavel });
 
   if (existsSync(join(RAIZ, 'CNAME'))) cpSync(join(RAIZ, 'CNAME'), join(SAIDA, 'CNAME'));
+  /* O /favicon.ico, que o Google e os browsers pedem à raiz, e a prova de que
+     o site é nosso no Search Console (conta do Renato, 23 out 2026) — o ficheiro
+     tem de ficar para a validação se manter. */
+  cpSync(join(RAIZ, 'assets/img/favicon.ico'), join(SAIDA, 'favicon.ico'));
+  writeFileSync(join(SAIDA, 'googleaf407b74814457e5.html'), 'google-site-verification: googleaf407b74814457e5.html');
 
   escrever('index.html', paginaInicial());
   escrever('catalogo/index.html', paginaCatalogo());
@@ -1745,6 +1760,9 @@ ${DIREITOS.map((d) => `<li><strong>${esc(d.nome)}</strong>: ${esc(d.descricao)}<
       pag: destino.replace('index.html', ''),
       titulo: `${meta.titulo} | ${def.empresa.nome_comercial}`,
       descricao: meta.descricao ?? meta.titulo,
+      /* As páginas legais ficam fora do Google (mas as ligações seguem-se): no
+         Google, a loja, o catálogo, os artigos, o Sobre nós e os contactos. */
+      foraDoGoogle: true,
       corpo: `<section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)"><div class="envolve envolve--estreito">
         ${migalhas([{ nome: 'Início', href: '' }, { nome: meta.titulo }])}
         <h1 class="tit-g" style="margin-bottom:1.5rem">${esc(meta.titulo)}</h1>
@@ -1755,8 +1773,7 @@ ${DIREITOS.map((d) => `<li><strong>${esc(d.nome)}</strong>: ${esc(d.descricao)}<
 
   /* sitemap, robots, 404 */
   const urls = ['', 'catalogo/', 'como-encomendar/', 'sobre/', 'contactos/',
-    ...produtos.map((p) => `catalogo/${p.categoria}/${p.slug}/`),
-    ...LEGAIS.map(([p]) => p)];
+    ...produtos.map((p) => `catalogo/${p.categoria}/${p.slug}/`)];   // as legais ficam fora (noindex)
   const hoje = new Date().toISOString().slice(0, 10);
   escrever('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
