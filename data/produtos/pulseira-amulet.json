@@ -25,6 +25,6 @@
     "presente"
   ],
   "publicado": true,
-  "destaque": false,
+  "destaque": true,
   "ordem": 10
 }
