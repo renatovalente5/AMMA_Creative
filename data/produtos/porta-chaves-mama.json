@@ -1,0 +1,16 @@
+{
+  "nome": "Porta-chaves \"Mama\"",
+  "fotos": [
+    "assets/produtos/porta-chaves-mama/porta-chaves-mama-b50cee83.jpg"
+  ],
+  "resumo": "Mãe, um sentimento único.",
+  "texto": "Mãe… uma palavra tão pequena, mas com um amor tão grande!\n\nEste porta-chaves é uma lembrança especial que representa o amor incondicional, a proteção e a ligação única entre uma mãe e os seus filhos.\n\nUm presente cheio de carinho e significado, ideal para surpreender aquela que está sempre presente, que cuida, protege e ama sem condições.",
+  "preco": 8,
+  "categoria": "lembrancas",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 110
+}
