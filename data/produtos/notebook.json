@@ -1,0 +1,23 @@
+{
+  "nome": "Notebook",
+  "fotos": [
+    "assets/produtos/notebook/notebook-7bd2dd4a.jpg",
+    "assets/produtos/notebook/notebook-299116ae.jpg",
+    "assets/produtos/notebook/notebook-98f60cff.jpg"
+  ],
+  "resumo": "Porque ensinar é ajudar a crescer.",
+  "texto": "Surpreende aquela professora/educadora especial com um presente único, cheio de carinho e significado! \n\nUm presente simbólico para agradecer a dedicação, a paciência e todo o carinho de quem ensina e deixa uma marca especial no coração dos seus alunos.\n\nUm presente personalizado que transforma um simples caderno numa recordação inesquecível!",
+  "personalizavel": [
+    "A cor do caderno",
+    "O design",
+    "O nome"
+  ],
+  "preco": 8,
+  "categoria": "lembrancas",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 500
+}
