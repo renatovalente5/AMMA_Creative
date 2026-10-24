@@ -1,0 +1,24 @@
+{
+  "nome": "Colar \"CHARMED\"",
+  "fotos": [
+    "assets/produtos/pulseira-amulet/pulseira-amulet-78b47821.jpg",
+    "assets/produtos/colar-charmed/colar-charmed-b912f8fd.jpg",
+    "assets/produtos/colar-charmed/colar-charmed-1df6f88f.jpg",
+    "assets/produtos/colar-charmed/colar-charmed-119b69cc.jpg",
+    "assets/produtos/colar-charmed/colar-charmed-7271365b.jpg"
+  ],
+  "resumo": "Os teus pendentes. A tua história.",
+  "texto": "Pequenos detalhes, grandes significados. ♡\n\nCria o teu próprio colar, combina os teus charms favoritos e transforma símbolos em histórias que são só tuas.\n\nJoias personalizadas, feitas à tua maneira.  \n\nValor inclui 3 pendentes, cada pendente extra fica por 0.50€.",
+  "personalizavel": [
+    "O fio",
+    "Os pendentes"
+  ],
+  "preco": 13.5,
+  "categoria": "aco",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 500
+}
