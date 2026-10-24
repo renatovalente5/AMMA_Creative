@@ -22,6 +22,6 @@
   ],
   "ordem": 30,
   "publicado": true,
-  "destaque": true,
+  "destaque": false,
   "preco": 18
 }
