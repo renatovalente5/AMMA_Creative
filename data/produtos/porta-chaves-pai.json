@@ -1,0 +1,16 @@
+{
+  "nome": "Porta-chaves \"Pai\"",
+  "fotos": [
+    "assets/produtos/porta-chaves-pai/porta-chaves-pai-3af58c54.jpg"
+  ],
+  "resumo": "O meu pai é um super herói.",
+  "texto": "Porque os verdadeiros super-heróis não precisam de capa… basta serem pais!\n\nEste porta-chaves é uma lembrança especial para homenagear aquele pai que está sempre presente, que protege, apoia e faz de tudo para ver os seus filhos felizes.\n\nUm presente simbólico e cheio de significado para mostrar ao pai que ele é, sem dúvida, o nosso herói favorito.",
+  "preco": 8,
+  "categoria": "lembrancas",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 110
+}
