@@ -26,5 +26,5 @@
   "preco": 18,
   "ordem": 50,
   "publicado": true,
-  "destaque": true
+  "destaque": false
 }
