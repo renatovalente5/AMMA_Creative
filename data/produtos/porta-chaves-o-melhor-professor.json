@@ -1,0 +1,16 @@
+{
+  "nome": "Porta-chaves \"O Melhor Professor\"",
+  "fotos": [
+    "assets/produtos/porta-chaves-o-melhor-professor/porta-chaves-o-melhor-professor-494be99e.jpg"
+  ],
+  "resumo": "O melhor professor do mundo.",
+  "texto": "Uma pequena lembrança para agradecer a quem ensina com dedicação e faz a diferença todos os dias!\n\nEste porta-chaves é um presente especial para homenagear aquele professor que partilha conhecimentos, inspira os seus alunos e contribui para o seu crescimento, sempre com empenho e carinho.\n\nCom um design elegante esta peça transmite uma mensagem de gratidão muito especial.",
+  "preco": 8,
+  "categoria": "lembrancas",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 110
+}
