@@ -53,10 +53,11 @@
  *
  * problema = {
  *   classe:   'bloqueia' | 'neutraliza' | 'avisa',
- *   chave:    estável: 'artigo:<slug>:<regra>' ou 'definicoes:<campo>[:<regra>]'.
+ *   chave:    estável: 'artigo:<slug>:<regra>', 'definicoes:<campo>[:<regra>]' ou
+ *             'categoria:<slug>:<regra>' (e 'categorias:…', o ficheiro inteiro).
  *             O Worker compara as chaves do HEAD com as da gravação e recusa só
  *             as novas; por isso UMA CHAVE TEM SEMPRE A MESMA CLASSE.
- *   ficheiro: 'data/produtos/<nome>.json' ou 'data/definicoes.json';
+ *   ficheiro: 'data/produtos/<nome>.json', 'data/definicoes.json' ou 'data/categorias.json';
  *   ecra:     o ecrã do painel onde se corrige («Artigos › Sweat "LOVE"»,
  *             «Dados da loja › Contactos»);
  *   mensagem: para a dona, em português simples, sem caminhos de JSON;
@@ -64,6 +65,7 @@
  *   campos?:  quando são vários;
  *   efeito?:  só nos «neutraliza»: 'esconder' | 'sem_fotografia';
  *   slug?:    só nos artigos;
+ *   categoria?: só nos de uma categoria (o slug dela);
  *   foto?, indice?: só nos problemas de uma fotografia (o caminho e a posição);
  *   lembrete?: true nos avisos que não são erro de ninguém.
  * }
@@ -158,6 +160,25 @@ export const SECCOES_DEFINICOES = {
    mude — ver mudancasBloqueadas(). Preserva-se e não se valida. */
 export const BLOQUEADOS_DEFINICOES = ['tecnico'];
 
+/* AS CATEGORIAS (data/categorias.json): uma lista de { slug, nome, curto,
+   resumo, tecido, … }, pela ordem em que o site as mostra. Desde 26 out 2026 a
+   dona cria-as, muda-lhes o nome e a ordem no painel (ecrã «Categorias»).
+   O SLUG é o pedaço do endereço de cada artigo (/catalogo/<categoria>/<artigo>/):
+   gera-se do nome ao criar (gerarSlug) e nunca muda. UMA CATEGORIA NÃO SE
+   APAGA: cada artigo responde em todas as categorias (os endereços antigos de
+   quem mudou de categoria), e esses endereços iam-se com ela; uma categoria
+   sem artigos já não aparece no site (gerar.mjs, catsVisiveis).
+   O painel escreve só estes campos (pela ordem do formulário); os outros
+   (`texto`, `titulo_seo`, `descricao_seo`, das páginas de categoria que
+   saíram em Agosto) ficam como estão — mudancasBloqueadas(). `tecido`: as
+   peças são de tecido, e a ficha pede a composição (Regulamento (UE)
+   1007/2011). */
+export const CAMPOS_CATEGORIA = ['slug', 'nome', 'curto', 'resumo', 'tecido'];
+export const EDITAVEIS_CATEGORIA = ['nome', 'curto', 'resumo', 'tecido'];
+export const NOMES_CAMPOS_CATEGORIA = { nome: 'Nome da categoria', curto: 'Nome curto (filtro do catálogo)', resumo: 'Frase do cartão', tecido: 'Peças de tecido' };
+/** A categoria é de peças de tecido (a ficha pede a composição). */
+export const eDeTecido = (c) => eObjecto(c) && c.tecido === true;
+
 /* ------------------------------------------------------------------ */
 /* Limites                                                             */
 /* ------------------------------------------------------------------ */
@@ -175,6 +196,7 @@ export const TAMANHOS = {
   heroTitulo: 80, heroTexto: 300, reclamo: 100, sobreTitulo: 120, sobreChamada: 300, sobreTexto: 3000, portes: 120, prazo: 200, fichaLinha: 80,
   passoTitulo: 60, passoTexto: 300, passos: 6,
   importaLinha: 60, importaTitulo: 120, importaItemTitulo: 60, importaItemTexto: 300, importaItens: 6,
+  categoriaNome: 60, categoriaCurto: 30, categoriaResumo: 200,
 };
 /* O que o Worker do painel aceita gravar (recusa acima); aqui só se lembra, a
    partir de 80 %. */
@@ -345,7 +367,7 @@ function lerJson(valor) {
 export function categoriasDe(valor) {
   const l = lerJson(valor);
   if (!Array.isArray(l.obj)) return null;
-  return l.obj.filter((c) => eObjecto(c) && temTexto(c.slug)).map((c) => ({ slug: c.slug, nome: temTexto(c.nome) ? c.nome.trim() : c.slug }));
+  return l.obj.filter((c) => eObjecto(c) && temTexto(c.slug)).map((c) => ({ slug: c.slug, nome: temTexto(c.nome) ? c.nome.trim() : c.slug, tecido: c.tecido === true }));
 }
 
 /* ------------------------------------------------------------------ */
@@ -668,6 +690,54 @@ export function problemasDasDefinicoes(d) {
 }
 
 /* ------------------------------------------------------------------ */
+/* As categorias                                                       */
+/* ------------------------------------------------------------------ */
+
+/* Os problemas de cada categoria (a lista lida de data/categorias.json), sem
+   os do ficheiro inteiro (que problemas() diz). O painel usa-o campo a campo.
+   Uma entrada sem endereço ou repetida, ou um endereço que não é um slug,
+   «bloqueia» (o painel nunca as escreve: só um commit à mão). Um nome vazio ou
+   comprido de mais «avisa» — o painel não deixa gravar, mas não é razão para
+   parar o site. `categoria` é o slug, para o painel achar a linha. */
+export function problemasDasCategorias(lista) {
+  const ficheiro = FICHEIROS.categorias;
+  const out = [];
+  if (!Array.isArray(lista)) return out;
+  const vistas = new Set();
+  lista.forEach((c, i) => {
+    if (!eObjecto(c) || !temTexto(c.slug)) {
+      out.push({ classe: 'bloqueia', chave: `categorias:entrada:${i}`, ficheiro, ecra: 'Categorias', mensagem: `A ${i + 1}.ª categoria do site não tem endereço: sem ele o site não se consegue gerar. Só o Renato a pode corrigir.` });
+      return;
+    }
+    const slug = c.slug;
+    const nome = temTexto(c.nome) ? c.nome.trim() : slug;
+    const ecra = `Categorias › ${nome}`;
+    const base = { ficheiro, ecra, categoria: slug };
+    const bloqueia = (regra, mensagem, extra = {}) => out.push({ classe: 'bloqueia', chave: `categoria:${slug}:${regra}`, ...base, mensagem, ...extra });
+    const avisa = (regra, campo, mensagem) => out.push({ classe: 'avisa', chave: `categoria:${slug}:${regra}`, ...base, campo, mensagem });
+    if (vistas.has(slug)) bloqueia('repetida', `Há duas categorias com o endereço «${slug}». Só o Renato o pode corrigir.`);
+    vistas.add(slug);
+    if (!RE_SLUG.test(slug)) bloqueia('endereco', `O endereço da categoria «${nome}» («${slug}») não é como os outros (só minúsculas, algarismos e hífens). Só o Renato o pode corrigir.`);
+    if (textosDe(c).some(([, t]) => RE_PARTE_A_PAGINA.test(t))) bloqueia('partia-a-pagina', 'Um texto desta categoria tem «</script» ou «<!--», que não podem ir para o site. Apague-o e escreva-o outra vez.');
+    const texto = (k, max, obrigatorio) => {
+      const v = c[k];
+      const rotulo = NOMES_CAMPOS_CATEGORIA[k];
+      if (vazio(v)) { if (obrigatorio) avisa(k, k, `Preencha «${rotulo}».`); return; }
+      if (typeof v !== 'string') { avisa(k, k, `«${rotulo}» tem de ser texto.`); return; }
+      if (v.length > max) avisa(`${k}:tamanho`, k, `«${rotulo}» tem mais de ${max} caracteres (tem ${v.length}).`);
+      if (RE_CONTROLO_LINHA.test(v)) avisa(`${k}:controlo`, k, `«${rotulo}» tem caracteres invisíveis (ex.: uma mudança de linha). Escreva-o outra vez.`);
+    };
+    /* O nome é string (sem ele o gerador rebenta: problemas(), categorias:forma);
+       vazio, o botão do filtro e o cartão ficavam sem texto. */
+    if (typeof c.nome === 'string') texto('nome', TAMANHOS.categoriaNome, true);
+    texto('curto', TAMANHOS.categoriaCurto, false);
+    texto('resumo', TAMANHOS.categoriaResumo, false);
+    if (!ausente(c.tecido) && typeof c.tecido !== 'boolean') avisa('tecido', 'tecido', `«${NOMES_CAMPOS_CATEGORIA.tecido}» é um sim ou não.`);
+  });
+  return out;
+}
+
+/* ------------------------------------------------------------------ */
 /* Todos                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -697,13 +767,14 @@ export function problemas(dados = {}, opcoes = {}) {
   let categorias = null;
   if (tem(d, 'categorias')) {
     const cs = categoriasDe(d.categorias);
-    if (!cs || !cs.length) lista.push({ classe: 'bloqueia', chave: 'categorias:ilegivel', ficheiro: FICHEIROS.categorias, ecra: 'Artigos', mensagem: 'As categorias do site não se conseguem ler: sem elas o site não se consegue gerar. Só o Renato as pode corrigir.' });
+    if (!cs || !cs.length) lista.push({ classe: 'bloqueia', chave: 'categorias:ilegivel', ficheiro: FICHEIROS.categorias, ecra: 'Categorias', mensagem: 'As categorias do site não se conseguem ler: sem elas o site não se consegue gerar. Só o Renato as pode corrigir.' });
     else {
       categorias = cs.map((c) => c.slug);
       /* O gerador escreve o nome de cada categoria (em minúsculas, no botão do
          fim de cada ficha): uma sem nome rebenta-o. */
       const lida = lerJson(d.categorias).obj;
-      if (lida.some((c) => eObjecto(c) && temTexto(c.slug) && typeof c.nome !== 'string')) lista.push({ classe: 'bloqueia', chave: 'categorias:forma', ficheiro: FICHEIROS.categorias, ecra: 'Artigos', mensagem: 'Há uma categoria do site sem nome: sem ele o site não se consegue gerar. Só o Renato a pode corrigir.' });
+      if (lida.some((c) => eObjecto(c) && temTexto(c.slug) && typeof c.nome !== 'string')) lista.push({ classe: 'bloqueia', chave: 'categorias:forma', ficheiro: FICHEIROS.categorias, ecra: 'Categorias', mensagem: 'Há uma categoria do site sem nome: sem ele o site não se consegue gerar. Só o Renato a pode corrigir.' });
+      lista.push(...problemasDasCategorias(lida));
     }
   }
 
@@ -810,8 +881,14 @@ export const descreverEfeitos = (e) => e.efeitos.map((x) => (x === 'sem_fotograf
  *   qual = 'definicoes': o `tecnico` não muda, e uma chave de topo nova só pode
  *          ser uma das SECCOES_DEFINICOES;
  *   qual = 'artigo':     as chaves que não são CAMPOS_ARTIGO não mudam (nem
- *          aparecem, nem desaparecem): o painel preserva o que não edita. */
+ *          aparecem, nem desaparecem): o painel preserva o que não edita;
+ *   qual = 'categorias': `antes` e `depois` são as listas. Nenhuma categoria
+ *          sai (motivo 'apagada'), cada uma é um objecto com endereço
+ *          ('forma'), e de cada uma só mudam os EDITAVEIS_CATEGORIA — o slug é
+ *          o que as junta, por isso não muda; uma nova leva só os
+ *          CAMPOS_CATEGORIA. A ordem muda à vontade. */
 export function mudancasBloqueadas(antes, depois, qual = 'definicoes') {
+  if (qual === 'categorias') return categoriasBloqueadas(antes, depois);
   const a = eObjecto(antes) ? antes : {};
   const d = eObjecto(depois) ? depois : {};
   const out = [];
@@ -828,6 +905,25 @@ export function mudancasBloqueadas(antes, depois, qual = 'definicoes') {
   for (const k of Object.keys(d)) {
     if (tem(a, k) || tem(SECCOES_DEFINICOES, k) || out.some((x) => x.caminho === k)) continue;
     out.push({ caminho: k, motivo: 'chave_nova' });
+  }
+  return out;
+}
+
+function categoriasBloqueadas(antes, depois) {
+  if (!Array.isArray(depois)) return [{ caminho: '', motivo: 'forma' }];
+  const out = [];
+  const porSlug = (l) => new Map((Array.isArray(l) ? l : []).filter((c) => eObjecto(c) && temTexto(c.slug)).map((c) => [c.slug, c]));
+  const a = porSlug(antes);
+  depois.forEach((c, i) => { if (!eObjecto(c) || !temTexto(c.slug)) out.push({ caminho: String(i), motivo: 'forma' }); });
+  const d = porSlug(depois);
+  for (const slug of a.keys()) if (!d.has(slug)) out.push({ caminho: slug, motivo: 'apagada' });
+  for (const [slug, cd] of d) {
+    const ca = a.get(slug);
+    for (const k of new Set([...Object.keys(ca ?? {}), ...Object.keys(cd)])) {
+      if (k === 'slug' || EDITAVEIS_CATEGORIA.includes(k)) continue;
+      if (ca && mesmoValor(ca[k], cd[k])) continue;
+      out.push({ caminho: `${slug}.${k}`, motivo: ca && tem(ca, k) ? 'mudou' : 'chave_nova' });
+    }
   }
   return out;
 }

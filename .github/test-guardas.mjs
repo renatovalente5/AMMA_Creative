@@ -289,6 +289,16 @@ secao('cada regra, com a classe certa');
     ['as categorias não se lêem', (d) => { d.categorias = '['; }, 'bloqueia', 'categorias:ilegivel'],
     ['nenhuma categoria', (d) => { d.categorias = []; }, 'bloqueia', 'categorias:ilegivel'],
     ['uma categoria do site sem nome', (d) => { delete d.categorias[0].nome; }, 'bloqueia', 'categorias:forma'],
+    // As categorias que a dona cria no painel (26 out 2026).
+    ['uma categoria sem endereço', (d) => { d.categorias.push({ nome: 'Sem endereço' }); }, 'bloqueia', /^categorias:entrada:\d+$/],
+    ['duas categorias com o mesmo endereço', (d) => { d.categorias.push({ ...d.categorias[0] }); }, 'bloqueia', `categoria:${HOJE.categorias[0].slug}:repetida`],
+    ['um endereço de categoria com maiúsculas', (d) => { d.categorias.push({ slug: 'Velas', nome: 'Velas' }); }, 'bloqueia', 'categoria:Velas:endereco'],
+    ['«</script>» no nome de uma categoria', (d) => { d.categorias.push({ slug: 'velas', nome: 'a </script> b' }); }, 'bloqueia', 'categoria:velas:partia-a-pagina'],
+    ['uma categoria com o nome vazio', (d) => { d.categorias.push({ slug: 'velas', nome: '  ' }); }, 'avisa', 'categoria:velas:nome'],
+    ['um nome de categoria comprido de mais', (d) => { d.categorias.push({ slug: 'velas', nome: 'V'.repeat(61) }); }, 'avisa', 'categoria:velas:nome:tamanho'],
+    ['um nome curto comprido de mais', (d) => { d.categorias.push({ slug: 'velas', nome: 'Velas', curto: 'V'.repeat(31) }); }, 'avisa', 'categoria:velas:curto:tamanho'],
+    ['a frase do cartão com uma mudança de linha', (d) => { d.categorias.push({ slug: 'velas', nome: 'Velas', resumo: 'a\nb' }); }, 'avisa', 'categoria:velas:resumo:controlo'],
+    ['«peças de tecido» que não é sim nem não', (d) => { d.categorias.push({ slug: 'velas', nome: 'Velas', tecido: 'sim' }); }, 'avisa', 'categoria:velas:tecido'],
   ];
   for (const [descr, mudar, classe, chave, efeito, lembrete] of CASOS) {
     const lista = problemasCom(mudar);
@@ -314,6 +324,10 @@ secao('cada regra, com a classe certa');
     ['sem email (é opcional)', def((x) => { delete x.contactos.email; })],
     ['sem passos', def((x) => { delete x.passos; })],
     ['sem «O que nos importa»', def((x) => { delete x.importa; })],
+    ['uma categoria nova, do painel (só o nome)', (d) => { d.categorias.push({ slug: 'velas', nome: 'Velas' }); }],
+    ['uma categoria nova com tudo', (d) => { d.categorias.push({ slug: 'velas-e-aromas', nome: 'Velas e aromas', curto: 'Velas', resumo: 'Velas feitas à mão.', tecido: false }); }],
+    ['um artigo numa categoria nova', (d) => { d.categorias.push({ slug: 'velas', nome: 'Velas' }); d.artigos['vela-nova'] = { nome: 'Vela nova', fotos: [PRIMEIRA_C], resumo: 'Uma vela.', texto: 'Uma vela.', categoria: 'velas', publicado: true, destaque: false, ordem: 500 }; }],
+    ['as categorias por outra ordem', (d) => { d.categorias.reverse(); }],
     ['um artigo novo, do painel', (d) => { d.artigos['caneca-nova'] = { nome: 'Caneca nova', fotos: [PRIMEIRA_C], resumo: 'Uma caneca.', texto: 'Uma caneca.', categoria: HOJE.artigos[C].categoria, publicado: true, destaque: false, ordem: 500 }; }],
   ];
   for (const [descr, mudar] of SIM) {

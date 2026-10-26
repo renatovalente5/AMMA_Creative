@@ -19,7 +19,7 @@ import { join, dirname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 /* As ocasiões vêm das regras do conteúdo, que o painel e a guarda do CI também
    usam: uma lista só (ver .github/regras.mjs). */
-import { OCASIOES } from '../.github/regras.mjs';
+import { OCASIOES, eDeTecido } from '../.github/regras.mjs';
 /* AS PEÇAS LEGAIS COMUNS aos sites dos clientes (legal-comum, instalada em
    legal-comum/ por `node _ferramentas/legal-comum/instalar.mjs <repo>`; a
    versão está em .legal-comum.json). O Livro de Reclamações (discreto), os
@@ -200,8 +200,8 @@ const nomeCat = (slug) => catDe(slug)?.nome ?? slug;
 const contaCat = (slug) => produtos.filter((p) => p.categoria === slug).length;
 
 /* CATEGORIAS QUE AINDA NÃO TÊM ARTIGOS NÃO APARECEM AO VISITANTE.
-   Existe por causa de uma armadilha real: a cliente pode criar uma categoria em
-   «Textos das categorias» antes de lhe pôr artigos, e sem isto ela aparecia no
+   Existe por causa de uma armadilha real: a cliente pode criar uma categoria
+   (hoje no ecrã «Categorias» do painel) antes de lhe pôr artigos, e sem isto ela aparecia no
    rodapé, na prateleira da página inicial, nos filtros e no sitemap — uma secção
    vazia, e um endereço vazio dado ao Google.
 
@@ -702,7 +702,7 @@ function cartaoCategoria(c, prioridade = false) {
     <span class="cat__n">${n} ${n === 1 ? 'artigo' : 'artigos'}</span>
     <div class="cat__corpo">
       <h3 class="cat__nome">${esc(c.nome)}</h3>
-      <p class="cat__resumo">${esc(c.resumo)}</p>
+      ${c.resumo ? `<p class="cat__resumo">${esc(c.resumo)}</p>` : ''}
     </div>
   </a>`;
 }
@@ -1504,7 +1504,7 @@ function avisosLegais() {
   const incompletos = [];
   for (const p of produtos) {
     const categoria = Array.isArray(p.perigos) && p.perigos.some((x) => typeof x === 'string' && x.trim()) ? 'mistura-clp'
-      : ['textil', 'bodies'].includes(p.categoria) ? 'textil' : 'geral';
+      : eDeTecido(catDe(p.categoria)) ? 'textil' : 'geral';
     /* `aVenda` só com preço: o site é uma montra, e «Sob consulta» é uma
        escolha da loja (o preço combina-se na conversa), não uma falha da ficha. */
     const r = verificarProduto({

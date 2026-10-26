@@ -48,7 +48,7 @@ export function lerDados(raiz) {
     mensagem: `${rel} não é um ficheiro normal (é uma pasta ou uma ligação): o site não se consegue gerar assim. Só o Renato o pode corrigir.`,
   });
   const dados = { artigos: Object.create(null), definicoes: null, categorias: null };
-  for (const [chave, rel, ecra] of [['definicoes', FICHEIROS.definicoes, 'Dados da loja'], ['categorias', FICHEIROS.categorias, 'Artigos']]) {
+  for (const [chave, rel, ecra] of [['definicoes', FICHEIROS.definicoes, 'Dados da loja'], ['categorias', FICHEIROS.categorias, 'Categorias']]) {
     let st = null;
     try { st = lstatSync(join(raiz, rel)); } catch { st = null; }
     if (st && !st.isFile()) pararNoFicheiro(rel, ecra);
