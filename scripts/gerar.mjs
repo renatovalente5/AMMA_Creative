@@ -459,7 +459,7 @@ function pagina({ pag = '', titulo, descricao, corpo, jsonld = [], og, classe = 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(titulo)}</title>
-<meta name="description" content="${esc(descricao)}">
+<meta name="description" content="${esc(cortarDescricao(descricao))}">
 <link rel="canonical" href="${canonico}">
 ${naoIndexar ? '<meta name="robots" content="noindex, nofollow">\n' : (foraDoGoogle ? '<meta name="robots" content="noindex, follow">\n' : '')}<meta name="theme-color" content="#602601">
 <meta name="author" content="${esc(def.empresa.nome_comercial)}">
@@ -706,6 +706,17 @@ function cartaoCategoria(c, prioridade = false) {
     </div>
   </a>`;
 }
+
+/* A DESCRIÇÃO PARA O GOOGLE: o Google corta-a a ~160 caracteres no meio de uma
+   palavra. A das fichas nasce da frase curta que a dona escreve, por isso não
+   tem tamanho fixo (26 out 2026: quatro passavam dos 165). Corta-se na última
+   palavra inteira antes dos 158, com «…». */
+const cortarDescricao = (t) => {
+  const s = String(t ?? '').replace(/\s+/g, ' ').trim();
+  if (s.length <= 160) return s;
+  const c = s.slice(0, 158);
+  return `${c.slice(0, Math.max(c.lastIndexOf(' '), 100)).replace(/[\s,;:.—–-]+$/, '')}…`;
+};
 
 /* ================================================================ páginas === */
 function paginaInicial() {
