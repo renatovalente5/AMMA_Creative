@@ -747,7 +747,7 @@ export function problemasDasDefinicoes(d) {
     textoSimples(p.texto, `perguntas.${i}.texto`, 'perguntas', `perguntas.${i}.texto`, `Resposta ${i + 1}`, TAMANHOS.perguntaTexto, { vazio: 'avisa', porque: 'uma pergunta sem resposta não aparece no site.', linha: false });
     if (eurosDosPortes.size && /portes|envio/i.test(`${p.titulo ?? ''} ${p.texto ?? ''}`)) {
       const outro = [...eurosDe(p.texto)].find((v) => !eurosDosPortes.has(v));
-      if (outro) avisa(`perguntas.${i}.texto:portes`, 'perguntas', `perguntas.${i}.texto`, `A resposta ${i + 1} fala de ${outro}€ e a «Frase dos portes» de ${[...eurosDosPortes].join(' e ')}€: ponha as duas a dizer o mesmo.`);
+      if (outro) avisa(`perguntas.${i}.texto:portes`, 'perguntas', `perguntas.${i}.texto`, `A pergunta «${String(p.titulo ?? '').trim() || i + 1}» (Como encomendar) fala de ${outro}€ e a «Frase dos portes» (Fichas e rodapé) de ${[...eurosDosPortes].join(' e ')}€: ponha as duas a dizer o mesmo.`, { portes: true });
     }
   });
 
