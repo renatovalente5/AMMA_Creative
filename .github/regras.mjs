@@ -153,8 +153,51 @@ export const NOMES_CAMPOS = {
    meio. `passos` e `importa` são opcionais (sem elas a secção não aparece). */
 export const SECCOES_DEFINICOES = {
   empresa: 'Dados legais', contactos: 'Contactos', local: 'Morada da sede', textos: 'Textos do site',
-  passos: 'Como encomendar', importa: '«O que nos importa»',
+  passos: 'Os passos', importa: '«O que nos importa»', perguntas: 'As perguntas', inicio: 'As fotografias da página inicial',
 };
+/* AS PARTES DE «DADOS DA LOJA», PELA PÁGINA DO SITE ONDE O TEXTO APARECE (26
+   out 2026: a dona chegava com uma captura de uma página — «como altero
+   isto?» — e os textos estavam arrumados pela secção do ficheiro). Cada
+   problema leva ao ecrã da parte do campo dele (parteDaLoja). */
+export const PARTES_DA_LOJA = {
+  inicio: 'Página inicial', sobre: 'Sobre nós', encomendar: 'Como encomendar', contactos: 'Contactos',
+  fichas: 'Fichas e rodapé', morada: 'Morada da sede', empresa: 'Dados legais',
+};
+/** O campo do definicoes.json («textos.hero_titulo», «passos.2.texto») → a parte dele, ou null. */
+export function parteDaLoja(campo) {
+  const [s, k = ''] = String(campo ?? '').split('.');
+  if (s === 'textos') {
+    if (/^(sobre_titulo|sobre_texto)$/.test(k)) return 'sobre';
+    if (/^(encomendar_|perguntas_|prazo$)/.test(k)) return 'encomendar';
+    if (/^contactos_/.test(k)) return 'contactos';
+    if (/^(portes|ficha_|reclamo)/.test(k)) return 'fichas';
+    return 'inicio';
+  }
+  return { contactos: 'contactos', inicio: 'inicio', importa: 'sobre', passos: 'encomendar', perguntas: 'encomendar', local: 'morada', empresa: 'empresa' }[s] ?? null;
+}
+/* OS TEXTOS DAS PÁGINAS (26 out 2026: estavam escritos no gerador, e a dona
+   não lhes chegava). Todos opcionais: vazio, a linha ou o parágrafo não
+   aparece. [chave, rótulo, tamanho, uma linha?] */
+export const TEXTOS_DAS_PAGINAS = [
+  ['inicio_categorias_linha', 'Categorias › linha por cima', 'linhaPequena', true],
+  ['inicio_categorias_titulo', 'Categorias › título', 'tituloSecao', true],
+  ['inicio_destaques_linha', 'Os mais pedidos › linha por cima', 'linhaPequena', true],
+  ['inicio_destaques_titulo', 'Os mais pedidos › título', 'tituloSecao', true],
+  ['inicio_quem_linha', '«Quem somos» › linha por cima', 'linhaPequena', true],
+  ['encomendar_linha', 'Topo › linha por cima', 'linhaPequena', true],
+  ['encomendar_titulo', 'Topo › título', 'tituloSecao', true],
+  ['encomendar_texto', 'Topo › texto', 'textoSecao', false],
+  ['perguntas_linha', 'Perguntas › linha por cima', 'linhaPequena', true],
+  ['perguntas_titulo', 'Perguntas › título', 'tituloSecao', true],
+  ['encomendar_fim_linha', 'Fim da página › linha por cima', 'linhaPequena', true],
+  ['encomendar_fim_titulo', 'Fim da página › título', 'tituloSecao', true],
+  ['encomendar_fim_texto', 'Fim da página › texto', 'textoSecao', false],
+  ['encomendar_fim_nota', 'Fim da página › nota', 'textoSecao', false],
+  ['contactos_linha', 'Página Contactos › linha por cima', 'linhaPequena', true],
+  ['contactos_texto', 'Página Contactos › texto', 'textoSecao', false],
+  ['contactos_whatsapp', 'Página Contactos › frase do WhatsApp', 'textoSecao', false],
+  ['contactos_instagram', 'Página Contactos › frase do Instagram', 'textoSecao', false],
+];
 /* O que o painel nunca muda: `tecnico` (o endereço do site, que nenhum ecrã
    mostra). O Worker do painel recusa uma gravação do definicoes.json que o
    mude — ver mudancasBloqueadas(). Preserva-se e não se valida. */
@@ -197,6 +240,8 @@ export const TAMANHOS = {
   passoTitulo: 60, passoTexto: 300, passos: 6,
   importaLinha: 60, importaTitulo: 120, importaItemTitulo: 60, importaItemTexto: 300, importaItens: 6,
   categoriaNome: 60, categoriaCurto: 30, categoriaResumo: 200,
+  linhaPequena: 60, tituloSecao: 120, textoSecao: 600,
+  perguntaTitulo: 150, perguntaTexto: 1500, perguntas: 20, fotosQuemSomos: 4,
 };
 /* O que o Worker do painel aceita gravar (recusa acima); aqui só se lembra, a
    partir de 80 %. */
@@ -563,9 +608,10 @@ export function problemasDoArtigo(a, ctx = {}) {
 export function problemasDasDefinicoes(d) {
   const ficheiro = FICHEIROS.definicoes;
   const out = [];
-  const ecraDe = (seccao) => `Dados da loja › ${SECCOES_DEFINICOES[seccao]}`;
-  const bloqueia = (chave, seccao, campo, mensagem) => out.push({ classe: 'bloqueia', chave: `definicoes:${chave}`, ficheiro, ecra: seccao ? ecraDe(seccao) : 'Dados da loja', campo, mensagem });
-  const avisa = (chave, seccao, campo, mensagem, extra = {}) => out.push({ classe: 'avisa', chave: `definicoes:${chave}`, ficheiro, ecra: seccao ? ecraDe(seccao) : 'Dados da loja', campo, mensagem, ...extra });
+  /* O ecrã é o da parte do CAMPO (parteDaLoja), que é a página do site onde se vê. */
+  const ecraDe = (campo) => { const p = parteDaLoja(campo); return p ? `Dados da loja › ${PARTES_DA_LOJA[p]}` : 'Dados da loja'; };
+  const bloqueia = (chave, seccao, campo, mensagem) => out.push({ classe: 'bloqueia', chave: `definicoes:${chave}`, ficheiro, ecra: ecraDe(campo ?? seccao), campo, mensagem });
+  const avisa = (chave, seccao, campo, mensagem, extra = {}) => out.push({ classe: 'avisa', chave: `definicoes:${chave}`, ficheiro, ecra: ecraDe(campo ?? seccao), campo, mensagem, ...extra });
   if (!eObjecto(d)) { bloqueia('forma', null, undefined, 'Os dados da loja não têm a forma certa. Só o Renato os pode corrigir.'); return out; }
 
   /* As secções que o gerador lê sem perguntar. */
@@ -659,13 +705,15 @@ export function problemasDasDefinicoes(d) {
     textoSimples(t.sobre_texto, 'textos.sobre_texto', 'textos', 'textos.sobre_texto', 'Texto do «Sobre nós»', TAMANHOS.sobreTexto, { vazio: 'bloqueia', porque: 'é o texto da página «Sobre nós»', linha: false });
     textoSimples(t.portes, 'textos.portes', 'textos', 'textos.portes', 'Frase dos portes', TAMANHOS.portes, { vazio: 'bloqueia', porque: 'aparece em todas as fichas de artigo' });
     textoSimples(t.prazo, 'textos.prazo', 'textos', 'textos.prazo', 'Prazo de produção', TAMANHOS.prazo, { vazio: 'avisa', porque: 'numa venda à distância o prazo é informação obrigatória.' });
+    for (const [k, rotulo, tam, linha] of TEXTOS_DAS_PAGINAS) textoSimples(t[k], `textos.${k}`, 'textos', `textos.${k}`, rotulo, TAMANHOS[tam], { linha });
   }
 
   // --- listas: os passos e «O que nos importa» ---------------------------------
   const lista = (valor, seccao, max, item) => {
     if (ausente(valor)) return;
-    if (!Array.isArray(valor)) { avisa(`${seccao}:forma`, seccao, seccao, `«${SECCOES_DEFINICOES[seccao]}» tem de ser uma lista: escreva os pontos outra vez.`); return; }
-    if (valor.length > max) avisa(`${seccao}:quantos`, seccao, seccao, `«${SECCOES_DEFINICOES[seccao]}» tem ${valor.length} pontos; o máximo é ${max}.`);
+    const nome = `«${SECCOES_DEFINICOES[seccao]}» (${PARTES_DA_LOJA[parteDaLoja(seccao)]})`;
+    if (!Array.isArray(valor)) { avisa(`${seccao}:forma`, seccao, seccao, `A lista ${nome} não está gravada como uma lista: escreva-a outra vez.`); return; }
+    if (valor.length > max) avisa(`${seccao}:quantos`, seccao, seccao, `A lista ${nome} tem ${valor.length}; o máximo é ${max}.`);
     valor.forEach((x, i) => item(x, i));
   };
   lista(d.passos, 'passos', TAMANHOS.passos, (p, i) => {
@@ -684,6 +732,41 @@ export function problemasDasDefinicoes(d) {
         textoSimples(p.titulo, `importa.itens.${i}.titulo`, 'importa', `importa.itens.${i}.titulo`, `Título do ponto ${i + 1}`, TAMANHOS.importaItemTitulo, { vazio: 'avisa', porque: 'um ponto sem título não aparece no site.' });
         textoSimples(p.texto, `importa.itens.${i}.texto`, 'importa', `importa.itens.${i}.texto`, `Explicação do ponto ${i + 1}`, TAMANHOS.importaItemTexto, { linha: false });
       });
+    }
+  }
+
+  // --- as perguntas do «Como encomendar» -----------------------------------------
+  /* Uma pergunta sem resposta não aparece (nem no Google). Os PORTES: a
+     resposta que fala deles com um valor em euros que a «Frase dos portes»
+     não tem diz um preço que o site não cumpre noutro sítio — avisa. */
+  const eurosDe = (s) => new Set([...String(s ?? '').matchAll(/(\d+(?:[.,]\d+)?)\s*(?:€|euros?)/gi)].map((m) => m[1].replace(',', '.').replace(/\.0+$/, '')));
+  const eurosDosPortes = eurosDe(eObjecto(t) ? t.portes : '');
+  lista(d.perguntas, 'perguntas', TAMANHOS.perguntas, (p, i) => {
+    if (!eObjecto(p)) { avisa(`perguntas.${i}:forma`, 'perguntas', 'perguntas', `A pergunta ${i + 1} não tem a forma de uma pergunta.`); return; }
+    textoSimples(p.titulo, `perguntas.${i}.titulo`, 'perguntas', `perguntas.${i}.titulo`, `Pergunta ${i + 1}`, TAMANHOS.perguntaTitulo, { vazio: 'avisa', porque: 'uma pergunta sem texto não aparece no site.' });
+    textoSimples(p.texto, `perguntas.${i}.texto`, 'perguntas', `perguntas.${i}.texto`, `Resposta ${i + 1}`, TAMANHOS.perguntaTexto, { vazio: 'avisa', porque: 'uma pergunta sem resposta não aparece no site.', linha: false });
+    if (eurosDosPortes.size && /portes|envio/i.test(`${p.titulo ?? ''} ${p.texto ?? ''}`)) {
+      const outro = [...eurosDe(p.texto)].find((v) => !eurosDosPortes.has(v));
+      if (outro) avisa(`perguntas.${i}.texto:portes`, 'perguntas', `perguntas.${i}.texto`, `A resposta ${i + 1} fala de ${outro}€ e a «Frase dos portes» de ${[...eurosDosPortes].join(' e ')}€: ponha as duas a dizer o mesmo.`);
+    }
+  });
+
+  // --- as fotografias da página inicial ---------------------------------------
+  /* Caminhos de fotografias da biblioteca. Uma que já lá não está não parte o
+     site: o gerador usa a de sempre (a capa de um artigo em destaque). */
+  const ini = d.inicio;
+  if (!ausente(ini)) {
+    if (!eObjecto(ini)) avisa('inicio:forma', 'inicio', 'inicio', 'As fotografias da página inicial não têm a forma certa: escolha-as outra vez.');
+    else {
+      const foto = (v, campo, rotulo) => { if (!ausente(v) && !(typeof v === 'string' && v.startsWith('assets/'))) avisa(`${campo}:forma`, 'inicio', campo, `«${rotulo}» não é uma fotografia do site: escolha-a outra vez.`); };
+      foto(ini.foto, 'inicio.foto', 'Fotografia do topo');
+      if (!ausente(ini.fotos)) {
+        if (!Array.isArray(ini.fotos)) avisa('inicio.fotos:forma', 'inicio', 'inicio.fotos', 'As fotografias do «Quem somos» têm de ser uma lista: escolha-as outra vez.');
+        else {
+          if (ini.fotos.length > TAMANHOS.fotosQuemSomos) avisa('inicio.fotos:quantos', 'inicio', 'inicio.fotos', `O «Quem somos» tem ${ini.fotos.length} fotografias; o máximo é ${TAMANHOS.fotosQuemSomos}.`);
+          ini.fotos.forEach((v, i) => foto(v, `inicio.fotos.${i}`, `Fotografia ${i + 1} do «Quem somos»`));
+        }
+      }
     }
   }
   return out;

@@ -29,7 +29,34 @@
     "portes": "Portes grátis acima de 60€",
     "ficha_previa": "Pré-visualização antes de produzir",
     "ficha_feito": "Cada detalhe exclusivo",
-    "prazo": "Os nossos artigos demoram entre 2 e 3 dias úteis a produzir."
+    "prazo": "Os nossos artigos demoram entre 2 e 3 dias úteis a produzir.",
+    "inicio_categorias_linha": "O que fazemos",
+    "inicio_categorias_titulo": "Escolha por onde começar",
+    "inicio_destaques_linha": "Os mais pedidos",
+    "inicio_destaques_titulo": "O que mais sai por aqui",
+    "inicio_quem_linha": "Quem somos",
+    "encomendar_linha": "Sem carrinho",
+    "encomendar_titulo": "Como se encomenda",
+    "encomendar_texto": "Este site é a nossa montra. Cada peça é feita por medida — a frase, o nome, o tamanho, a cor — e isso combina-se a falar, não a clicar. É mais simples do que parece.",
+    "perguntas_linha": "Perguntas de sempre",
+    "perguntas_titulo": "O que nos perguntam mais",
+    "encomendar_fim_linha": "Vamos a isso",
+    "encomendar_fim_titulo": "Diga-nos o que tem em mente",
+    "encomendar_fim_texto": "Uma fotografia, uma frase, ou só uma ideia vaga. Nós ajudamos a chegar ao resto.",
+    "encomendar_fim_nota": "Respondemos por mensagem, normalmente no próprio dia.",
+    "contactos_linha": "Falar connosco",
+    "contactos_texto": "O caminho mais rápido é o WhatsApp ou o Instagram — é por lá que combinamos quase tudo, porque é onde se podem trocar fotografias.",
+    "contactos_whatsapp": "Manda-nos a ideia, uma fotografia, ou só uma pergunta.",
+    "contactos_instagram": "É lá que publicamos o que vai saindo."
+  },
+  "inicio": {
+    "foto": "assets/produtos/box-anuncio-gravidez/01.jpg",
+    "fotos": [
+      "assets/produtos/sweat-mae/01.jpg",
+      "assets/produtos/colares-site-2-pronta.jpg",
+      "assets/produtos/box-convite-padrinhos/01.jpg",
+      "assets/produtos/porta-chaves-foto/01.jpg"
+    ]
   },
   "passos": [
     {
@@ -43,6 +70,32 @@
     {
       "titulo": "Produzimos e enviamos",
       "texto": "Depois de aprovar, produzimos e seguimos com o envio."
+    }
+  ],
+  "perguntas": [
+    {
+      "titulo": "Quanto custa?",
+      "texto": "Está na página de cada artigo: é o preço final, com os impostos incluídos, e o envio é à parte. Se quiser algo além do que lá está descrito, diga-nos e confirmamos o valor antes de avançar."
+    },
+    {
+      "titulo": "Quanto tempo demora?",
+      "texto": "Depende da peça e de estarmos com muitos pedidos — em época de batizados e de Dia da Mãe, estamos. Dizemos-lhe o prazo antes de começar, e cumprimo-lo."
+    },
+    {
+      "titulo": "Posso ver antes de vocês produzirem?",
+      "texto": "Sim, e insistimos nisso. Enviamos uma pré-visualização e só avançamos com o seu «sim». É a forma de ninguém receber uma peça com um nome mal escrito."
+    },
+    {
+      "titulo": "E os portes?",
+      "texto": "Portes grátis acima de 60€. Abaixo disso, dizemos-lhe quanto fica quando combinarmos o pedido. Também pode combinar a entrega em mão."
+    },
+    {
+      "titulo": "Posso devolver?",
+      "texto": "Peças personalizadas não têm direito de livre resolução — é a lei (Decreto-Lei 24/2014, artigo 17.º), porque uma peça feita com o nome de alguém não se pode vender a mais ninguém. O que fazemos, e fazemos sempre, é mostrar-lhe a pré-visualização antes de produzir. Se a peça vier com defeito ou não corresponder ao aprovado, resolvemos sem discussão. Está explicado nos termos e condições."
+    },
+    {
+      "titulo": "Fazem coisas que não estão no site?",
+      "texto": "Fazemos, e é metade do nosso trabalho. A maior parte do que está aqui começou por ser o pedido de alguém."
     }
   ],
   "importa": {

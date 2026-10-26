@@ -128,6 +128,16 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
 /* Um texto opcional dos «Textos do site» (o painel deixa-o vazio, ou nem
    está no ficheiro): '' quando não há, e a linha ou a frase não aparece. */
 const textoOpcional = (k) => (typeof def.textos?.[k] === 'string' ? def.textos[k].trim() : '');
+/* Um texto opcional num elemento: `<p class="sobre-linha">O que fazemos</p>`,
+   ou nada. Os textos das páginas (TEXTOS_DAS_PAGINAS das regras) saíram do
+   gerador para os dados a 26 out 2026. */
+const emTag = (k, tag, atributos = '') => (textoOpcional(k) ? `<${tag}${atributos ? ` ${atributos}` : ''}>${esc(textoOpcional(k))}</${tag}>` : '');
+/* Uma resposta das perguntas: parágrafos separados por uma linha em branco, e
+   «termos e condições» com a ligação para os termos. */
+const paragrafosDe = (t) => String(t ?? '').trim().split(/\n\s*\n/).map((x) => x.replace(/\s*\n\s*/g, ' ').trim()).filter(Boolean);
+const comLigacoes = (t) => esc(t).replace(/termos e condições/gi, (m) => `<a href="${u('termos/')}">${m}</a>`);
+/* O @ do Instagram, do endereço (https://www.instagram.com/_ammacreative → @_ammacreative). */
+const arrobaInstagram = () => { const m = String(def.contactos.instagram ?? '').match(/instagram\.com\/([A-Za-z0-9._]+)/); return m ? `@${m[1]}` : 'Instagram'; };
 
 /* Título com uma parte realçada: `Feito para *uma pessoa* só` sai com «uma
    pessoa» em itálico e na cor de destaque. É a mesma convenção dos asteriscos
@@ -318,22 +328,6 @@ const CSS_LEGAL = livroCss('lr-botao', { cor: '#FAF1E8', fundo: '#602601' });
 const temPreco = (p) => typeof p.preco === 'number' && p.preco > 0;
 const precoTexto = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(2).replace('.', ',')) + '\u00A0€';
 const precoOuConsulta = (p) => (temPreco(p) ? precoTexto(p.preco) : 'Sob consulta');
-/* «QUANTO CUSTA?» SEGUE OS ARTIGOS. Dizia «não pomos preços no site» desde o
-   princípio, e a 21 out 2026 os 34 artigos publicados tinham todos preço (o
-   painel passou a pô-lo): a resposta desmentia a página ao lado. Com algum
-   preço, diz onde está, com o que a ficha diz por baixo dele; sem nenhum, a
-   resposta de sempre. → [o parágrafo da página, a resposta do FAQPage]. */
-function respostaDoPreco() {
-  if (!produtos.some(temPreco)) {
-    return ['Depende do que escolher personalizar, e por isso não pomos preços no site: um número aqui seria um número errado. Diga-nos o que quer e respondemos no mesmo dia, com o valor final e o prazo.',
-      'O preço depende do que escolher personalizar. Diga-nos o que quer e respondemos no mesmo dia, com o valor final e o prazo.'];
-  }
-  const consulta = produtos.some((p) => !temPreco(p))
-    ? ' Nos que dizem «Sob consulta», depende do que escolher personalizar: diga-nos o que quer e respondemos no mesmo dia, com o valor final.' : '';
-  const r = `Está na página de cada artigo: é o preço final, com os impostos incluídos, e o envio é à parte.${consulta} Se quiser algo além do que lá está descrito, diga-nos e confirmamos o valor antes de avançar.`;
-  return [r, r];
-}
-
 /* ---------------------------------------------------------- páginas legais --- */
 const LEGAIS = [
   ['privacidade/', 'Privacidade e cookies'],
@@ -531,7 +525,7 @@ ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j)}</sc
     </ul>
     <div class="menu__pe">
       <a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap}<span>WhatsApp</span></a>
-      <a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta}<span>@_ammacreative</span></a>
+      <a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta}<span>${esc(arrobaInstagram())}</span></a>
     </div>
   </div>
 </dialog>
@@ -566,7 +560,7 @@ ${corpo}
         <h3>Contactos</h3>
         <ul>
           <li class="pe__contacto">${ic.zap}<span><a href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">WhatsApp</a></span></li>
-          <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">@_ammacreative</a></span></li>
+          <li class="pe__contacto">${ic.insta}<span><a href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${esc(arrobaInstagram())}</a></span></li>
           ${/* O EMAIL, EM TEXTO, em todas as páginas: o art. 10.º do DL 7/2004
                 nomeia-o entre os elementos de identificação. Estava nos dados e
                 não aparecia em lado nenhum (auditoria de 21 out 2026). Só quando
@@ -722,8 +716,16 @@ const cortarDescricao = (t) => {
 function paginaInicial() {
   const destaques = produtos.filter((p) => p.destaque).slice(0, 6);
   const lista = destaques.length ? destaques : produtos.slice(0, 6);
-  const heroArtigo = produtos.find((p) => p.slug === 'box-anuncio-gravidez') || produtos[0];
-  const heroFoto = heroArtigo ? fotos(heroArtigo)[0] : undefined;   // sem artigos no site, sem fotografia
+  /* AS FOTOGRAFIAS ESCOLHEM-SE NO PAINEL (definicoes `inicio`, desde 26 out
+     2026; antes, quatro artigos escritos aqui). Uma que já não exista dá
+     lugar à de sempre: a capa do primeiro em destaque. */
+  const ini = def.inicio && typeof def.inicio === 'object' ? def.inicio : {};
+  const fotoDe = (c) => (typeof c === 'string' && c ? fotos({ slug: 'inicio', fotos: [c] })[0] : undefined);
+  const nomeDaFoto = (c) => produtos.find((p) => Array.isArray(p.fotos) && p.fotos.some((f) => String(f).replace(/^\/+/, '') === c))?.nome;
+  const heroArtigo = lista[0];
+  const heroFoto = fotoDe(ini.foto) ?? (heroArtigo ? fotos(heroArtigo)[0] : undefined);   // sem artigos no site, sem fotografia
+  const heroAlt = (fotoDe(ini.foto) ? nomeDaFoto(ini.foto) : heroArtigo?.nome) ?? def.empresa.nome_comercial;
+  const quemFotos = (Array.isArray(ini.fotos) ? ini.fotos : []).map((c) => [fotoDe(c), nomeDaFoto(c) ?? def.empresa.nome_comercial]).filter(([f]) => f).slice(0, 4);
 
   const corpo = `
 <section class="hero">
@@ -739,7 +741,7 @@ function paginaInicial() {
     </div>
     <figure class="hero__figura" style="margin:0">
       ${heroFoto ? `<img src="${heroFoto.src}" srcset="${heroFoto.srcset}"
-        sizes="(max-width: 900px) 92vw, 560px" alt="Box de anúncio de gravidez personalizada da AMMA Creative"
+        sizes="(max-width: 900px) 92vw, 560px" alt="${esc(heroAlt)}"
         width="1600" height="1600" fetchpriority="high" decoding="async">` : ''}
       <span class="hero__selo">${ic.caixa}${esc(def.textos.portes)}</span>
     </figure>
@@ -750,8 +752,8 @@ function paginaInicial() {
   <div class="envolve">
     <div class="secao__topo">
       <div>
-        <p class="sobre-linha">O que fazemos</p>
-        <h2 class="tit-g">Escolha por onde começar</h2>
+        ${emTag('inicio_categorias_linha', 'p', 'class="sobre-linha"')}
+        ${emTag('inicio_categorias_titulo', 'h2', 'class="tit-g"')}
       </div>
       <a class="btn btn--fantasma" href="${u('catalogo/')}">Ver tudo ${ic.seta}</a>
     </div>
@@ -765,8 +767,8 @@ function paginaInicial() {
   <div class="envolve">
     <div class="secao__topo">
       <div>
-        <p class="sobre-linha">Os mais pedidos</p>
-        <h2 class="tit-g">O que mais sai por aqui</h2>
+        ${emTag('inicio_destaques_linha', 'p', 'class="sobre-linha"')}
+        ${emTag('inicio_destaques_titulo', 'h2', 'class="tit-g"')}
       </div>
       <a class="btn btn--fantasma" href="${u('catalogo/')}">Ver o catálogo ${ic.seta}</a>
     </div>
@@ -780,21 +782,17 @@ function paginaInicial() {
   <div class="envolve">
     <div class="editorial">
       <div class="editorial__texto">
-        <p class="sobre-linha">Quem somos</p>
+        ${emTag('inicio_quem_linha', 'p', 'class="sobre-linha"')}
         <h2 class="tit-g" style="margin-bottom:1rem">${esc(def.textos.sobre_titulo)}</h2>
         ${textoOpcional('sobre_chamada') ? `<p class="chamada">${esc(textoOpcional('sobre_chamada'))}</p>` : ''}
         <div class="hero__acoes">
           <a class="btn btn--linha" href="${u('sobre/')}">Conhecer-nos ${ic.seta}</a>
         </div>
       </div>
-      <div class="editorial__figuras">
-        ${['sweat-mae', 'colar-inicial', 'box-convite-padrinhos', 'porta-chaves-foto']
-          .map((s) => produtos.find((p) => p.slug === s)).filter(Boolean)
-          .map((p) => { const f = fotos(p)[0]; return f
-            ? `<div><img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
-                alt="${esc(p.nome)}" width="960" height="960" loading="lazy" decoding="async"></div>` : ''; })
-          .join('\n        ')}
-      </div>
+      ${quemFotos.length ? `<div class="editorial__figuras">
+        ${quemFotos.map(([f, nome]) => `<div><img src="${f.cartao}" srcset="${f.cartaoSet}" sizes="(max-width: 620px) 92vw, 300px"
+                alt="${esc(nome)}" width="960" height="960" loading="lazy" decoding="async"></div>`).join('\n        ')}
+      </div>` : ''}
     </div>
   </div>
 </section>
@@ -1132,72 +1130,49 @@ ${relacionados.length ? `<section class="secao secao--creme">
   });
 }
 
+/* As perguntas do «Como encomendar», da lista do painel (desde 26 out 2026):
+   sem pergunta ou sem resposta, não aparece — nem na página nem no Google. */
+const perguntasDoSite = () => (Array.isArray(def.perguntas) ? def.perguntas : [])
+  .filter((p) => p && typeof p.titulo === 'string' && p.titulo.trim() && paragrafosDe(p.texto).length);
+
 function paginaComoEncomendar() {
+  const perguntas = perguntasDoSite();
   const corpo = `
 <section class="secao" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
   <div class="envolve">
     ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Como encomendar' }])}
     <div style="max-width:68ch">
-      <p class="sobre-linha">Sem carrinho</p>
-      <h1 class="tit-g" style="margin-bottom:1rem">Como se encomenda</h1>
-      <p class="chamada">Este site é a nossa montra. Cada peça é
-      feita por medida — a frase, o nome, o tamanho, a cor — e isso combina-se a
-      falar, não a clicar. É mais simples do que parece.</p>
+      ${emTag('encomendar_linha', 'p', 'class="sobre-linha"')}
+      <h1 class="tit-g" style="margin-bottom:1rem">${esc(textoOpcional('encomendar_titulo') || 'Como encomendar')}</h1>
+      ${paragrafosDe(textoOpcional('encomendar_texto')).map((t) => `<p class="chamada">${esc(t)}</p>`).join('\n      ')}
     </div>
     <div style="margin-top:clamp(2.5rem,5vw,4rem)">
       ${passosEncomenda()}
     </div>
   </div>
 </section>
-
+${perguntas.length ? `
 <section class="secao secao--creme">
   <div class="envolve envolve--estreito">
-    <p class="sobre-linha">Perguntas de sempre</p>
-    <h2 class="tit-m" style="margin-bottom:1.6rem">O que nos perguntam mais</h2>
+    ${emTag('perguntas_linha', 'p', 'class="sobre-linha"')}
+    ${emTag('perguntas_titulo', 'h2', 'class="tit-m" style="margin-bottom:1.6rem"')}
     <div class="texto">
-      <h3>Quanto custa?</h3>
-      <p>${esc(respostaDoPreco()[0])}</p>
-
-      <h3>Quanto tempo demora?</h3>
-      <p>Depende da peça e de estarmos com muitos pedidos — em época de batizados e
-      de Dia da Mãe, estamos. Dizemos-lhe o prazo antes de começar, e cumprimo-lo.</p>
-
-      <h3>Posso ver antes de vocês produzirem?</h3>
-      <p>Sim, e insistimos nisso. Enviamos uma pré-visualização e só avançamos com o
-      seu «sim». É a forma de ninguém receber uma peça com um nome mal escrito.</p>
-
-      <h3>E os portes?</h3>
-      <p>${esc(def.textos.portes)}. Abaixo disso, dizemos-lhe quanto fica quando
-      combinarmos o pedido. Também pode combinar a entrega em mão.</p>
-
-      <h3>Posso devolver?</h3>
-      <p>Peças personalizadas não têm direito de livre resolução — é a lei
-      (Decreto-Lei 24/2014, artigo 17.º), porque uma peça feita com o nome de
-      alguém não se pode vender a mais ninguém. O que fazemos, e fazemos sempre, é
-      mostrar-lhe a pré-visualização antes de produzir. Se a peça vier com defeito
-      ou não corresponder ao aprovado, resolvemos sem discussão. Está explicado nos
-      <a href="${u('termos/')}">termos e condições</a>.</p>
-
-      <h3>Fazem coisas que não estão no site?</h3>
-      <p>Fazemos, e é metade do nosso trabalho. A maior parte do que está aqui
-      começou por ser o pedido de alguém.</p>
+      ${perguntas.map((p) => `<h3>${esc(p.titulo.trim())}</h3>
+      ${paragrafosDe(p.texto).map((t) => `<p>${comLigacoes(t)}</p>`).join('\n      ')}`).join('\n\n      ')}
     </div>
   </div>
-</section>
+</section>` : ''}
 
 <section class="secao secao--escura">
   <div class="envolve" style="text-align:center">
-    <p class="sobre-linha sobre-linha--claro sobre-linha--centro">Vamos a isso</p>
-    <h2 class="tit-g" style="margin-bottom:1rem">Diga-nos o que tem em mente</h2>
-    <p class="chamada" style="margin-inline:auto">Uma fotografia, uma frase, ou só uma ideia
-    vaga. Nós ajudamos a chegar ao resto.</p>
+    ${emTag('encomendar_fim_linha', 'p', 'class="sobre-linha sobre-linha--claro sobre-linha--centro"')}
+    ${emTag('encomendar_fim_titulo', 'h2', 'class="tit-g" style="margin-bottom:1rem"')}
+    ${emTag('encomendar_fim_texto', 'p', 'class="chamada" style="margin-inline:auto"')}
     <div style="margin-top:1.8rem;display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
       <a class="btn btn--claro" href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap} WhatsApp</a>
       <a class="btn btn--claro" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Instagram</a>
     </div>
-    <p style="margin-top:1.2rem;font-size:.86rem;color:rgba(250,241,232,.7)">
-      Respondemos por mensagem, normalmente no próprio dia.
-    </p>
+    ${emTag('encomendar_fim_nota', 'p', 'style="margin-top:1.2rem;font-size:.86rem;color:rgba(250,241,232,.7)"')}
   </div>
 </section>`;
 
@@ -1208,19 +1183,13 @@ function paginaComoEncomendar() {
     corpo,
     jsonld: [
       migalhasLD([{ nome: 'Início', href: '' }, { nome: 'Como encomendar' }]),
-      {
+      ...(perguntas.length ? [{
         '@context': 'https://schema.org', '@type': 'FAQPage',
-        mainEntity: [
-          ['Quanto custa?', respostaDoPreco()[1]],
-          ['Quanto tempo demora?', 'Depende da peça e da época. Dizemos o prazo antes de começar.'],
-          ['Posso ver antes de produzirem?', 'Sim. Enviamos uma pré-visualização e só avançamos com a sua aprovação.'],
-          ['E os portes?', `${def.textos.portes}. Abaixo disso indicamos o valor ao combinar o pedido.`],
-          ['Posso devolver?', 'Peças personalizadas não têm direito de livre resolução, nos termos do artigo 17.º do Decreto-Lei 24/2014. Se a peça vier com defeito ou não corresponder ao aprovado, resolvemos.'],
-        ].map(([q, a]) => ({
-          '@type': 'Question', name: q,
-          acceptedAnswer: { '@type': 'Answer', text: a },
+        mainEntity: perguntas.map((p) => ({
+          '@type': 'Question', name: p.titulo.trim(),
+          acceptedAnswer: { '@type': 'Answer', text: paragrafosDe(p.texto).join(' ') },
         })),
-      },
+      }] : []),
     ],
   });
 }
@@ -1283,10 +1252,9 @@ function paginaContactos() {
   <div class="envolve">
     ${migalhas([{ nome: 'Início', href: '' }, { nome: 'Contactos' }])}
     <div style="max-width:60ch;margin-bottom:clamp(2rem,4vw,3rem)">
-      <p class="sobre-linha">Falar connosco</p>
+      ${emTag('contactos_linha', 'p', 'class="sobre-linha"')}
       <h1 class="tit-g" style="margin-bottom:1rem">Contactos</h1>
-      <p class="chamada">O caminho mais rápido é o WhatsApp ou o Instagram — é por lá
-      que combinamos quase tudo, porque é onde se podem trocar fotografias.</p>
+      ${emTag('contactos_texto', 'p', 'class="chamada"')}
     </div>
 
     <div class="editorial" style="grid-template-columns:1fr">
@@ -1294,7 +1262,7 @@ function paginaContactos() {
         <div class="painel" style="position:static">
           <span class="painel__cat">Mensagem</span>
           <h2 class="tit-m" style="margin:.4rem 0 .8rem">WhatsApp</h2>
-          <p class="painel__resumo">Manda-nos a ideia, uma fotografia, ou só uma pergunta.</p>
+          ${emTag('contactos_whatsapp', 'p', 'class="painel__resumo"')}
           <div class="painel__acoes">
             <a class="btn btn--cheio" href="https://wa.me/${def.contactos.whatsapp}" target="_blank" rel="noopener">${ic.zap} Abrir conversa</a>
           </div>
@@ -1302,7 +1270,7 @@ function paginaContactos() {
         <div class="painel" style="position:static">
           <span class="painel__cat">Redes</span>
           <h2 class="tit-m" style="margin:.4rem 0 .8rem">Instagram</h2>
-          <p class="painel__resumo">É lá que publicamos o que vai saindo. @_ammacreative</p>
+          <p class="painel__resumo">${textoOpcional('contactos_instagram') ? `${esc(textoOpcional('contactos_instagram'))} ` : ''}${esc(arrobaInstagram())}</p>
           <div class="painel__acoes">
             <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Ver o Instagram</a>
           </div>
