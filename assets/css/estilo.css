@@ -559,7 +559,11 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 .ficha-prod { padding-block: clamp(1.5rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5rem); }
 .ficha-prod__grelha {
   display: grid; gap: clamp(1.8rem, 4vw, 3.5rem);
-  grid-template-columns: 1fr;
+  /* minmax(0, …) e não 1fr: um 1fr não encolhe abaixo do conteúdo mais largo,
+     e a fila das miniaturas (14 no Body anúncio de gravidez) esticava a
+     coluna — e a página — para 1234 px num telemóvel de 390 (26 out 2026).
+     Assim a fila rola dentro dela, como devia. */
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
 }
 @media (min-width: 940px) {
@@ -567,6 +571,7 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 }
 
 /* ---- galeria ---- */
+.galeria { min-width: 0; }
 .galeria__principal {
   position: relative; background: var(--creme-fundo);
   border-radius: var(--raio-g); overflow: clip; aspect-ratio: 1;
@@ -779,7 +784,7 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
 
 /* ---------------------------------------------------------- migalhas ------- */
 .migalhas { font-size: .84rem; color: var(--tinta-2); margin-bottom: 1.3rem; display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
-.migalhas a { text-decoration: none; }
+.migalhas a { text-decoration: none; display: inline-flex; align-items: center; min-height: 28px; }
 .migalhas a:hover { color: var(--cacau); text-decoration: underline; }
 .migalhas svg { width: 13px; height: 13px; color: var(--tinta-3); }
 
