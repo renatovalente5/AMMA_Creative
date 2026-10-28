@@ -302,9 +302,11 @@ const MORADA_COMPLETA = [def.local.morada, `${def.local.codigo_postal} ${def.loc
    de texto igual às outras do rodapé (auditoria, A3). Passa a ter o ícone do
    livro à frente, que é o que o destaca — com a mesma letra, o mesmo tamanho
    e a mesma cor das ligações vizinhas (nunca mais pequeno nem mais esbatido),
-   SEM caixa nem fundo: o Renato não quer um botão (22 out 2026). No rodapé de
-   todas as páginas e na página de contactos. Entre marcadores, para a
-   sincronização da biblioteca os encontrar. */
+   SEM caixa nem fundo: o Renato não quer um botão (22 out 2026). Só no rodapé
+   de todas as páginas: o Renato não o quer também na página de contactos
+   (27 out 2026); a lei pede-o na página de entrada, e o rodapé da página
+   inicial cumpre isso. Entre marcadores, para a sincronização da biblioteca
+   os encontrar. */
 const livroMarcado = (opcoes) => `<!-- legal-comum:livro v${LEGAL_VERSAO} -->${livroReclamacoes(opcoes)}<!-- /legal-comum:livro -->`;
 /* O CSS vai dentro da página: é pouco, e assim não há um ficheiro a mais a
    carregar nem a ficar em cache velha. Do que a biblioteca dá usa-se o
@@ -1298,17 +1300,6 @@ function paginaContactos() {
             Para pedidos sobre os seus dados pessoais, a garantia ou uma reclamação,
             o email deixa tudo escrito.</p>
         </div>` : ''}
-        <!-- O LIVRO DE RECLAMAÇÕES também aqui, como o manual da DGC recomenda
-             (a página de apoio ao cliente), discreto como no rodapé. -->
-        <div class="painel" style="position:static">
-          <span class="painel__cat">Reclamações</span>
-          <h2 class="tit-m" style="margin:.4rem 0 .8rem">Livro de Reclamações</h2>
-          <p class="painel__resumo">Se algo correu mal e não o resolvemos consigo, pode apresentar
-            reclamação no Livro de Reclamações electrónico. Antes disso, fale connosco: a
-            maior parte resolve-se numa mensagem. Ver também a
-            <a href="${u('resolucao-de-litigios/')}">resolução de litígios</a>.</p>
-          <p class="painel__resumo contactos__livro">${livroMarcado()}</p>
-        </div>
       </div>
     </div>
     <!-- Sem «Onde estamos» nem mapa desde Outubro de 2026: a loja não tem porta

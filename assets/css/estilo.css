@@ -750,10 +750,7 @@ main > .hero:first-child { margin-top: calc(-1 * var(--h-topo)); padding-top: va
    legal-comum (CSS dentro de cada página, scripts/gerar.mjs, CSS_LEGAL) — o
    ícone do livro e o texto, sem caixa. No rodapé fica com tudo o que as
    ligações vizinhas têm (`.pe__legais a`: a cor, a letra, os 24 px de toque, o
-   branco ao passar), nunca menos. Na página de contactos, a cor das ligações
-   do texto. */
-.contactos__livro { margin-top: .9rem; }
-.contactos__livro .lr-discreto { color: var(--cacau); font-weight: 600; }
+   branco ao passar), nunca menos. Só no rodapé (27 out 2026). */
 /* A linha de identificação da página de contactos (só quando a titular e o NIF
    verdadeiros existem): pequena, por baixo dos cartões. */
 .contactos__id { margin-top: clamp(1.5rem, 3vw, 2.2rem); font-size: .86rem; color: var(--tinta-2); }
