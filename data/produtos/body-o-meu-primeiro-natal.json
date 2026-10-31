@@ -1,0 +1,18 @@
+{
+  "nome": "Body \"O meu primeiro Natal\"",
+  "fotos": [
+    "assets/produtos/body-o-meu-primeiro-natal/body-o-meu-primeiro-natal-a676aeb8.jpg",
+    "assets/produtos/body-o-meu-primeiro-natal/body-o-meu-primeiro-natal-59fcd257.jpg",
+    "assets/produtos/body-o-meu-primeiro-natal/body-o-meu-primeiro-natal-b39aa211.jpg"
+  ],
+  "resumo": "O primeiro Natal dos nossos bebes!",
+  "texto": "O primeiro Natal é sempre mágico e merece ser recordado de uma forma muito especial! \n\nEste body foi pensado para tornar ainda mais doce e inesquecível uma das primeiras celebrações do bebé. Com um toque natalício e muito amor, é perfeito para criar memórias únicas, registar fotografias especiais e encantar toda a família.\n\nPorque há momentos que merecem ser guardados para sempre!",
+  "personalizavel": [
+    "O tamanho do body",
+    "O nome"
+  ],
+  "preco": 11,
+  "categoria": "natal",
+  "publicado": true,
+  "destaque": false
+}
