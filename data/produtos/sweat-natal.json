@@ -7,7 +7,14 @@
     "assets/produtos/sweat-natal/sweat-natal-8b1e8f5d.jpg"
   ],
   "resumo": "A magia do Natal.",
-  "texto": "Imagem gerada por IA. \n\nCelebre a magia do Natal com um look especial para toda a família! \n\nPersonalize as suas sweats e combine com quem mais ama. Perfeitas para criar memórias, partilhar sorrisos e tornar este Natal ainda mais especial!\n\nPorque o Natal é ainda mais mágico em família!",
+  "texto": "Imagem gerada por IA. \n\nCelebre a magia do Natal com um look especial para toda a família! \n\nPersonalize as suas sweats e combine com quem mais ama. Perfeitas para criar memórias, partilhar sorrisos e tornar este Natal ainda mais especial!\n\nPorque o Natal é ainda mais mágico em família!\n\nCompras em quantidade tem desconto.",
+  "personalizavel": [
+    "A cor da camisola",
+    "O tamanho",
+    "O nome",
+    "O desenho"
+  ],
+  "preco": 18,
   "categoria": "natal",
   "ocasioes": [
     "presente"
