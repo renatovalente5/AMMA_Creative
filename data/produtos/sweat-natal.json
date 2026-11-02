@@ -1,0 +1,18 @@
+{
+  "nome": "Sweat Natal",
+  "fotos": [
+    "assets/produtos/sweat-natal/sweat-natal-0c8a3d72.jpg",
+    "assets/produtos/sweat-natal/sweat-natal-6bb44802.jpg",
+    "assets/produtos/sweat-natal/sweat-natal-f4cb7e21.jpg",
+    "assets/produtos/sweat-natal/sweat-natal-8b1e8f5d.jpg"
+  ],
+  "resumo": "A magia do Natal.",
+  "texto": "Imagem gerada por IA. \n\nCelebre a magia do Natal com um look especial para toda a família! \n\nPersonalize as suas sweats e combine com quem mais ama. Perfeitas para criar memórias, partilhar sorrisos e tornar este Natal ainda mais especial!\n\nPorque o Natal é ainda mais mágico em família!",
+  "categoria": "natal",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 1
+}
