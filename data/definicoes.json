@@ -20,8 +20,8 @@
     "pais": "Portugal"
   },
   "textos": {
-    "hero_titulo": "Feito para *uma pessoa* só",
-    "hero_texto": "Artigos personalizados para todas as ocasiões. Tu escolhes o que queres, nós produzimos.",
+    "hero_titulo": "A *Magia do Natal* começa aqui!",
+    "hero_texto": "Ajudamos a tornar o teu natal mais mágico!",
     "reclamo": "Detalhes únicos, feitos para si",
     "sobre_titulo": "Somos uma loja de artigos personalizados",
     "sobre_chamada": "Uma casal de jovens que se aventurou e decidiu dedicar se a este mundo, criamos artigos personalizados com amor e dedicação, tornando cada peça única e especial. Transformamos as tuas ideias em momentos e recordações inesquecíveis.",
@@ -50,7 +50,7 @@
     "contactos_instagram": "É lá que publicamos o que vai saindo."
   },
   "inicio": {
-    "foto": "assets/produtos/box-anuncio-gravidez/01.jpg",
+    "foto": "assets/produtos/tabuleiro-pai-natal/tabuleiro-pai-natal-4cbbb9f2.jpg",
     "fotos": [
       "assets/produtos/sweat-mae/01.jpg",
       "assets/produtos/colares-site-2-pronta.jpg",
