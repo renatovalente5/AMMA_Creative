@@ -14,7 +14,7 @@
   ],
   "preco": 11,
   "categoria": "natal",
-  "publicado": false,
+  "publicado": true,
   "destaque": false,
   "ordem": 1
 }
