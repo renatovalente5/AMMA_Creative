@@ -1,0 +1,22 @@
+{
+  "nome": "Bolas de natal",
+  "fotos": [
+    "assets/produtos/bolas-de-natal/bolas-de-natal-c6b08d3d.jpg",
+    "assets/produtos/bolas-de-natal/bolas-de-natal-b393e2d1.jpg",
+    "assets/produtos/bolas-de-natal/bolas-de-natal-7411e2cd.jpg",
+    "assets/produtos/bolas-de-natal/bolas-de-natal-699c05d3.jpg"
+  ],
+  "resumo": "Pequenos detalhes que tornam ainda mais especial.",
+  "texto": "Dá um toque único e especial à tua árvore de Natal!\n\nPersonaliza com o nome que desejares e cria uma decoração cheia de magia ou um presente inesquecível! \n\nUm pequeno detalhe que torna o Natal ainda mais especial!",
+  "personalizavel": [
+    "O nome"
+  ],
+  "preco": 6,
+  "categoria": "natal",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": true,
+  "destaque": false,
+  "ordem": 1
+}
