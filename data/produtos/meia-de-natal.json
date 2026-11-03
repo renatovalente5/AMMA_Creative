@@ -1,0 +1,20 @@
+{
+  "nome": "Meia de Natal",
+  "fotos": [
+    "assets/produtos/meia-de-natal/meia-de-natal-83180856.jpg",
+    "assets/produtos/meia-de-natal/meia-de-natal-315bc243.jpg"
+  ],
+  "resumo": "Dá um toque único e especial à tua árvore de Natal!",
+  "texto": "Dá um toque único e especial à tua árvore de Natal!\n\nPersonaliza com o nome que desejares e cria uma decoração cheia de magia ou um presente inesquecível!\n\nUm pequeno detalhe que torna o Natal ainda mais especial! \n\nEncomenda já a tua e torna este Natal ainda mais mágico!",
+  "personalizavel": [
+    "O nome"
+  ],
+  "preco": 6,
+  "categoria": "natal",
+  "ocasioes": [
+    "presente"
+  ],
+  "publicado": false,
+  "destaque": false,
+  "ordem": 1
+}
