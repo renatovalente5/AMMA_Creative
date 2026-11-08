@@ -1030,14 +1030,10 @@ function paginaProduto(p) {
         <p class="painel__resumo">${esc(p.resumo)}</p>
         <p class="painel__preco">${esc(precoOuConsulta(p))}</p>
         ${temPreco(p)
-          /* Com preço à vista, a nota tem de dizer três coisas que a lei pede: que
-             o valor é final e com impostos (DL 138/90), que o envio é à parte
-             (DL 24/2014, alínea e) do n.º 1 do artigo 4.º), e que personalizações
-             fora do que está descrito podem mudar o valor — dito de forma a não
-             transformar o preço anunciado numa isca. */
-          ? `<p class="painel__nota">Preço final, com impostos incluídos. O envio é à parte —
-             ${esc(def.textos.portes.toLowerCase())}. Se quiser algo além do que está aqui
-             descrito, diga-nos e confirmamos o valor antes de avançar.</p>`
+          /* Com preço à vista, sem nota (o Renato, 8 nov 2026: menos texto): o preço é o final (DL 138/90)
+             e que o envio se paga à parte (DL 24/2014, art. 4.º, n.º 1, al. e)) diz-se na primeira linha
+             da lista de baixo. Sem preço, a nota diz como se chega a ele. */
+          ? ''
           : `<p class="painel__nota">O preço depende do que escolher personalizar. Diga-nos o
              que quer e respondemos no mesmo dia.</p>`}
         <div class="painel__acoes">
@@ -1046,7 +1042,8 @@ function paginaProduto(p) {
           <a class="btn btn--linha" href="${esc(def.contactos.instagram)}" target="_blank" rel="noopener">${ic.insta} Mensagem no Instagram</a>
         </div>
         <ul class="person" style="margin-top:1.4rem">
-          <li>${ic.caixa}<span>${esc(def.textos.portes)}</span></li>
+          <li>${ic.caixa}<span>${esc(/acima de/i.test(def.textos.portes) && !/à parte/i.test(def.textos.portes)
+            ? `Envio à parte — ${def.textos.portes.charAt(0).toLowerCase()}${def.textos.portes.slice(1)}` : def.textos.portes)}</span></li>
           ${textoOpcional('ficha_previa') ? `<li>${ic.relogio}<span>${esc(textoOpcional('ficha_previa'))}</span></li>` : ''}
           ${textoOpcional('ficha_feito') ? `<li>${ic.agulha}<span>${esc(textoOpcional('ficha_feito'))}</span></li>` : ''}
         </ul>
