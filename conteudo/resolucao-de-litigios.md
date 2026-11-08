@@ -30,8 +30,8 @@ para todo o país, o centro competente é, em regra, o da zona onde mora:
 - **CACCL**, Centro de Arbitragem de Conflitos de Consumo de Lisboa:
   [centroarbitragemlisboa.pt](https://www.centroarbitragemlisboa.pt/)
 - **CIAB**, Centro de Informação, Mediação e Arbitragem de Consumo (Tribunal
-  Arbitral de Consumo), para os distritos de Braga, Viana do Castelo e Vila
-  Real: [ciab.pt](https://ciab.pt/)
+  Arbitral de Consumo), para os distritos de Braga e Viana do Castelo e para o
+  Alto Tâmega e Barroso: [ciab.pt](https://ciab.pt/)
 - **TRIAVE**, Centro de Arbitragem de Conflitos de Consumo do Ave, Tâmega e
   Sousa: [triave.pt](https://www.triave.pt/)
 - **CACRC**, Centro de Arbitragem de Conflitos de Consumo da Região de Coimbra:
@@ -80,4 +80,4 @@ Segurança Alimentar e Económica** ([asae.gov.pt](https://www.asae.gov.pt)).
 
 ---
 
-*Última actualização: Outubro de 2026.*
+*Última actualização: Novembro de 2026.*

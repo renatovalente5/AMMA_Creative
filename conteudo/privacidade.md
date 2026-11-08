@@ -55,15 +55,16 @@ Se nos enviar fotografias para uma peça, elas servem **só para fazer essa peç
 {{frase_fotografias}} Um «não» é uma resposta completa, que não afecta a
 encomenda.
 
-Guardamo-las enquanto a encomenda estiver a decorrer, e apagamo-las depois, salvo
-se nos pedir para as manter para uma repetição.
+Chegam-nos na conversa da encomenda e ficam guardadas com ela, pelo mesmo prazo:
+três anos, enquanto durar a garantia (ver «Quanto tempo guardamos»).
 
 ## Quanto tempo guardamos
 
 - {{prazo_contactos}}
 - {{prazo_encomendas}} As conversas e os detalhes de uma encomenda ficam
   enquanto durar a garantia (três anos, nos termos do Decreto-Lei n.º 84/2021).
-- **Fotografias que nos envia:** até a encomenda terminar.
+- **Fotografias que nos envia:** o mesmo prazo que a conversa da encomenda em
+  que chegam — três anos.
 - {{prazo_registos}} São os registos do alojamento do site, que não lemos nem
   cruzamos com mais nada.
 
@@ -120,4 +121,4 @@ Se isto mudar, muda aqui, com a data actualizada em baixo.
 
 ---
 
-*Última actualização: 22 de Outubro de 2026.*
+*Última actualização: 8 de Novembro de 2026.*

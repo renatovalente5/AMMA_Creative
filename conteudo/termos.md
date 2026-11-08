@@ -21,15 +21,20 @@ forma permanente e de acesso fácil. Para exercer a garantia, pedir informação
 sobre os seus dados ou reclamar, pode usar qualquer um destes contactos; o email
 deixa tudo escrito.
 
-## Este site é uma montra, não uma loja em linha
+## Como se compra aqui
 
 Não há carrinho de compras nem pagamento neste site, e isso é intencional: cada
-artigo é feito por medida, e o preço depende do que se personaliza. O que aqui
-está serve para mostrar o que fazemos.
+artigo é feito por medida, e o preço depende do que se personaliza.
 
 **As encomendas fazem-se a falar** — por WhatsApp, por mensagem no Instagram ou
-por mensagem. Quando combinarmos o artigo, dizemos-lhe o preço final, o prazo e
-como se paga.
+por email. Quando combinarmos o artigo, dizemos-lhe o preço final, o prazo e
+como se paga, e só avançamos depois de confirmar.
+
+Uma encomenda combinada assim, a partir deste site e sem estarmos frente a
+frente, é uma **venda à distância**: aplica-se-lhe o Decreto-Lei n.º 24/2014 e
+tem os direitos que a lei dá a quem compra à distância, explicados nos pontos
+seguintes — a informação antes de comprar, o preço final e os portes antes de
+confirmar, a garantia legal e as vias de reclamação.
 
 ## Preços
 
@@ -39,8 +44,7 @@ descrita.
 
 O preço de uma peça personalizada depende do que leva: o número de nomes a
 gravar, o tamanho, a quantidade, o material. Por isso, se pedir algo além do que
-está descrito, ou se o artigo disser «Sob consulta», confirmamos o valor consigo
-antes de avançar.
+está descrito, confirmamos o valor consigo antes de avançar.
 
 Quando lhe indicarmos um preço, ele é **final e com todos os impostos incluídos**,
 como a lei exige (Decreto-Lei n.º 138/90). Os portes são à parte, e dizemos-lhe
@@ -76,9 +80,10 @@ Os artigos têm a garantia legal de conformidade prevista no **Decreto-Lei n.º
 84/2021**: **três anos** a contar da entrega, para bens móveis.
 
 A garantia cobre defeitos de fabrico e falta de conformidade com o que foi
-acordado. Não cobre o desgaste normal do uso, nem danos causados por lavagem ou
-utilização indevida — para o têxtil, seguir as instruções de lavagem que
-enviamos com a peça faz toda a diferença na durabilidade do vinil.
+acordado. Não cobre o desgaste normal do uso, nem danos causados por lavagem
+contrária às instruções que enviamos com a peça ou por utilização indevida —
+para o têxtil, seguir essas instruções faz toda a diferença na durabilidade do
+vinil.
 
 Para exercer a garantia, fale connosco pelos contactos acima.
 
@@ -116,4 +121,4 @@ prejuízo do direito de recorrer à resolução alternativa de litígios.
 
 ---
 
-*Última actualização: 22 de Outubro de 2026.*
+*Última actualização: 8 de Novembro de 2026.*
